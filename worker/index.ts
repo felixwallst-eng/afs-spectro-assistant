@@ -1,4 +1,8 @@
 import { classify } from './clef.ts'
+import { handleDocs } from './docs.ts'
+import { runAgent, runBrief } from './agent.ts'
+import { runTree } from './tree.ts'
+import type { AgentRequest } from '../shared/agent.ts'
 
 const MAX_TEXT = 8000
 
@@ -24,8 +28,51 @@ export default {
       }
     }
 
+    if (url.pathname === '/api/tree' && request.method === 'POST') {
+      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown } | null
+      const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
+      if (!text) return Response.json({ error: 'Enter the customer enquiry text.' }, { status: 400 })
+      try {
+        return Response.json(await runTree(env.AI, env.DOCS, { text, model: body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss' }))
+      } catch (err) {
+        return Response.json({ error: `Assessment failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
+      }
+    }
+
+    if (url.pathname === '/api/agent/brief' && request.method === 'POST') {
+      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown } | null
+      const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
+      if (!text) return Response.json({ error: 'Send the enquiry text.' }, { status: 400 })
+      try {
+        return Response.json(await runBrief(env.AI, env.DOCS, { text, model: body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss' }))
+      } catch (err) {
+        return Response.json({ error: `Agent failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
+      }
+    }
+
+    if (url.pathname === '/api/agent' && request.method === 'POST') {
+      const body = (await request.json().catch(() => null)) as Partial<AgentRequest> | null
+      const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
+      const dimensionIds = Array.isArray(body?.dimensionIds) ? body.dimensionIds.filter((x): x is string => typeof x === 'string') : []
+      if (!text || !dimensionIds.length) return Response.json({ error: 'Send the enquiry text and the open dimension ids.' }, { status: 400 })
+      try {
+        return Response.json(await runAgent(env.AI, env.DOCS, { text, dimensionIds, model: body?.model }))
+      } catch (err) {
+        return Response.json({ error: `Agent failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
+      }
+    }
+
     if (url.pathname === '/api/health') {
       return Response.json({ status: 'ok' })
+    }
+
+    if (url.pathname.startsWith('/api/docs')) {
+      try {
+        const res = await handleDocs(request, env.DOCS)
+        if (res) return res
+      } catch (err) {
+        return Response.json({ error: `Knowledge base request failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 })
+      }
     }
 
     if (url.pathname.startsWith('/api/')) {

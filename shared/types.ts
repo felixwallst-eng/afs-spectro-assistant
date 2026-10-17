@@ -118,6 +118,7 @@ export interface Assessment {
 export interface Settings {
   confidentAt: number // >= -> confident
   uncertainAt: number // >= -> uncertain, below -> unknown
+  agentModel: 'gptoss' | 'qwen' | 'kimi' // knowledge agent model, see shared/agent.ts
 }
 
-export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3 }
+export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3, agentModel: 'gptoss' }

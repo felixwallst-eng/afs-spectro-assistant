@@ -1,3 +1,5 @@
+import { AGENT_MODELS } from '../../shared/agent.ts'
+import type { AgentModelKey } from '../../shared/agent.ts'
 import { DEFAULT_SETTINGS } from '../../shared/types.ts'
 import type { Settings } from '../../shared/types.ts'
 
@@ -49,6 +51,22 @@ export default function SettingsPage({ settings, setSettings }: Props) {
             onChange={(e) => setSettings({ ...settings, uncertainAt: Math.min(Number(e.target.value), settings.confidentAt - 0.01) })}
           />
           <span>{pct(settings.uncertainAt)}</span>
+        </div>
+        <h3 className="settings-sub">Knowledge agent model</h3>
+        <p className="hint" style={{ marginBottom: 8 }}>
+          All models have open weights, so the same model can later run on AFS hardware without sending enquiries to a third party. In
+          this prototype they are hosted on Cloudflare Workers AI.
+        </p>
+        <div className="model-choice">
+          {(Object.keys(AGENT_MODELS) as AgentModelKey[]).map((k) => (
+            <label key={k} className={settings.agentModel === k ? 'on' : ''}>
+              <input type="radio" name="agent-model" checked={settings.agentModel === k} onChange={() => setSettings({ ...settings, agentModel: k })} />
+              <span>
+                <strong>{AGENT_MODELS[k].name}</strong>
+                <small>{AGENT_MODELS[k].note}</small>
+              </span>
+            </label>
+          ))}
         </div>
         <div className="toolbar" style={{ marginTop: 16 }}>
           <button className="btn" onClick={() => setSettings(DEFAULT_SETTINGS)}>

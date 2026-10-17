@@ -1,5 +1,6 @@
 import { FIBERS, METHOD_INFO } from '../../shared/knowledge.ts'
-import type { Assessment, Candidate, Citation, MethodKey } from '../../shared/types.ts'
+import CiteLink from './CiteLink.tsx'
+import type { Assessment, Candidate, MethodKey } from '../../shared/types.ts'
 
 const DECISION_TEXT = {
   provisional: 'Provisional assessment',
@@ -9,7 +10,6 @@ const DECISION_TEXT = {
 const EFFECT_SYM = { plus: '+', minus: '−', condition: '!', exclude: '×', info: 'i' }
 const METHOD_COLOR: Record<MethodKey, string> = { uvvis: '#5b2a9c', fluorescence: '#2d4fd0', raman: '#1b9a8a', nir: '#d8642a', ir: '#8c1f30' }
 
-const cite = (c?: Citation) => (c ? `${c.source}${c.page ? ' ' + c.page : ''}` : '')
 
 function CandidateCard({ c }: { c: Candidate }) {
   const s = c.setup
@@ -32,7 +32,7 @@ function CandidateCard({ c }: { c: Candidate }) {
               {EFFECT_SYM[r.effect]}
             </span>
             <span>{r.text}</span>
-            {r.citation ? <span className="cite">{cite(r.citation)}</span> : <span />}
+            <CiteLink c={r.citation} />
           </li>
         ))}
       </ul>
@@ -114,7 +114,7 @@ export default function Recommendations({ assessment }: { assessment: Assessment
               <li key={w.id} className={w.severity}>
                 <span className="sym">{w.severity === 'block' ? '×' : '!'}</span>
                 <span style={{ flex: 1 }}>{w.text}</span>
-                {w.citation && <span className="cite">{cite(w.citation)}</span>}
+                {w.citation && <CiteLink c={w.citation} />}
               </li>
             ))}
           </ul>

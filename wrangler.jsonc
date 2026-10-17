@@ -9,7 +9,9 @@
 	"compatibility_date": "2026-10-06",
 	"assets": {
 		"not_found_handling": "single-page-application",
-		"run_worker_first": ["/api/*"]
+		"run_worker_first": [
+			"/api/*"
+		]
 	},
 	"observability": {
 		"enabled": true
@@ -17,7 +19,15 @@
 	"upload_source_maps": true,
 	"ai": {
 		"binding": "AI"
-	}
+	},
+	// Knowledge base: uploaded PDFs, extracted page text and document notes.
+	// Create once with: npx wrangler kv namespace create DOCS  -> paste the id below.
+	"kv_namespaces": [
+		{
+			"binding": "DOCS",
+			"id": "12ce1bbae18949e8800c15b1ea59b1b8"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { EXAMPLE_CASES } from '../../shared/cases.ts'
 import { assess, resolveDimensions } from '../../shared/engine.ts'
 import type { MethodSetup, RawDimension, Settings } from '../../shared/types.ts'
 import Recommendations from '../components/Recommendations.tsx'
-import ReviewTable from '../components/ReviewTable.tsx'
-import { classifyText, store } from '../lib.ts'
+import DecisionTree from '../components/DecisionTree.tsx'
+import { store, treeApi } from '../lib.ts'
+import { rawFromDecisions } from '../treeModel.ts'
+import type { TreeResponse } from '../../shared/tree.ts'
 import { METHOD_INFO } from '../../shared/knowledge.ts'
 import type { Assessment } from '../../shared/types.ts'
 
@@ -29,7 +31,7 @@ function Summary({ assessment }: { assessment: Assessment }) {
       </p>
       {open > 0 && (
         <p style={{ fontSize: 14, marginTop: 8 }}>
-          <a href="#review">{open} open question{open > 1 ? 's' : ''} to clarify with the client</a>
+          {open} open question{open > 1 ? 's' : ''} to clarify with the client – marked “?” on the decision path.
         </p>
       )}
     </section>
@@ -52,6 +54,8 @@ export default function AssessPage({ settings, methods }: Props) {
   const [error, setError] = useState('')
   const [history, setHistory] = useState<HistoryEntry[]>(() => store.history())
   const [currentId, setCurrentId] = useState<string | null>(null)
+  const [tree, setTree] = useState<TreeResponse | null>(null)
+  const [since, setSince] = useState<number | null>(null)
 
   const dims = useMemo(() => (raw ? resolveDimensions(raw, overrides, settings) : null), [raw, overrides, settings])
   const assessment = useMemo(() => (dims ? assess(dims, methods) : null), [dims, methods])
@@ -64,9 +68,12 @@ export default function AssessPage({ settings, methods }: Props) {
     setBusy(true)
     setError('')
     try {
-      const res = await classifyText(input)
+      setSince(Date.now())
+      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss')
       const nextOverrides = keepOverrides ? overrides : {}
-      setRaw(res.dimensions)
+      const dimensions = rawFromDecisions(res.decisions)
+      setTree(res)
+      setRaw(dimensions)
       setModel(res.model)
       setLatency(res.latencyMs)
       setOverrides(nextOverrides)
@@ -74,9 +81,10 @@ export default function AssessPage({ settings, methods }: Props) {
         id: keepOverrides && currentId ? currentId : crypto.randomUUID(),
         title: input.trim().slice(0, 70),
         text: input,
-        raw: res.dimensions,
+        raw: dimensions,
         overrides: nextOverrides,
         model: res.model,
+        tree: res,
         createdAt: new Date().toISOString(),
       }
       const next = [entry, ...history.filter((h) => h.id !== entry.id)]
@@ -87,6 +95,7 @@ export default function AssessPage({ settings, methods }: Props) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
       setBusy(false)
+      setSince(null)
     }
   }
 
@@ -102,12 +111,6 @@ export default function AssessPage({ settings, methods }: Props) {
     }
   }
 
-  function addNote(note: string) {
-    const next = `${text.trim()}\n\nAdditional information from the client: ${note.trim()}`
-    setText(next)
-    void analyze(next, true)
-  }
-
   function openEntry(e: HistoryEntry) {
     setText(e.text)
     setRaw(e.raw)
@@ -116,12 +119,14 @@ export default function AssessPage({ settings, methods }: Props) {
     setLatency(null)
     setCurrentId(e.id)
     setError('')
+    setTree(e.tree ?? null)
   }
 
   function newCase() {
     setText('')
     setRaw(null)
     setOverrides({})
+    setTree(null)
     setCurrentId(null)
     setError('')
   }
@@ -187,7 +192,7 @@ export default function AssessPage({ settings, methods }: Props) {
               />
               <div className="case-actions">
                 <button className="btn primary" disabled={busy} onClick={() => analyze(text, false)}>
-                  {busy ? 'Analysing…' : 'Analyse enquiry'}
+                  {busy ? <Elapsed since={since} /> : 'Analyse enquiry'}
                 </button>
                 {raw && (
                   <button className="btn" disabled={busy} onClick={newCase}>
@@ -197,7 +202,7 @@ export default function AssessPage({ settings, methods }: Props) {
                 {raw && !busy && (
                   <span className="status">
                     {model}
-                    {latency !== null ? ` · ${latency} ms` : ''}
+                    {latency !== null ? ` · ${(latency / 1000).toFixed(1)} s` : ''}
                   </span>
                 )}
               </div>
@@ -211,9 +216,9 @@ export default function AssessPage({ settings, methods }: Props) {
               <div className="panel-body">
                 <strong>How the assessment works</strong>
                 <ol>
-                  <li>Clef classifies the enquiry on every decision dimension.</li>
-                  <li>You answer what is missing and check what is uncertain.</li>
-                  <li>Rules from the AFS material rank the method setups and cite their source.</li>
+                  <li>The model decides each step of the AFS method table – only with a quote from the enquiry as evidence.</li>
+                  <li>Steps without evidence stay open: you decide them (“action needed”).</li>
+                  <li>Rules from the AFS material narrow the 19 method setups and cite their source.</li>
                 </ol>
               </div>
             </section>
@@ -222,7 +227,14 @@ export default function AssessPage({ settings, methods }: Props) {
 
         {assessment ? (
           <>
-            <ReviewTable key={currentId ?? "case"} assessment={assessment} settings={settings} onOverride={setOverride} onAddNote={addNote} busy={busy} />
+            {tree ? (
+              <DecisionTree key={currentId ?? 'case'} tree={tree} text={history.find((h) => h.id === currentId)?.text ?? text} assessment={assessment} methods={methods} overrides={overrides} onOverride={setOverride} />
+            ) : (
+              <section className="panel placeholder">
+                <strong>This entry was analysed with the earlier classifier</strong>
+                Choose “Analyse enquiry” again to build the evidence-backed decision path.
+              </section>
+            )}
             <Recommendations assessment={assessment} />
           </>
         ) : (
@@ -234,4 +246,13 @@ export default function AssessPage({ settings, methods }: Props) {
       </div>
     </div>
   )
+}
+
+function Elapsed({ since }: { since: number | null }) {
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 250)
+    return () => clearInterval(t)
+  }, [])
+  return <>Reading the enquiry… {since ? ((now - since) / 1000).toFixed(0) : 0} s</>
 }

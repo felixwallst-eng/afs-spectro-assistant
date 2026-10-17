@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BASE_METHODS, knowledgeVersion } from '../shared/knowledge.ts'
 import { DEFAULT_SETTINGS } from '../shared/types.ts'
 import type { MethodSetup, Settings } from '../shared/types.ts'
-import { store } from './lib.ts'
+import { ensureOriginalsIndexed, store } from './lib.ts'
+import { extractPageTextsFromUrl } from './pdfText.ts'
+import SourceViewer from './components/SourceViewer.tsx'
+import type { SourceRef } from './sources.ts'
+import { SourceContext } from './sourceContext.ts'
 import AssessPage from './pages/AssessPage.tsx'
 import KnowledgePage from './pages/KnowledgePage.tsx'
 import MethodsPage from './pages/MethodsPage.tsx'
@@ -18,8 +22,14 @@ type TabId = (typeof TABS)[number]['id']
 
 export default function App() {
   const [tab, setTab] = useState<TabId>('assess')
-  const [settings, setSettingsState] = useState<Settings>(() => store.settings(DEFAULT_SETTINGS))
+  const [source, setSource] = useState<SourceRef | null>(null)
+  const [settings, setSettingsState] = useState<Settings>(() => ({ ...DEFAULT_SETTINGS, ...store.settings(DEFAULT_SETTINGS) }))
   const [methods, setMethodsState] = useState<MethodSetup[]>(() => store.methods(BASE_METHODS))
+
+  // make the bundled AFS PDFs searchable for the knowledge agent (runs once, skips indexed ones)
+  useEffect(() => {
+    void ensureOriginalsIndexed(extractPageTextsFromUrl).catch((e) => console.warn('Indexing skipped:', e))
+  }, [])
 
   const setSettings = (s: Settings) => {
     setSettingsState(s)
@@ -31,7 +41,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <SourceContext.Provider value={setSource}>
       <div className="spectrum" aria-hidden="true" />
       <header className="topbar">
         <div className="brand">
@@ -56,6 +66,7 @@ export default function App() {
         {tab === 'methods' && <MethodsPage methods={methods} setMethods={setMethods} />}
         {tab === 'settings' && <SettingsPage settings={settings} setSettings={setSettings} />}
       </main>
-    </>
+      {source && <SourceViewer key={JSON.stringify(source)} refTo={source} onClose={() => setSource(null)} />}
+    </SourceContext.Provider>
   )
 }

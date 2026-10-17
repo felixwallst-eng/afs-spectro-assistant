@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { DIMENSIONS, GROUP_TITLES } from "../../shared/dimensions.ts";
 import { RELEVANCE_NOTE, isRelevant } from "../../shared/engine.ts";
+import CiteLink from "./CiteLink.tsx";
+import type { AgentState } from "../lib.ts";
 import type {
   Assessment,
   DimensionDef,
@@ -15,6 +17,8 @@ interface Props {
   onOverride: (id: string, value: string | undefined) => void;
   onAddNote: (note: string) => void;
   busy: boolean;
+  agent: AgentState;
+  onAskAgent: () => void;
 }
 
 const PRIORITY_TEXT = {
@@ -81,6 +85,8 @@ export default function ReviewTable({
   onOverride,
   onAddNote,
   busy,
+  agent,
+  onAskAgent,
 }: Props) {
   const [note, setNote] = useState("");
   // Pending answers: shown in the control, applied only on "Save changes".
@@ -250,6 +256,74 @@ export default function ReviewTable({
       </select>
     );
 
+  /** Knowledge-base agent: suggestion with a verified quote, or why there is none. */
+  const agentRow = (def: DimensionDef) => {
+    if (agent.status === "idle") return null;
+    const d = dims[def.id];
+    let body: ReactNode;
+    if (agent.status === "loading")
+      body = (
+        <span className="agent-main agent-wait">
+          Reading the knowledge base…
+        </span>
+      );
+    else if (agent.status === "error") return null;
+    else {
+      const sug = agent.data.suggestions.find((x) => x.dimensionId === def.id);
+      if (!sug) return null;
+      body =
+        sug.status === "verified" && sug.value ? (
+          <>
+            <span className="agent-main">
+              <span>
+                Suggests <strong>{valueName(def, sug.value)}</strong>
+              </span>
+              {sug.rationale && (
+                <span className="agent-reason">{sug.rationale}</span>
+              )}
+              <span className="agent-quote">
+                “{sug.quote}”
+                <CiteLink
+                  c={{ source: sug.docId!, page: `p.${sug.page}` }}
+                  quote={sug.quote}
+                />
+              </span>
+            </span>
+            <button
+              className="btn small"
+              onClick={() => setDraft(def.id, sug.value!, d.value)}
+            >
+              Use suggestion
+            </button>
+          </>
+        ) : (
+          <span
+            className={`agent-main ${sug.status === "withheld" ? "agent-withheld" : ""}`}
+          >
+            {sug.rationale}
+          </span>
+        );
+    }
+    return (
+      <tr key={`${def.id}-agent`} className="rv-agent">
+        <td />
+        <td colSpan={3}>
+          <div
+            className={`agent ${
+              agent.status === "done"
+                ? (agent.data.suggestions.find((x) => x.dimensionId === def.id)
+                    ?.status ?? "")
+                : ""
+            }`}
+          >
+            <span className="agent-tag">Knowledge agent</span>
+            {body}
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
   const questionRow = (def: DimensionDef, b: "missing" | "check") => {
     const d = dims[def.id];
     const q = questionOf.get(def.id);
@@ -315,7 +389,11 @@ export default function ReviewTable({
         </tr>
       </thead>
       <tbody>
-        {defs.map((def) => questionRow(def, b))}
+        {defs.flatMap((def) =>
+          b === "missing"
+            ? [questionRow(def, b), agentRow(def)]
+            : [questionRow(def, b)],
+        )}
         {b === "missing" && processQuestion && (
           <tr>
             <td className="dim-title">Process conditions</td>
@@ -392,6 +470,33 @@ export default function ReviewTable({
           open
           tone="missing"
         >
+          <div className="agent-bar">
+            {agent.status === "loading" && (
+              <span>Knowledge agent is reading the documents…</span>
+            )}
+            {agent.status === "error" && (
+              <span className="error">{agent.error}</span>
+            )}
+            {agent.status === "done" && (
+              <span>
+                Knowledge agent · {agent.data.model} · read{" "}
+                {agent.data.selectedDocs.map((d) => d.id).join(", ")} ·{" "}
+                {agent.data.pagesRead.length} pages ·{" "}
+                {(agent.data.latencyMs / 1000).toFixed(1)} s ·{" "}
+                {Math.round(
+                  (agent.data.usage.inputTokens +
+                    agent.data.usage.outputTokens) /
+                    100,
+                ) / 10}
+                k tokens
+              </span>
+            )}
+            {agent.status !== "loading" && (
+              <button className="linkbtn" onClick={onAskAgent}>
+                {agent.status === "idle" ? "Ask knowledge agent" : "Ask again"}
+              </button>
+            )}
+          </div>
           {questionTable(missing, "missing")}
           <form
             className="note-row"
