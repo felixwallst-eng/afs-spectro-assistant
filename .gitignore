@@ -29,3 +29,17 @@ dist-ssr
 !.dev.vars.example
 .env*
 !.env.example
+
+# Secrets und lokale Materialien
+.dev.vars
+.env
+.env.*
+!.dev.vars.example
+materials/
+
+# Secrets und lokale Materialien
+.dev.vars
+.env
+.env.*
+!.dev.vars.example
+materials/
