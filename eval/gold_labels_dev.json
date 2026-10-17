@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "schema": "dimensions.yaml v0.1",
+    "split": "dev (D01-D08 only; H01-H06 are the held-out test set and are deliberately NOT labelled here)",
+    "annotator": "draft A (to be checked; second annotator labels independently, then compute Cohen's kappa)",
+    "rule": "Label only what the client states or unambiguously implies. Unstated facts -> not_stated. Flags: list only flags that are mentioned.",
+    "note_on_gated_dimensions": "The classifier answers every dimension. relevant_if only controls whether an unknown value produces a question."
+  },
+  "cases": {
+    "D01": {
+      "labels": {
+        "application_domain": "pharma_solid_dosage",
+        "sample_state": "powder_or_granular",
+        "matrix_count": "single_matrix",
+        "optical_variability": "not_stated",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "defined_chemical_constituents",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "available",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": [],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {}
+    },
+    "D02": {
+      "labels": {
+        "application_domain": "dairy_food",
+        "sample_state": "opaque_liquid_or_emulsion",
+        "matrix_count": "single_matrix",
+        "optical_variability": "variable_over_process",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "defined_chemical_constituents",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "available",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": ["temperature_variation", "physical_texture_variation"],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "optical_variability": "Client says 'temperature and texture vary', not 'optics vary'. Labelled variable because texture changes scattering in an opaque product (S01 p.17); a strict annotator may choose not_stated."
+      }
+    },
+    "D03": {
+      "labels": {
+        "application_domain": "dairy_food",
+        "sample_state": "clear_liquid",
+        "matrix_count": "single_matrix",
+        "optical_variability": "variable_over_process",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "defined_chemical_constituents",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "available",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": [],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "sample_state": "'Relatively clear' but 'can become more turbid'. Base state = clear_liquid; the change is captured by optical_variability. turbid_liquid_or_suspension is a defensible alternative - decide one convention and keep it."
+      }
+    },
+    "D04": {
+      "labels": {
+        "application_domain": "bioprocess_fermentation",
+        "sample_state": "liquid_optics_unspecified",
+        "matrix_count": "single_matrix",
+        "optical_variability": "not_stated",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "defined_chemical_constituents",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "available",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": [],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "sample_state": "'Aqueous medium' with cells; turbidity is not stated. Strict rule -> liquid_optics_unspecified. Domain knowledge would suggest a suspension.",
+        "optical_variability": "'Medium and cell population change during the run' describes composition, not optics. Strict -> not_stated; lenient -> variable_over_process."
+      }
+    },
+    "D05": {
+      "labels": {
+        "application_domain": "bioprocess_fermentation",
+        "sample_state": "turbid_liquid_or_suspension",
+        "matrix_count": "single_matrix",
+        "optical_variability": "variable_over_process",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "loosely_defined_signal",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "to_be_defined",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": [],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "client_proposed_methods": "'An optical measurement' is not a specific method; 'optical density' is a property, not a request for UV/Vis. Labelled [].",
+        "deployment_context": "Fermentation monitoring, scale not stated; process_monitoring chosen because the goal is following a running fermentation."
+      }
+    },
+    "D06": {
+      "labels": {
+        "application_domain": "petrochemical",
+        "sample_state": "liquid_optics_unspecified",
+        "matrix_count": "single_matrix",
+        "optical_variability": "not_stated",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "defined_chemical_constituents",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "available",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "remote_from_process",
+        "quantified_requirements": "not_stated",
+        "process_conditions": [],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "sample_state": "'Petroleum stream' - liquid, optics not stated."
+      }
+    },
+    "D07": {
+      "labels": {
+        "application_domain": "pharma_polymer_melt",
+        "sample_state": "melt_or_paste",
+        "matrix_count": "single_matrix",
+        "optical_variability": "not_stated",
+        "sample_heterogeneity": "not_stated",
+        "target_definition": "defined_chemical_constituents",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "available",
+        "deployment_context": "process_monitoring",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": ["high_temperature", "fouling_or_buildup"],
+        "client_proposed_methods": [],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "deployment_context": "'Developing a hot polymer extrusion process' - could be lab-scale development. process_monitoring chosen because the measurement is during processing."
+      }
+    },
+    "D08": {
+      "labels": {
+        "application_domain": "biomedical_tissue",
+        "sample_state": "soft_solid_or_tissue",
+        "matrix_count": "single_matrix",
+        "optical_variability": "not_stated",
+        "sample_heterogeneity": "locally_heterogeneous",
+        "target_definition": "classification_of_sample_types",
+        "fluorescent_target": "not_stated",
+        "reference_analytics": "not_stated",
+        "deployment_context": "laboratory_study",
+        "analyzer_location": "not_stated",
+        "quantified_requirements": "not_stated",
+        "process_conditions": [],
+        "client_proposed_methods": ["mir_atr", "fluorescence"],
+        "reuse_requested": [],
+        "matrix_change_vs_existing": "not_stated",
+        "existing_fiber_type": "not_stated",
+        "certainty_requested": "exploratory_assessment"
+      },
+      "ambiguous": {
+        "matrix_count": "Muscle, fat, liver are classes of a classification study, not separate process streams -> single_matrix (see dimension note).",
+        "reference_analytics": "Tissue type is known by construction, which acts as class label; no reference analysis is mentioned. Strict -> not_stated."
+      }
+    }
+  }
+}

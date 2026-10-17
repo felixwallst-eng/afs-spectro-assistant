@@ -1,0 +1,292 @@
+# =============================================================================
+# Case dimensions for the AFS spectroscopy assistant (pilot v0.1)
+# =============================================================================
+# The classifier (Jev or an LLM with structured output) answers ONE typed
+# question per dimension from the customer text alone. Methods are NOT scored
+# here; method fit is derived later by the rule engine from these labels plus
+# the AFS knowledge matrix (xlsx / S01 / S02).
+#
+# kind:
+#   fact     -> a property of the customer situation. If the text does not
+#               state it, the correct label is the dimension's unknown_label.
+#               Unknown facts generate clarification questions.
+#   request  -> something the client asks for or proposes. If it is not in the
+#               text, it simply was not requested (absence = "none"), so it
+#               never generates a question.
+#
+# call:
+#   choice      -> exactly one label (Jev "Choice" call)
+#   multi_flag  -> one yes/no call per flag (Jev "Noul" call per flag)
+#
+# relevant_if: the dimension is only evaluated / asked about when the
+#   condition holds. Keeps the question list short.
+#
+# priority (for clarification questions, used until value-of-information
+# ranking is implemented):
+#   1 = can change WHICH METHOD is suitable
+#   2 = can change the MEASUREMENT SETUP (geometry, probe, fiber, location)
+#   3 = refines the FEASIBILITY PLAN / acceptance criteria
+#
+# LABELLING RULE (gold + classifier): label only what the client actually
+# states or unambiguously implies. Domain knowledge ("cell cultures are
+# usually turbid") is NOT a statement. When in doubt -> unknown_label.
+# =============================================================================
+
+version: 0.1
+confidence_threshold_default: 0.70   # below -> treat as unknown_label (fact) / "no" (flag). Tune on D01-D08.
+
+dimensions:
+
+  # ---------------------------------------------------------------- FACTS ---
+
+  - id: application_domain
+    kind: fact
+    call: choice
+    classifier_question: "Which industrial or research domain does this enquiry come from?"
+    labels:
+      pharma_solid_dosage: "Pharmaceutical powders, blends, tablets, coating."
+      pharma_polymer_melt: "Pharmaceutical or polymer melt processing, e.g. hot-melt extrusion."
+      dairy_food: "Milk, whey, dairy concentrates or other food liquids."
+      bioprocess_fermentation: "Cell culture, fermentation, bioreactor media."
+      petrochemical: "Petroleum, oil, fuels, hydrocarbon streams."
+      biomedical_tissue: "Biological or medical tissue, surgery, diagnostics."
+      other_industrial: "A clearly named domain not listed above."
+      not_stated: "The domain cannot be determined from the text."
+    unknown_label: not_stated
+    priority: 3
+    affects: [source_selection]
+    clarification_question: "Which industry and process step does the measurement belong to?"
+    notes: "Mainly used to pull the matching AFS application case (S01 p.13-18, S02 p.13-14) as a citation."
+
+  - id: sample_state
+    kind: fact
+    call: choice
+    classifier_question: "What is the physical state and optical appearance of the sample at the measurement point, as stated by the client?"
+    labels:
+      powder_or_granular: "Powder, blend, granulate, pellets."
+      clear_liquid: "A liquid described as clear, transparent or relatively clear."
+      turbid_liquid_or_suspension: "A liquid described as turbid, optically dense or a suspension."
+      opaque_liquid_or_emulsion: "A liquid described as opaque, concentrated or emulsion-like."
+      liquid_optics_unspecified: "A liquid, but its clarity/turbidity is not stated."
+      melt_or_paste: "Polymer melt, paste, highly viscous mass."
+      soft_solid_or_tissue: "Biological tissue or other soft solid."
+      not_stated: "The sample state is not stated."
+    unknown_label: not_stated
+    priority: 1
+    affects: [geometry_choice, method_shortlist]
+    clarification_question: "What is the physical state and optical appearance of the sample at the measurement point (powder, clear / turbid / opaque liquid, paste or melt, solid)?"
+    follow_up_if: { liquid_optics_unspecified: "Is the liquid clear, turbid or opaque, and does that change during the process?" }
+    sources: ["S01 Table 1 (p.6)", "S01 p.16", "S01 p.17-18"]
+
+  - id: matrix_count
+    kind: fact
+    call: choice
+    classifier_question: "Does the enquiry involve one product/stream or several distinct streams or products that would each need their own measurement point?"
+    labels:
+      single_matrix: "One product or stream (possibly with several target variables)."
+      multiple_distinct_matrices: "Two or more different streams/products with different properties."
+      not_stated: "Cannot be determined."
+    unknown_label: not_stated
+    priority: 1
+    affects: [split_case_into_subcases]
+    clarification_question: "Is the measurement needed on a single stream, or on several streams or products with different properties?"
+    notes: "multiple_distinct_matrices -> rule engine evaluates each matrix as a sub-case. Sample classes in a classification study are NOT separate matrices."
+
+  - id: optical_variability
+    kind: fact
+    call: choice
+    classifier_question: "Does the client state that the optical or physical properties of the sample (turbidity, optical density, texture, scattering) change during the process?"
+    labels:
+      stable: "Client states the sample stays optically/physically stable."
+      variable_over_process: "Client states turbidity, optical density, texture or similar changes."
+      not_stated: "Not mentioned."
+    unknown_label: not_stated
+    priority: 2
+    affects: [geometry_choice, preprocessing, feasibility_design]
+    clarification_question: "Do turbidity, optical density, texture, bubbles or temperature of the sample change during the process, and over what range?"
+    sources: ["S01 p.16", "S01 p.17-18"]
+
+  - id: sample_heterogeneity
+    kind: fact
+    call: choice
+    classifier_question: "Does the client describe the sample as locally heterogeneous, so that measurements at different spots may differ?"
+    labels:
+      homogeneous_or_well_mixed: "Client states the sample is homogeneous or well mixed."
+      locally_heterogeneous: "Client states the sample is heterogeneous / spot-dependent."
+      not_stated: "Not mentioned."
+    unknown_label: not_stated
+    priority: 2
+    affects: [combined_probe_need, sampling_design]
+    clarification_question: "Is the sample homogeneous at the probe tip, or can composition differ between nearby measurement spots?"
+    sources: ["S01 p.8", "S01 p.14", "S04"]
+
+  - id: target_definition
+    kind: fact
+    call: choice
+    classifier_question: "How clearly has the client defined what should be measured?"
+    labels:
+      defined_chemical_constituents: "Named constituents or properties, e.g. API, water, fat, protein, glucose."
+      classification_of_sample_types: "Distinguish/classify sample types, e.g. tissue classes."
+      loosely_defined_signal: "A vague signal (e.g. 'growth', 'metabolic signal') not yet tied to a variable."
+      undefined: "The client explicitly cannot name the target or affected variable."
+      not_stated: "No target mentioned at all."
+    unknown_label: not_stated
+    priority: 1
+    affects: [method_shortlist, decision_status]
+    clarification_question: "Which specific constituent or quality variable must be measured, and which change in it must be detected?"
+    notes: "undefined / loosely_defined_signal -> decision_status at most 'insufficient information' for a final method choice."
+
+  - id: fluorescent_target
+    kind: fact
+    call: choice
+    relevant_if: "fluorescence is a candidate method OR client_proposed_methods.fluorescence"
+    classifier_question: "Has the client identified a specific fluorescent species, marker or reference relationship for the target?"
+    labels:
+      identified: "A fluorescent species/marker is named (e.g. NADH, tryptophan, riboflavin)."
+      explicitly_not_identified: "The client states no fluorescent target or marker has been identified."
+      not_stated: "Not mentioned."
+    unknown_label: not_stated
+    priority: 1
+    affects: [fluorescence_knockout]
+    clarification_question: "Which fluorescent species or marker is expected to reflect the target variable, and is there a known reference relationship?"
+    sources: ["S01 p.16", "docx section 5 (Fluorescence)"]
+
+  - id: reference_analytics
+    kind: fact
+    call: choice
+    classifier_question: "Does the client have independent reference measurements (laboratory analysis, offline assays) for the target variable?"
+    labels:
+      available: "Laboratory / offline reference measurements exist."
+      to_be_defined: "The client asks for help defining reference measurements."
+      not_stated: "Not mentioned."
+    unknown_label: not_stated
+    priority: 3
+    affects: [feasibility_design, calibration_possible]
+    clarification_question: "Which independent reference method provides values for the target variable, with what uncertainty and sampling time?"
+
+  - id: deployment_context
+    kind: fact
+    call: choice
+    classifier_question: "In which context should the measurement be used?"
+    labels:
+      laboratory_study: "Laboratory research or classification study."
+      process_monitoring: "Industrial process monitoring, pilot or in-line/in-situ installation."
+      clinical_or_in_vivo: "Use on patients, in vivo, or for clinical decisions."
+      not_stated: "Not stated."
+    unknown_label: not_stated
+    priority: 1
+    affects: [scope_check, decision_status, evidence_maturity_check]
+    clarification_question: "Is the measurement intended for a laboratory study, a process pilot, routine process control or a clinical setting?"
+    notes: "clinical_or_in_vivo -> outside supported scope; only research feasibility steps can be proposed."
+
+  - id: analyzer_location
+    kind: fact
+    call: choice
+    classifier_question: "Where would the analyzer be located relative to the measurement point?"
+    labels:
+      near_process: "Analyzer at or near the measurement point."
+      remote_from_process: "Analyzer outside the process area, another room or building."
+      not_stated: "Not stated."
+    unknown_label: not_stated
+    priority: 2
+    affects: [fiber_link_check]
+    clarification_question: "Where will the analyzer be placed, and what fiber link length and routing are required?"
+    sources: ["S02 p.6", "S01 p.10"]
+
+  - id: quantified_requirements
+    kind: fact
+    call: choice
+    classifier_question: "Does the client give quantified requirements such as concentration range, acceptance limits, accuracy or response time?"
+    labels:
+      quantified: "At least concentration range or acceptance limits are given numerically."
+      not_stated: "No quantified requirements."
+    unknown_label: not_stated
+    priority: 3
+    affects: [feasibility_go_no_go]
+    clarification_question: "What concentration range, acceptance limits, required accuracy and response time apply?"
+
+  - id: process_conditions
+    kind: fact
+    call: multi_flag
+    classifier_question: "Which of these process conditions does the client mention at the measurement point?"
+    flags:
+      high_temperature: "Hot process / hot interface."
+      temperature_variation: "Product temperature varies."
+      physical_texture_variation: "Texture, viscosity, particle size or similar physical properties vary."
+      fouling_or_buildup: "Material build-up, fouling or deposits on the interface."
+      humid_or_dirty_environment: "Humid, dusty or dirty surroundings."
+    unknown_label: null      # flags: unmentioned = not stated; one generic question is asked instead
+    priority: 2
+    affects: [probe_material_check, interface_design, risk_list]
+    clarification_question: "What temperature, pressure, fouling and cleaning conditions apply at the measurement point?"
+    ask_if: "no flag is set"
+
+  # ------------------------------------------------------------- REQUESTS ---
+
+  - id: client_proposed_methods
+    kind: request
+    call: multi_flag
+    classifier_question: "Which spectroscopy methods does the client already use, propose or ask about?"
+    flags:
+      nir: "Near-infrared."
+      mir_atr: "Mid-infrared / MIR ATR / FTIR."
+      raman: "Raman."
+      fluorescence: "Fluorescence / fluorimetry."
+      uv_vis: "UV/Vis, optical density, turbidity."
+    priority: null
+    affects: [premise_check]
+    notes: "Proposed methods are always evaluated by the rule engine and either supported, conditioned or rejected with reason."
+
+  - id: reuse_requested
+    kind: request
+    call: multi_flag
+    classifier_question: "What existing assets or evidence does the client want to reuse?"
+    flags:
+      existing_calibration_model: "Reuse an existing calibration/model."
+      existing_instrument: "Reuse an instrument they already own."
+      existing_fiber_or_cable: "Reuse an existing fiber cable/link."
+      published_study_as_evidence: "Use published or supplied study results as proof for their own use."
+    priority: null
+    affects: [premise_check, evidence_maturity_check]
+
+  - id: matrix_change_vs_existing
+    kind: fact
+    call: choice
+    relevant_if: "reuse_requested.existing_calibration_model"
+    classifier_question: "Compared with the existing setup or calibration, is the sample matrix the same or has it changed?"
+    labels:
+      same_matrix: "Same product / formulation as before."
+      changed_matrix: "New formulation, API, excipients, product or medium."
+      not_stated: "Not stated."
+    unknown_label: not_stated
+    priority: 1
+    affects: [calibration_transfer_check]
+    clarification_question: "Which components, ranges and physical properties differ between the calibrated product and the new one?"
+    sources: ["S01 p.10", "docx D01 risks"]
+
+  - id: existing_fiber_type
+    kind: fact
+    call: choice
+    relevant_if: "reuse_requested.existing_fiber_or_cable"
+    classifier_question: "What type of fiber does the client want to reuse?"
+    labels:
+      silica_uv_vis_nir: "Silica / quartz fiber, or a fiber from a UV, visible or NIR setup."
+      ir_fiber: "Chalcogenide, polycrystalline, fluoride or hollow-waveguide IR fiber."
+      not_stated: "Fiber type not stated."
+    unknown_label: not_stated
+    priority: 1
+    affects: [fiber_link_check]
+    clarification_question: "What fiber type, core material, length and connectors does the existing link have?"
+    sources: ["S02 p.6"]
+
+  - id: certainty_requested
+    kind: request
+    call: choice
+    classifier_question: "What kind of answer does the client ask for?"
+    labels:
+      exploratory_assessment: "First assessment, comparison, feasibility study, questions to clarify."
+      approval_or_proof: "Approval of a concept, or proof that something is ready/valid."
+      immediate_final_specification: "The best method and exact configuration right now."
+    priority: null
+    affects: [decision_status, tone_of_answer]
+    notes: "approval_or_proof / immediate_final_specification combined with open priority-1 facts -> answer must explicitly decline the requested certainty."
