@@ -39,6 +39,9 @@ const MODEL = args.model ?? 'gptoss'
 const PRICE_IN = Number(args['price-in'] ?? 0.35)
 const PRICE_OUT = Number(args['price-out'] ?? 0.75)
 
+// Clef's raw classification per step (for scripts/thresholds.mjs: re-apply other thresholds without new calls)
+const clefTrace = (d) =>
+  d?.clef ? { a: [d.clef.text.value, d.clef.text.confidence], c: d.clef.relevantCards ? [d.clef.withSources.value, d.clef.withSources.confidence] : null, derived: /^Derived/.test(d.reasoning ?? '') ? d.value : null } : null
 const TREE = ['sample_state', 'interface_mode', 'spectral_range', 'target_property_type', 'optical_variability', 'concentration_level']
 const SETUPS = {
   clef: { label: 'Clef', body: () => ({ pipeline: 'clef' }), callsPerRun: 8 },
@@ -118,7 +121,7 @@ async function runExperiment(name) {
     try {
       const res = await api('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: c.text, model: MODEL, sources: 'original', fresh: true, ...setup.body(r) }) })
       if (res.seedAccepted !== undefined) seedInfo = res.seedAccepted
-      return { case: c.id, run: r, ms: Date.now() - t, calls: res.calls ?? 1, tin: res.usage?.inputTokens ?? 0, tout: res.usage?.outputTokens ?? 0, steps: Object.fromEntries(TREE.map((id) => [id, outcome(res.decisions.find((d) => d.id === id))])), premises: (res.premises ?? []).map((w) => ({ id: w.id, severity: w.severity })), premiseFacts: res.premiseFacts }
+      return { case: c.id, run: r, ms: Date.now() - t, calls: res.calls ?? 1, tin: res.usage?.inputTokens ?? 0, tout: res.usage?.outputTokens ?? 0, steps: Object.fromEntries(TREE.map((id) => [id, outcome(res.decisions.find((d) => d.id === id))])), premises: (res.premises ?? []).map((w) => ({ id: w.id, severity: w.severity })), premiseFacts: res.premiseFacts, clef: Object.fromEntries(TREE.map((id) => [id, clefTrace(res.decisions.find((d) => d.id === id))])) }
     } catch (e) {
       return { case: c.id, run: r, ms: Date.now() - t, error: String(e.message ?? e) }
     } finally {

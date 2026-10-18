@@ -4,7 +4,8 @@ import type { DocMeta } from '../../shared/docs.ts'
 import { DIM_BY_ID } from '../../shared/dimensions.ts'
 import type { CardSet } from '../../shared/cards.ts'
 import { TREE_NODES } from '../../shared/tree.ts'
-import { cardsApi, docsApi } from '../lib.ts'
+import { cardsApi, casesApi, docsApi } from '../lib.ts'
+import type { SolvedCase } from '../../shared/solvedCases.ts'
 import { extractPageTexts } from '../pdfText.ts'
 import { useOpenSource } from '../sourceContext.ts'
 
@@ -279,6 +280,7 @@ export default function KnowledgePage() {
   const active = docs?.filter((d) => d.enabled).length ?? 0
 
   return (
+    <div className="kb-page">
     <section className="panel kb">
       <div className="panel-head">
         <h2>Knowledge base</h2>
@@ -448,5 +450,147 @@ export default function KnowledgePage() {
         )}
       </div>
     </section>
+    <SolvedCasesPanel />
+    </div>
   )
 }
+
+const BASIS_TEXT: Record<string, string> = {
+  customer: 'stated by the customer',
+  sources: 'suggested from the sources',
+  missing: 'missing',
+  conflict: 'conflict',
+}
+
+/** Enquiries the expert walked through: the worked examples next to the documents. */
+function SolvedCasesPanel() {
+  const [cases, setCases] = useState<SolvedCase[] | null>(null)
+  const [error, setError] = useState('')
+  const [open, setOpen] = useState<string | null>(null)
+  const [confirm, setConfirm] = useState<string | null>(null)
+
+  useEffect(() => {
+    casesApi
+      .list()
+      .then(setCases)
+      .catch((e) => setError(`Could not load the solved cases: ${e instanceof Error ? e.message : String(e)}`))
+  }, [])
+
+  async function remove(id: string) {
+    try {
+      await casesApi.remove(id)
+      setCases((prev) => (prev ?? []).filter((c) => c.id !== id))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  return (
+    <section className="panel kb-cases">
+      <div className="panel-head">
+        <h2>Solved cases</h2>
+        {cases && <span className="hint">{cases.length} worked example{cases.length === 1 ? '' : 's'} from expert reviews</span>}
+      </div>
+      <div className="panel-body">
+        <p className="kb-intro">
+          When an expert has decided every step of an assessment, the case can be added here: the customer enquiry, what the assistant proposed, what the
+          expert decided and why. The collection grows with every reviewed enquiry.
+        </p>
+        {error && <p className="error">{error}</p>}
+        {!cases ? (
+          !error && <p className="kb-muted">Loading…</p>
+        ) : cases.length === 0 ? (
+          <p className="kb-muted">No solved cases yet. Walk through an assessment, decide every step and choose “Add to knowledge base”.</p>
+        ) : (
+          <ul className="case-list">
+            {cases.map((c) => {
+              const expert = c.steps.filter((s) => s.byExpert || s.note)
+              const isOpen = open === c.id
+              return (
+                <li key={c.id} className={isOpen ? 'open' : ''}>
+                  <button className="case-row" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen}>
+                    <span className="case-title">{c.title}{c.enquiry.length > c.title.length ? '…' : ''}</span>
+                    <span className="case-meta">
+                      {expert.length} expert decision{expert.length === 1 ? '' : 's'} · {c.steps.filter((s) => s.note).length} note
+                      {c.steps.filter((s) => s.note).length === 1 ? '' : 's'} · {fmtDate(c.updatedAt ?? c.createdAt)}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="case-body">
+                      <h4>Customer enquiry</h4>
+                      <p className="case-enquiry">{c.enquiry}</p>
+                      <h4>Decisions</h4>
+                      <table className="case-steps">
+                        <thead>
+                          <tr>
+                            <th>Step</th>
+                            <th>Assistant proposed</th>
+                            <th>Final decision</th>
+                            <th>Expert reasoning</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {c.steps.map((s) => (
+                            <tr key={s.id} className={s.byExpert || s.note ? 'hard' : ''}>
+                              <td>{s.title}</td>
+                              <td>
+                                {s.model.valueName ?? '–'}
+                                <small>{BASIS_TEXT[s.model.basis] ?? s.model.basis}</small>
+                              </td>
+                              <td>
+                                <strong>{s.valueName}</strong>
+                                <small>{s.byExpert ? (s.model.value === s.value ? 'confirmed by the expert' : s.model.value ? 'changed by the expert' : 'filled in by the expert') : 'from the customer text'}</small>
+                              </td>
+                              <td>{s.note ?? <span className="kb-muted">–</span>}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {c.methods.length > 0 && (
+                        <>
+                          <h4>Methods worth testing</h4>
+                          <p className="case-methods">{c.methods.map((m) => `${m.rank ? `#${m.rank} ` : ''}${m.name} – ${m.technique}`).join(' · ')}</p>
+                        </>
+                      )}
+                      {c.premises.length > 0 && (
+                        <>
+                          <h4>Premise check</h4>
+                          <ul className="case-premises">
+                            {c.premises.map((w) => (
+                              <li key={w.id} className={w.severity}>
+                                {w.text}
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                      <div className="case-actions-row">
+                        <span className="kb-muted">Assessed with {c.engine || 'the assistant'}</span>
+                        {confirm === c.id ? (
+                          <span>
+                            Delete this case?{' '}
+                            <button className="linkbtn danger" onClick={() => remove(c.id)}>
+                              Yes
+                            </button>{' '}
+                            <button className="linkbtn" onClick={() => setConfirm(null)}>
+                              No
+                            </button>
+                          </span>
+                        ) : (
+                          <button className="linkbtn danger" onClick={() => setConfirm(c.id)}>
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
+  )
+}
+

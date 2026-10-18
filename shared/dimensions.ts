@@ -6,6 +6,9 @@ import type { DimensionDef, LabelDef } from './types.ts'
 
 const L = (name: string, description: string): LabelDef => ({ name, description })
 const STRICT = ' Only use what the client explicitly states; do not infer from general domain knowledge.'
+/** For the physical setting: what the client states, including what the named product or place plainly is
+ *  (a pipeline carries a liquid, a reactor or dryer is part of the process). */
+const PLAIN = ' Use what the client states, including what the named product, place or equipment plainly implies (e.g. a pipeline carries a liquid or gas, a reactor or dryer is part of the process). Do not guess beyond that; choose "Not stated" only if the text gives no such hint.'
 
 const yesNo = (yes: string): Record<string, LabelDef> => ({
   yes: L('Yes', yes),
@@ -19,13 +22,13 @@ export const DIMENSIONS: DimensionDef[] = [
     group: 'case',
     kind: 'fact',
     title: 'Sample state',
-    question: 'What is the physical state and optical appearance of the sample at the measurement point?' + STRICT,
+    question: 'What is the physical state and optical appearance of the sample at the measurement point?' + PLAIN,
     labels: {
-      powder_or_granular: L('Powder / granulate', 'Powder, blend, granulate, pellets.'),
+      powder_or_granular: L('Powder / granulate', 'Powder, powder blend, granulate, pellets or another bulk solid (e.g. a tablet blend before pressing).'),
       clear_liquid: L('Clear liquid', 'A liquid described as clear, transparent or relatively clear.'),
       turbid_or_colloidal_liquid: L('Turbid / colloidal liquid', 'A liquid described as turbid, cloudy, colloidal, optically dense or a suspension.'),
       opaque_scattering_liquid: L('Opaque liquid', 'A liquid described as opaque, concentrated, emulsion-like or highly scattering.'),
-      liquid_optics_unspecified: L('Liquid (optics not stated)', 'A liquid or stream, but its clarity or turbidity is not stated.'),
+      liquid_optics_unspecified: L('Liquid (optics not stated)', 'A liquid, solution, oil or liquid process stream, but its clarity or turbidity is not stated.'),
       melt_or_paste: L('Melt / paste', 'Polymer melt, paste, highly viscous mass.'),
       soft_solid_or_tissue: L('Soft solid / tissue', 'Biological tissue or another soft solid.'),
       rigid_solid: L('Rigid solid', 'Rigid solid, film, tablet or pill.'),
@@ -138,9 +141,9 @@ export const DIMENSIONS: DimensionDef[] = [
     group: 'case',
     kind: 'fact',
     title: 'Measurement interface',
-    question: 'How should the measurement be taken?' + STRICT,
+    question: 'Where and how should the measurement be taken: inside the process, at a distance without contact, or on samples in the laboratory?' + PLAIN,
     labels: {
-      in_process_probe: L('In-process probe', 'A probe installed in the process, line, vessel or feed frame (in-line or in-situ).'),
+      in_process_probe: L('In-process probe', 'A probe in the process: in a line, pipe, vessel, reactor, dryer or feed frame, in-line or in-situ.'),
       non_contact_at_distance: L('Non-contact / remote', 'Measurement from a distance without touching the sample.'),
       offline_lab_sample: L('Laboratory samples', 'Samples are measured in the laboratory.'),
       not_stated: L('Not stated', 'Not stated.'),

@@ -7,6 +7,7 @@ import { runSteps } from './steps.ts'
 import { runClefSteps } from './clefSteps.ts'
 import { buildCards, deleteCard, getCards, resetCards } from './cards.ts'
 import { listDocs } from './docs.ts'
+import { handleCases } from './cases.ts'
 import type { AgentRequest } from '../shared/agent.ts'
 
 const MAX_TEXT = 8000
@@ -110,6 +111,17 @@ export default {
         }
       } catch (err) {
         return Response.json({ error: `Reading the document failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
+      }
+    }
+
+    // solved cases added by the expert: /api/cases[/:id]
+    const caseRoute = url.pathname.match(/^\/api\/cases(?:\/([^/]+))?$/)
+    if (caseRoute) {
+      try {
+        const res = await handleCases(request, env.DOCS, caseRoute[1] ? decodeURIComponent(caseRoute[1]) : undefined)
+        if (res) return res
+      } catch (err) {
+        return Response.json({ error: `Saving the case failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 })
       }
     }
 

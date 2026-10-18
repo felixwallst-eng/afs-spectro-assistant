@@ -23,7 +23,13 @@ type TabId = (typeof TABS)[number]['id']
 export default function App() {
   const [tab, setTab] = useState<TabId>('assess')
   const [source, setSource] = useState<SourceRef | null>(null)
-  const [settings, setSettingsState] = useState<Settings>(() => ({ ...DEFAULT_SETTINGS, ...store.settings(DEFAULT_SETTINGS) }))
+  const [settings, setSettingsState] = useState<Settings>(() => {
+    const saved = { ...DEFAULT_SETTINGS, ...store.settings(DEFAULT_SETTINGS) }
+    // saved thresholds from before a default change are replaced by the new defaults
+    return saved.thresholdsVersion === DEFAULT_SETTINGS.thresholdsVersion
+      ? saved
+      : { ...saved, confidentAt: DEFAULT_SETTINGS.confidentAt, uncertainAt: DEFAULT_SETTINGS.uncertainAt, premiseAt: DEFAULT_SETTINGS.premiseAt, thresholdsVersion: DEFAULT_SETTINGS.thresholdsVersion }
+  })
   const [methods, setMethodsState] = useState<MethodSetup[]>(() => store.methods(BASE_METHODS))
 
   // make the bundled AFS PDFs searchable for the knowledge agent (runs once, skips indexed ones)
@@ -42,7 +48,6 @@ export default function App() {
 
   return (
     <SourceContext.Provider value={setSource}>
-      <div className="spectrum" aria-hidden="true" />
       <header className="topbar">
         <div className="brand">
           <strong>Spectroscopy Assessment</strong>

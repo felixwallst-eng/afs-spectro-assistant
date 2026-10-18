@@ -1,0 +1,2671 @@
+{
+  "date": "2026-10-18T13:20:55.478Z",
+  "model": "gptoss",
+  "runs": 1,
+  "cases": [
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T06",
+    "T07",
+    "T08",
+    "T09",
+    "T10"
+  ],
+  "seedAccepted": null,
+  "summaries": [
+    {
+      "name": "clef",
+      "label": "Clef",
+      "stepAgreement": null,
+      "stepsIdentical": null,
+      "valueIdentical": null,
+      "wholeTree": null,
+      "maj3": null,
+      "byStep": {
+        "sample_state": null,
+        "interface_mode": null,
+        "spectral_range": null,
+        "target_property_type": null,
+        "optical_variability": null,
+        "concentration_level": null
+      },
+      "seconds": 2.1286,
+      "calls": 4.9,
+      "tokens": 0,
+      "costPerAnalysis": 0,
+      "failed": 0,
+      "quality": {
+        "steps": 0,
+        "correct": 0,
+        "wrongStated": 0,
+        "wrongSuggested": 0,
+        "overCaution": 0,
+        "conflicts": 0,
+        "premExpected": 11,
+        "premFound": 11,
+        "falseAlarms": 0,
+        "runsWithPremiseGold": 10,
+        "details": []
+      },
+      "errors": [],
+      "perCase": [
+        {
+          "case": "T01",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:powder_or_granular": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T02",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T03",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:liquid_optics_unspecified": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T04",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:liquid_optics_unspecified": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:uv_vis_nir_only": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T05",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T06",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:soft_solid_or_tissue": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:sample_classification": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T07",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:powder_or_granular": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:non_contact_at_distance": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T08",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T09",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:soft_solid_or_tissue": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:offline_lab_sample": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:sample_classification": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        },
+        {
+          "case": "T10",
+          "runs": 1,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:soft_solid_or_tissue": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "suggested:in_process_probe": 1
+              }
+            },
+            {
+              "id": "spectral_range",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "stated:sample_classification": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 1,
+              "agreement": 1,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": null,
+              "tally": {
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": null
+        }
+      ]
+    }
+  ],
+  "raw": {
+    "clef": [
+      {
+        "case": "T01",
+        "run": 0,
+        "ms": 2051,
+        "calls": 3,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "stated:powder_or_granular",
+          "interface_mode": "suggested:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "stated:chemical_composition",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "calibration",
+            "severity": "block"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.8652
+          },
+          "target_definition": {
+            "value": "clearly_defined",
+            "confidence": 0.8953
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.4027
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.3908
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.7516
+          },
+          "aqueous_matrix": {
+            "value": "no",
+            "confidence": 0.3506
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.2701
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.3938
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9397
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9114
+          },
+          "matrix_change_vs_existing": {
+            "value": "changed_matrix",
+            "confidence": 0.9508
+          },
+          "existing_fiber_type": {
+            "value": "silica_uv_vis_nir",
+            "confidence": 0.2534
+          },
+          "certainty_requested": {
+            "value": "approval_or_proof",
+            "confidence": 0.2436
+          },
+          "cond_high_temperature": {
+            "value": "yes",
+            "confidence": 0.1146
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9184
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.8334
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9692
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.7488
+          },
+          "proposed_nir": {
+            "value": "yes",
+            "confidence": 0.9851
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9746
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9822
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9772
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.9645
+          },
+          "reuse_calibration": {
+            "value": "yes",
+            "confidence": 0.9674
+          },
+          "reuse_instrument": {
+            "value": "yes",
+            "confidence": 0.0007
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9341
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "powder_or_granular",
+              0.7658
+            ],
+            "c": null,
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.4035
+            ],
+            "c": null,
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "uv_vis_nir_only",
+              0.4285
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.9039
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.2174
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.3553
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T02",
+        "run": 0,
+        "ms": 2157,
+        "calls": 5,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "missing",
+          "interface_mode": "stated:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "stated:chemical_composition",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "multi-stream",
+            "severity": "caution"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "multiple_distinct_matrices",
+            "confidence": 0.6824
+          },
+          "target_definition": {
+            "value": "clearly_defined",
+            "confidence": 0.8858
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.2958
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.6283
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.7351
+          },
+          "aqueous_matrix": {
+            "value": "not_stated",
+            "confidence": 0.3915
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.817
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.4453
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9635
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9115
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.2324
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.8268
+          },
+          "certainty_requested": {
+            "value": "exploratory_assessment",
+            "confidence": 0.7585
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9811
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.982
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.2159
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9526
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.9197
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.8594
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9231
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.936
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9779
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.8632
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9561
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.9615
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9643
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9619
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "turbid_or_colloidal_liquid",
+              0.2545
+            ],
+            "c": null,
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.8299
+            ],
+            "c": [
+              "in_process_probe",
+              0.8641
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "not_stated",
+              0.1033
+            ],
+            "c": [
+              "uv_vis_nir_only",
+              0.3316
+            ],
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.8247
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "variable_over_process",
+              0.2241
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.1336
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T03",
+        "run": 0,
+        "ms": 1685,
+        "calls": 3,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "suggested:liquid_optics_unspecified",
+          "interface_mode": "stated:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "stated:chemical_composition",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "fluorescence-target",
+            "severity": "block"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.8704
+          },
+          "target_definition": {
+            "value": "clearly_defined",
+            "confidence": 0.8509
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.963
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.6694
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.6831
+          },
+          "aqueous_matrix": {
+            "value": "yes",
+            "confidence": 0.5467
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.8928
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.5059
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9377
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9206
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.7621
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.6925
+          },
+          "certainty_requested": {
+            "value": "approval_or_proof",
+            "confidence": 0.2478
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.978
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9836
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.9813
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9654
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.9644
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.9364
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9596
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9625
+          },
+          "proposed_fluorescence": {
+            "value": "yes",
+            "confidence": 0.9805
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.9572
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9724
+          },
+          "reuse_instrument": {
+            "value": "yes",
+            "confidence": 0.9115
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9543
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9692
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "liquid_optics_unspecified",
+              0.3347
+            ],
+            "c": null,
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.8181
+            ],
+            "c": null,
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "uv_vis_nir_only",
+              0.1998
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.7898
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.6965
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.3944
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T04",
+        "run": 0,
+        "ms": 2032,
+        "calls": 6,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "suggested:liquid_optics_unspecified",
+          "interface_mode": "stated:in_process_probe",
+          "spectral_range": "stated:uv_vis_nir_only",
+          "target_property_type": "stated:chemical_composition",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "silica-mir",
+            "severity": "block"
+          },
+          {
+            "id": "remote",
+            "severity": "caution"
+          },
+          {
+            "id": "certainty",
+            "severity": "caution"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.8488
+          },
+          "target_definition": {
+            "value": "clearly_defined",
+            "confidence": 0.7774
+          },
+          "fluorescent_target": {
+            "value": "not_stated",
+            "confidence": 0.3796
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.7412
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.7299
+          },
+          "aqueous_matrix": {
+            "value": "not_stated",
+            "confidence": 0.3682
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.8988
+          },
+          "analyzer_location": {
+            "value": "remote_from_process",
+            "confidence": 0.9053
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9433
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9278
+          },
+          "matrix_change_vs_existing": {
+            "value": "changed_matrix",
+            "confidence": 0.1757
+          },
+          "existing_fiber_type": {
+            "value": "silica_uv_vis_nir",
+            "confidence": 0.961
+          },
+          "certainty_requested": {
+            "value": "approval_or_proof",
+            "confidence": 0.7516
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9081
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9676
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.9715
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9467
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.9323
+          },
+          "proposed_nir": {
+            "value": "yes",
+            "confidence": 0.9527
+          },
+          "proposed_mir_atr": {
+            "value": "yes",
+            "confidence": 0.985
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9747
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9763
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.949
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.8842
+          },
+          "reuse_instrument": {
+            "value": "yes",
+            "confidence": 0.157
+          },
+          "reuse_fiber": {
+            "value": "yes",
+            "confidence": 0.9678
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9572
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "liquid_optics_unspecified",
+              0.2512
+            ],
+            "c": [
+              "liquid_optics_unspecified",
+              0.3474
+            ],
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.7828
+            ],
+            "c": [
+              "in_process_probe",
+              0.9112
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "uv_vis_nir_only",
+              0.6879
+            ],
+            "c": [
+              "uv_vis_nir_only",
+              0.7415
+            ],
+            "derived": "uv_vis_nir_only"
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.8578
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.7034
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.5185
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T05",
+        "run": 0,
+        "ms": 2121,
+        "calls": 5,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "missing",
+          "interface_mode": "suggested:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "missing",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "certainty",
+            "severity": "block"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.7614
+          },
+          "target_definition": {
+            "value": "undefined",
+            "confidence": 0.7281
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.5598
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.8324
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.7541
+          },
+          "aqueous_matrix": {
+            "value": "yes",
+            "confidence": 0.3801
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.285
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.5073
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.6401
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9266
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.5376
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.9268
+          },
+          "certainty_requested": {
+            "value": "immediate_final_specification",
+            "confidence": 0.8097
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9704
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.983
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.9798
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9507
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.7914
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.9552
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9468
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9559
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9709
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.9288
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9773
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.9744
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9753
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9758
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "liquid_optics_unspecified",
+              0.2266
+            ],
+            "c": [
+              "turbid_or_colloidal_liquid",
+              0.2344
+            ],
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.3719
+            ],
+            "c": [
+              "in_process_probe",
+              0.7045
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "not_stated",
+              0.2513
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.1858
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.7383
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.2937
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T06",
+        "run": 0,
+        "ms": 2169,
+        "calls": 6,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "suggested:soft_solid_or_tissue",
+          "interface_mode": "suggested:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "suggested:sample_classification",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "clinical",
+            "severity": "block"
+          },
+          {
+            "id": "study-as-proof",
+            "severity": "block"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.4164
+          },
+          "target_definition": {
+            "value": "loosely_defined",
+            "confidence": 0.0503
+          },
+          "fluorescent_target": {
+            "value": "not_stated",
+            "confidence": 0.2391
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.5735
+          },
+          "deployment_context": {
+            "value": "clinical_or_in_vivo",
+            "confidence": 0.843
+          },
+          "aqueous_matrix": {
+            "value": "not_stated",
+            "confidence": 0.5604
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.4688
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.6627
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9451
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9392
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.0765
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.4568
+          },
+          "certainty_requested": {
+            "value": "approval_or_proof",
+            "confidence": 0.4564
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9833
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9846
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.982
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9758
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.9623
+          },
+          "proposed_nir": {
+            "value": "yes",
+            "confidence": 0.8344
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9705
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9688
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.911
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.9579
+          },
+          "reuse_calibration": {
+            "value": "yes",
+            "confidence": 0.2624
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.8851
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9559
+          },
+          "reuse_study_as_evidence": {
+            "value": "yes",
+            "confidence": 0.9768
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "soft_solid_or_tissue",
+              0.4367
+            ],
+            "c": null,
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.0199
+            ],
+            "c": [
+              "in_process_probe",
+              0.7341
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "uv_vis_nir_only",
+              0.3232
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "sample_classification",
+              0.5849
+            ],
+            "c": [
+              "sample_classification",
+              0.9101
+            ],
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.7138
+            ],
+            "c": [
+              "not_stated",
+              0.6984
+            ],
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.6229
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T07",
+        "run": 0,
+        "ms": 2493,
+        "calls": 5,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "stated:powder_or_granular",
+          "interface_mode": "stated:non_contact_at_distance",
+          "spectral_range": "missing",
+          "target_property_type": "stated:chemical_composition",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "remote",
+            "severity": "caution"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.8281
+          },
+          "target_definition": {
+            "value": "clearly_defined",
+            "confidence": 0.7196
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.4298
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.7948
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.6801
+          },
+          "aqueous_matrix": {
+            "value": "no",
+            "confidence": 0.4185
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.7995
+          },
+          "analyzer_location": {
+            "value": "remote_from_process",
+            "confidence": 0.8986
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9371
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9206
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.6933
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.7937
+          },
+          "certainty_requested": {
+            "value": "exploratory_assessment",
+            "confidence": 0.8796
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9705
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9793
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.9604
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9538
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.5636
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.8928
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9509
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9503
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9759
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.9603
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9767
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.9629
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.6996
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9752
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "powder_or_granular",
+              0.7671
+            ],
+            "c": null,
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "non_contact_at_distance",
+              0.7241
+            ],
+            "c": [
+              "in_process_probe",
+              0.2667
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "not_stated",
+              0.1258
+            ],
+            "c": [
+              "uv_vis_nir_only",
+              0.8684
+            ],
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.9005
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.5358
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.5526
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T08",
+        "run": 0,
+        "ms": 2294,
+        "calls": 6,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "missing",
+          "interface_mode": "stated:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "stated:chemical_composition",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.8584
+          },
+          "target_definition": {
+            "value": "clearly_defined",
+            "confidence": 0.8497
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.2697
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.6699
+          },
+          "deployment_context": {
+            "value": "process_monitoring",
+            "confidence": 0.5482
+          },
+          "aqueous_matrix": {
+            "value": "not_stated",
+            "confidence": 0.1933
+          },
+          "reference_analytics": {
+            "value": "available",
+            "confidence": 0.9468
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.5483
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9519
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9226
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.3457
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.6945
+          },
+          "certainty_requested": {
+            "value": "exploratory_assessment",
+            "confidence": 0.6802
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9313
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9739
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.9698
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9574
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.9549
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.8275
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.8964
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9045
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9619
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.8326
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9754
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.9615
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9547
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9615
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "turbid_or_colloidal_liquid",
+              0.2063
+            ],
+            "c": [
+              "turbid_or_colloidal_liquid",
+              0.2095
+            ],
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.7624
+            ],
+            "c": [
+              "in_process_probe",
+              0.7618
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "not_stated",
+              0.1173
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "chemical_composition",
+              0.8315
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.6341
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.4132
+            ],
+            "c": [
+              "minor_component",
+              0.0821
+            ],
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T09",
+        "run": 0,
+        "ms": 2160,
+        "calls": 4,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "suggested:soft_solid_or_tissue",
+          "interface_mode": "stated:offline_lab_sample",
+          "spectral_range": "missing",
+          "target_property_type": "stated:sample_classification",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.2826
+          },
+          "target_definition": {
+            "value": "loosely_defined",
+            "confidence": 0.0986
+          },
+          "fluorescent_target": {
+            "value": "explicitly_not_identified",
+            "confidence": 0.2184
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.2072
+          },
+          "deployment_context": {
+            "value": "laboratory_study",
+            "confidence": 0.8978
+          },
+          "aqueous_matrix": {
+            "value": "not_stated",
+            "confidence": 0.333
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.4866
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.6946
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9556
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.903
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.4895
+          },
+          "existing_fiber_type": {
+            "value": "not_stated",
+            "confidence": 0.8992
+          },
+          "certainty_requested": {
+            "value": "exploratory_assessment",
+            "confidence": 0.7226
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9793
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9809
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.969
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9745
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.9744
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.9252
+          },
+          "proposed_mir_atr": {
+            "value": "yes",
+            "confidence": 0.9765
+          },
+          "proposed_raman": {
+            "value": "no",
+            "confidence": 0.9735
+          },
+          "proposed_fluorescence": {
+            "value": "yes",
+            "confidence": 0.9649
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.9687
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9715
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.9506
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.9661
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9419
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "soft_solid_or_tissue",
+              0.4553
+            ],
+            "c": [
+              "soft_solid_or_tissue",
+              0.9164
+            ],
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "offline_lab_sample",
+              0.8619
+            ],
+            "c": null,
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "mid_ir_possible",
+              0.3049
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "sample_classification",
+              0.6785
+            ],
+            "c": null,
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.7011
+            ],
+            "c": null,
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.523
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      },
+      {
+        "case": "T10",
+        "run": 0,
+        "ms": 2124,
+        "calls": 6,
+        "tin": 0,
+        "tout": 0,
+        "steps": {
+          "sample_state": "suggested:soft_solid_or_tissue",
+          "interface_mode": "suggested:in_process_probe",
+          "spectral_range": "missing",
+          "target_property_type": "stated:sample_classification",
+          "optical_variability": "missing",
+          "concentration_level": "missing"
+        },
+        "premises": [
+          {
+            "id": "clinical",
+            "severity": "block"
+          }
+        ],
+        "premiseFacts": {
+          "matrix_count": {
+            "value": "single_matrix",
+            "confidence": 0.137
+          },
+          "target_definition": {
+            "value": "loosely_defined",
+            "confidence": 0.1061
+          },
+          "fluorescent_target": {
+            "value": "not_stated",
+            "confidence": 0.2501
+          },
+          "sample_heterogeneity": {
+            "value": "not_stated",
+            "confidence": 0.2072
+          },
+          "deployment_context": {
+            "value": "clinical_or_in_vivo",
+            "confidence": 0.9043
+          },
+          "aqueous_matrix": {
+            "value": "not_stated",
+            "confidence": 0.7193
+          },
+          "reference_analytics": {
+            "value": "not_stated",
+            "confidence": 0.805
+          },
+          "analyzer_location": {
+            "value": "not_stated",
+            "confidence": 0.3371
+          },
+          "quantified_requirements": {
+            "value": "not_stated",
+            "confidence": 0.9244
+          },
+          "budget": {
+            "value": "not_stated",
+            "confidence": 0.9232
+          },
+          "matrix_change_vs_existing": {
+            "value": "not_stated",
+            "confidence": 0.4483
+          },
+          "existing_fiber_type": {
+            "value": "silica_uv_vis_nir",
+            "confidence": 0.3045
+          },
+          "certainty_requested": {
+            "value": "exploratory_assessment",
+            "confidence": 0.7039
+          },
+          "cond_high_temperature": {
+            "value": "no",
+            "confidence": 0.9807
+          },
+          "cond_temperature_variation": {
+            "value": "no",
+            "confidence": 0.9816
+          },
+          "cond_texture_variation": {
+            "value": "no",
+            "confidence": 0.9496
+          },
+          "cond_fouling": {
+            "value": "no",
+            "confidence": 0.9277
+          },
+          "cond_harsh_environment": {
+            "value": "no",
+            "confidence": 0.8461
+          },
+          "proposed_nir": {
+            "value": "no",
+            "confidence": 0.6239
+          },
+          "proposed_mir_atr": {
+            "value": "no",
+            "confidence": 0.9404
+          },
+          "proposed_raman": {
+            "value": "yes",
+            "confidence": 0.9783
+          },
+          "proposed_fluorescence": {
+            "value": "no",
+            "confidence": 0.9736
+          },
+          "proposed_uv_vis": {
+            "value": "no",
+            "confidence": 0.963
+          },
+          "reuse_calibration": {
+            "value": "no",
+            "confidence": 0.9719
+          },
+          "reuse_instrument": {
+            "value": "no",
+            "confidence": 0.9239
+          },
+          "reuse_fiber": {
+            "value": "no",
+            "confidence": 0.0232
+          },
+          "reuse_study_as_evidence": {
+            "value": "no",
+            "confidence": 0.9552
+          }
+        },
+        "clef": {
+          "sample_state": {
+            "a": [
+              "soft_solid_or_tissue",
+              0.5011
+            ],
+            "c": null,
+            "derived": null
+          },
+          "interface_mode": {
+            "a": [
+              "in_process_probe",
+              0.6014
+            ],
+            "c": [
+              "in_process_probe",
+              0.7859
+            ],
+            "derived": null
+          },
+          "spectral_range": {
+            "a": [
+              "uv_vis_nir_only",
+              0.4463
+            ],
+            "c": null,
+            "derived": null
+          },
+          "target_property_type": {
+            "a": [
+              "sample_classification",
+              0.8969
+            ],
+            "c": [
+              "sample_classification",
+              0.9587
+            ],
+            "derived": null
+          },
+          "optical_variability": {
+            "a": [
+              "not_stated",
+              0.7054
+            ],
+            "c": [
+              "not_stated",
+              0.5236
+            ],
+            "derived": null
+          },
+          "concentration_level": {
+            "a": [
+              "not_stated",
+              0.5567
+            ],
+            "c": null,
+            "derived": null
+          }
+        }
+      }
+    ]
+  }
+}

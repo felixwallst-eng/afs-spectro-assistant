@@ -1,3 +1,4 @@
+import type { SolvedCase } from '../shared/solvedCases.ts'
 import type { CardSet } from '../shared/cards.ts'
 import type { SourceMode, TreeResponse, Thresholds } from '../shared/tree.ts'
 import type { AgentModelKey, AgentResponse, BriefResponse } from '../shared/agent.ts'
@@ -44,6 +45,10 @@ export interface HistoryEntry {
   createdAt: string
   /** Evidence-backed decisions from the tree endpoint (absent in old entries). */
   tree?: TreeResponse
+  /** Expert notes per step: why they decided it that way. */
+  notes?: Record<string, string>
+  /** Set once the case was added to the knowledge base as a solved case. */
+  savedAt?: string
 }
 
 export const store = {
@@ -96,6 +101,13 @@ export const agentApi = {
 export const treeApi = {
   run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean; pipeline?: 'clef' | 'steps'; thresholds?: Thresholds } = {}) =>
     api<TreeResponse>(fetch('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, model, ...opts }) })),
+}
+
+/** Solved cases: enquiries the expert walked through, added to the knowledge base as worked examples. */
+export const casesApi = {
+  list: () => api<SolvedCase[]>(fetch('/api/cases')),
+  save: (c: Omit<SolvedCase, 'createdAt'>) => api<SolvedCase>(fetch('/api/cases', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(c) })),
+  remove: (id: string) => api<{ ok: true }>(fetch(`/api/cases/${encodeURIComponent(id)}`, { method: 'DELETE' })),
 }
 
 /** Knowledge cards: each document is read completely once; analyses use the verified cards. */

@@ -128,6 +128,9 @@ export interface Settings {
   agentModel: 'gptoss' | 'qwen' | 'kimi' // knowledge agent model, see shared/agent.ts
   /** Who decides the tree steps: the Clef classifier or the language model (one call per step, 3 votes). */
   engine?: 'clef' | 'llm'
+  /** Bumped when the default thresholds change, so saved browser settings pick up the new defaults. */
+  thresholdsVersion?: number
 }
 
-export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3, premiseAt: 0.5, agentModel: 'gptoss', engine: 'clef' }
+// Thresholds chosen with scripts/thresholds.mjs on the development cases D01–D08 (no error at 0.5 / 0.3).
+export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.5, uncertainAt: 0.3, premiseAt: 0.5, agentModel: 'gptoss', engine: 'clef', thresholdsVersion: 2 }

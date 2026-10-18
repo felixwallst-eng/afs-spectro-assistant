@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import { DIM_BY_ID } from '../../shared/dimensions.ts'
 import { openRisks } from '../../shared/engine.ts'
+import type { SolvedCase } from '../../shared/solvedCases.ts'
+import { basisOf } from '../../shared/treeLogic.ts'
 import type { OpenRisk } from '../../shared/engine.ts'
 import { METHOD_INFO } from '../../shared/knowledge.ts'
 import { TREE_NODES } from '../../shared/tree.ts'
 import type { Decision, SourcePassage, TreeResponse } from '../../shared/tree.ts'
 import type { Assessment, Candidate, Level as Grade, MethodSetup } from '../../shared/types.ts'
+import { DEFAULT_SETTINGS } from '../../shared/types.ts'
 import { useOpenSource } from '../sourceContext.ts'
 import { nodeStatus, remainingPerLevel } from '../treeModel.ts'
 import type { NodeStatus } from '../treeModel.ts'
@@ -19,6 +22,14 @@ interface Props {
   methods: MethodSetup[]
   overrides: Record<string, string>
   onOverride: (id: string, value: string | undefined) => void
+  /** Empty path shown before the first analysis: greyed out, not interactive, with this message on top. */
+  placeholder?: { title: string; text: string }
+  /** Expert notes per step and saving the walked-through case to the knowledge base. */
+  caseId?: string | null
+  notes?: Record<string, string>
+  onNote?: (id: string, text: string) => void
+  savedAt?: string
+  onSaveCase?: (c: Omit<SolvedCase, 'createdAt'>) => Promise<void>
 }
 
 // ---------------------------------------------------------------- layout (SVG user units)
@@ -40,8 +51,9 @@ const STATUS_TEXT: Record<NodeStatus, string> = {
   expert: 'Decided by the expert',
   action: 'Information missing – blocks the decision',
   minor: 'Information missing – does not block the decision',
+  deferred: 'Left open by the expert – ask the customer',
 }
-const STATUS_CHIP: Record<NodeStatus, string> = { decided: 'confident', suggested: 'uncertain', conflict: 'unknown', expert: 'expert', action: 'unknown', minor: 'clef' }
+const STATUS_CHIP: Record<NodeStatus, string> = { decided: 'confident', suggested: 'uncertain', conflict: 'unknown', expert: 'expert', action: 'unknown', minor: 'clef', deferred: 'clef' }
 
 const curve = (x1: number, y1: number, x2: number, y2: number) => {
   const dx = Math.max(24, (x2 - x1) * 0.45)
@@ -65,7 +77,7 @@ type Selection = { kind: 'root' } | { kind: 'node'; id: string } | { kind: 'leaf
 const keyOf = (s: Selection) => (s.kind === 'node' ? `n:${s.id}` : s.kind === 'leaf' ? `l:${s.setupId}` : s.kind)
 const NEEDS: NodeStatus[] = ['suggested', 'action', 'conflict']
 
-export default function DecisionTree({ tree, text, assessment, methods, overrides, onOverride }: Props) {
+export default function DecisionTree({ tree, text, assessment, methods, overrides, onOverride, placeholder, caseId, notes = {}, onNote, savedAt, onSaveCase }: Props) {
   // the detail panel is always open and starts at the enquiry; the expert walks through from there
   const [selState, setSel] = useState<Selection>({ kind: 'root' })
   const [draft, setDraft] = useState<string | null>(null)
@@ -93,6 +105,10 @@ export default function DecisionTree({ tree, text, assessment, methods, override
   const recommended = assessment.candidates.filter((c) => c.status === 'recommended')
   // results stay provisional until every step is decided; per setup we check what the open steps could still do
   const openIds = levels.filter((l) => !l.decided).map((l) => l.node.id)
+  // steps nobody has looked at yet (left open on purpose by the expert does not count)
+  const unhandled = levels.filter((l) => !l.decided && l.status !== 'deferred').length
+  const deferred = levels.filter((l) => l.status === 'deferred')
+  const suggestions = levels.filter((l) => l.status === 'suggested')
   const provisional = openIds.length > 0
   const risks = new Map(assessment.candidates.filter((c) => c.status !== 'excluded').map((c) => [c.setup.id, openRisks(c.setup, values, openIds)]))
   const leaves = recommended.slice(0, MAX_LEAVES)
@@ -229,7 +245,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
             {lv.status === 'conflict' ? '!' : '?'}
           </text>
           <text x={bx} y={by - 20} textAnchor="middle" className="gate-label">
-            {lv.status === 'suggested' ? 'Confirm' : lv.status === 'conflict' ? 'Conflict' : lv.status === 'action' ? 'Missing' : 'Not stated'}
+            {lv.status === 'suggested' ? 'Confirm' : lv.status === 'conflict' ? 'Conflict' : lv.status === 'action' ? 'Missing' : lv.status === 'deferred' ? 'Ask customer' : 'Not stated'}
           </text>
         </g>,
       )
@@ -344,6 +360,30 @@ export default function DecisionTree({ tree, text, assessment, methods, override
     const c = assessment.candidates.find((x) => x.setup.id === s.setupId)
     return c ? `${METHOD_INFO[c.setup.method].name} – ${c.setup.technique}` : 'Method'
   }
+  /** The walked-through case as it goes into the knowledge base. */
+  const buildCase = (): Omit<SolvedCase, 'createdAt'> => ({
+    id: caseId ?? crypto.randomUUID(),
+    title: text.trim().slice(0, 90),
+    enquiry: text,
+    engine: tree.model,
+    steps: levels.map((l) => {
+      const d = decisionOf(l.node.id)
+      const name = (v?: string | null) => (v ? (l.def.labels[v]?.name ?? v) : null)
+      const note = notes[l.node.id]?.trim()
+      return {
+        id: l.node.id,
+        title: l.def.title,
+        model: { basis: basisOf(d), value: d?.value ?? null, valueName: name(d?.value) },
+        value: values[l.node.id],
+        valueName: l.status === 'deferred' ? 'Unknown – ask the customer' : (name(values[l.node.id]) ?? values[l.node.id]),
+        byExpert: overrides[l.node.id] !== undefined,
+        ...(note ? { note } : {}),
+      }
+    }),
+    methods: recommended.map((c) => ({ name: METHOD_INFO[c.setup.method].name, technique: c.setup.technique, rank: c.rank })),
+    premises: premises.map((w) => ({ id: w.id, severity: w.severity, text: w.text })),
+  })
+
   // ← / → walk through the path (not while typing, and not while a source document is open)
   const nav = useRef({ prev: () => {}, next: () => {} })
   useEffect(() => {
@@ -365,13 +405,13 @@ export default function DecisionTree({ tree, text, assessment, methods, override
   }, [])
 
   return (
-    <section className="panel tree-panel" ref={panelRef}>
+    <section className={`panel tree-panel ${placeholder ? 'is-empty' : ''}`} ref={panelRef} aria-busy={placeholder ? true : undefined}>
       <div className="panel-head">
         <h2>Decision path</h2>
         <span className="hint">Each step is a column of the AFS method table. Click any point or walk through the path with ← →.</span>
       </div>
       <div className="panel-body">
-        {needs.length > 0 ? (
+        {placeholder ? null : needs.length > 0 ? (
           <p className="tree-actions">
             Your decision is needed:{' '}
             {needs.map((l, i) => (
@@ -383,6 +423,14 @@ export default function DecisionTree({ tree, text, assessment, methods, override
                 <span className="needs-kind">{l.status === 'suggested' ? ' (suggestion ready)' : l.status === 'conflict' ? ' (customer and sources disagree)' : ' (information missing)'}</span>
               </span>
             ))}
+            {suggestions.length > 1 && (
+              <>
+                {' · '}
+                <button className="linkbtn accept-all" onClick={() => suggestions.forEach((l) => onOverride(l.node.id, l.options[l.suggested]))} title={suggestions.map((l) => `${l.def.title}: ${l.def.labels[l.options[l.suggested]].name}`).join('\n')}>
+                  Accept all {suggestions.length} suggestions
+                </button>
+              </>
+            )}
             {blocks > 0 && (
               <>
                 {' · '}
@@ -404,8 +452,27 @@ export default function DecisionTree({ tree, text, assessment, methods, override
           <p className="tree-actions ok">Every blocking step is decided – by a verified quote from the enquiry or by you.</p>
         )}
 
+        {!placeholder && deferred.length > 0 && (
+          <p className="tree-actions deferred">
+            To ask the customer:{' '}
+            {deferred.map((l, i) => (
+              <span key={l.node.id}>
+                {i > 0 && ' · '}
+                <button className="linkbtn" onClick={() => pickNode(l.node.id)} title={l.def.clarification}>
+                  {l.def.title}
+                </button>
+              </span>
+            ))}
+          </p>
+        )}
         <div className="tree-stage">
-          <div className="tree-scroll">
+          {placeholder && (
+            <div className="tree-empty-msg">
+              <strong>{placeholder.title}</strong>
+              <span>{placeholder.text}</span>
+            </div>
+          )}
+          <div className="tree-scroll" inert={placeholder ? true : undefined}>
             <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: W * 0.78 }} className="tree-svg" role="group" aria-label="Decision path from the enquiry to the method setups">
               {levels.map((lv, k) => (
                 <g
@@ -485,7 +552,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
               )}
             </svg>
           </div>
-          <div className="tree-nav">
+          {!placeholder && <div className="tree-nav">
             <button className="tree-nav-btn" disabled={!prev} onClick={() => prev && go(prev)} title={prev ? `Back to ${titleOf(prev)} (←)` : undefined}>
               ‹ Previous
             </button>
@@ -503,9 +570,11 @@ export default function DecisionTree({ tree, text, assessment, methods, override
                 Next open decision: {titleOf(nextOpen)}
               </button>
             )}
-          </div>
+          </div>}
         </div>
 
+        {!placeholder && (
+          <>
         {sel.kind === 'root' && <EnquiryDetail text={text} tree={tree} onPick={(id) => pickNode(id)} />}
         {level && (
           <NodeDetail
@@ -517,6 +586,8 @@ export default function DecisionTree({ tree, text, assessment, methods, override
             setDraft={setDraft}
             overridden={overrides[level.node.id] !== undefined}
             onOverride={(v) => (onOverride(level.node.id, v), setDraft(null))}
+            note={notes[level.node.id] ?? ''}
+            onNote={onNote ? (t) => onNote(level.node.id, t) : undefined}
           />
         )}
         {leaf && <LeafDetail c={leaf} all={assessment.candidates} openCount={openIds.length} risks={risks.get(leaf.setup.id) ?? []} />}
@@ -548,6 +619,17 @@ export default function DecisionTree({ tree, text, assessment, methods, override
           {tree.stats.rejectedQuotes > 0 && ` · ${tree.stats.rejectedQuotes} quotes rejected (not found)`}
           {tree.cachedAt && ' · stored result'}
         </p>
+          </>
+        )}
+        {!placeholder && onSaveCase && (
+          <CaseSaveBar
+            openSteps={unhandled}
+            expertSteps={levels.filter((l) => l.status === 'expert').length}
+            noted={levels.filter((l) => notes[l.node.id]?.trim()).length}
+            savedAt={savedAt}
+            onSave={() => onSaveCase(buildCase())}
+          />
+        )}
       </div>
     </section>
   )
@@ -684,6 +766,8 @@ function NodeDetail(p: {
   setDraft: (v: string | null) => void
   overridden: boolean
   onOverride: (v: string | undefined) => void
+  note: string
+  onNote?: (text: string) => void
 }) {
   const { level: lv, decision: d } = p
   const refs = d?.refs ?? []
@@ -708,6 +792,12 @@ function NodeDetail(p: {
     ) : (
       <>
         Likely from the customer text: <strong>{name(suggestion)}</strong> – please confirm
+      </>
+    )
+  else if (lv.status === 'deferred')
+    headline = (
+      <>
+        Left open by you – ask the customer: <span className="td-missing">{lv.def.clarification ?? lv.def.question}</span>
       </>
     )
   else headline = <>Information missing{d?.missing ? <>: <span className="td-missing">{d.missing}</span></> : null}</>
@@ -741,6 +831,11 @@ function NodeDetail(p: {
           <button className="btn small primary" disabled={!p.draft || (lv.decided && p.draft === p.current)} onClick={() => p.draft && p.onOverride(p.draft)}>
             {suggestion && p.draft === suggestion ? 'Accept suggestion' : 'Confirm'}
           </button>
+          {lv.status !== 'deferred' && lv.def.unknownLabel && (
+            <button className="btn small ask-btn" onClick={() => p.onOverride(lv.def.unknownLabel)} title="The information is not available: leave the step open and collect it as a question for the customer">
+              Still unknown – ask the customer
+            </button>
+          )}
           {p.overridden && (
             <button className="linkbtn" onClick={() => p.onOverride(undefined)}>
               Reset to model
@@ -779,11 +874,25 @@ function NodeDetail(p: {
           </details>
         )}
       </div>
+
+      {p.onNote && (
+        <label className={`td-note ${lv.status === 'decided' && !p.note ? 'quiet' : ''}`}>
+          <span>
+            Expert note <small>– why you decided this way. It is saved with the case when you add it to the knowledge base.</small>
+          </span>
+          <textarea
+            rows={2}
+            value={p.note}
+            onChange={(e) => p.onNote!(e.target.value)}
+            placeholder={lv.status === 'decided' ? 'Optional – e.g. confirmed with the customer.' : 'e.g. Customer confirmed by phone that the slurry is opaque and varies with solids content.'}
+          />
+        </label>
+      )}
     </div>
   )
 }
 
-const certainty = (c: number) => (c >= 0.65 ? 'clear' : c >= 0.3 ? 'tentative' : 'unclear')
+const certainty = (c: number) => (c >= DEFAULT_SETTINGS.confidentAt ? 'clear' : c >= 0.3 ? 'tentative' : 'unclear')
 
 /** How the classifier reached the decision – in words, not percentages. */
 function ClefTrace({ d, def }: { d: Decision; def: Level['def'] }) {
@@ -1141,6 +1250,52 @@ function CompareDetail({
         </table>
       </div>
       <p className="td-small">Every setup here is a starting point for a feasibility test, not a final specification.</p>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------- adding the solved case to the knowledge base
+
+function CaseSaveBar({ openSteps, expertSteps, noted, savedAt, onSave }: { openSteps: number; expertSteps: number; noted: number; savedAt?: string; onSave: () => Promise<void> }) {
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const save = async () => {
+    setBusy(true)
+    setError('')
+    try {
+      await onSave()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+  const done = openSteps === 0
+  return (
+    <div className={`case-save ${done ? 'ready' : ''} ${savedAt ? 'saved' : ''}`}>
+      <div className="case-save-text">
+        {done ? (
+          savedAt ? (
+            <>
+              <strong>Added to the knowledge base</strong> as a solved case · {new Date(savedAt).toLocaleString()}. Changes since then can be saved again.
+            </>
+          ) : (
+            <>
+              <strong>Every step is decided.</strong> Add this case to the knowledge base as a worked example – with the enquiry, your {expertSteps} decision
+              {expertSteps === 1 ? '' : 's'} and {noted} note{noted === 1 ? '' : 's'}.
+            </>
+          )
+        ) : (
+          <>
+            <strong>Solved case:</strong> decide the {openSteps} open step{openSteps > 1 ? 's' : ''} to add this enquiry to the knowledge base. Add a note to each
+            decision you make – it explains your reasoning to colleagues.
+          </>
+        )}
+        {error && <span className="error"> {error}</span>}
+      </div>
+      <button className="btn primary" disabled={!done || busy} onClick={save}>
+        {busy ? 'Saving…' : savedAt ? 'Save again' : 'Add to knowledge base'}
+      </button>
     </div>
   )
 }

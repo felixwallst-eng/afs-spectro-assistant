@@ -23,7 +23,7 @@ import { listDocs } from './docs.ts'
 //   premise check (customer assumptions that the AFS rules contradict).
 // The evidence shown to the expert is the relevant cards (verified quotes) – no generated text.
 
-export const CLEF_PIPELINE_VERSION = 'clef-v4'
+export const CLEF_PIPELINE_VERSION = 'clef-v5'
 const MAX_QUESTIONS = 60
 const TREE_IDS = new Set(TREE_NODES.map((n) => n.id))
 /** Steps that are never suggested from a tentative reading of the text – stated or open. */

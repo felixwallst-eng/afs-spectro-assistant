@@ -4,42 +4,21 @@ import { assess, resolveDimensions } from '../../shared/engine.ts'
 import { DEFAULT_SETTINGS } from '../../shared/types.ts'
 import type { MethodSetup, RawDimension, Settings } from '../../shared/types.ts'
 import DecisionTree from '../components/DecisionTree.tsx'
-import { store, treeApi } from '../lib.ts'
+import { casesApi, store, treeApi } from '../lib.ts'
+import type { SolvedCase } from '../../shared/solvedCases.ts'
 import { rawFromDecisions } from '../treeModel.ts'
 import type { SourceMode, TreeResponse } from '../../shared/tree.ts'
-import { METHOD_INFO } from '../../shared/knowledge.ts'
-import { TREE_NODES } from '../../shared/tree.ts'
-import type { Assessment } from '../../shared/types.ts'
 
-const DECISION_SHORT = {
-  provisional: 'Provisional assessment',
-  insufficient_information: 'Insufficient information',
-  out_of_scope: 'Outside supported scope',
-}
-
-function Summary({ assessment }: { assessment: Assessment }) {
-  const top = assessment.candidates.filter((c) => c.status === 'recommended').slice(0, 3)
-  const blocks = assessment.warnings.filter((w) => w.severity === 'block').length
-  const open = assessment.questions.filter((q) => q.kind === 'missing').length
-  const openSteps = TREE_NODES.filter((n) => assessment.dimensions[n.id]?.status === 'unknown').length
-  return (
-    <section className={`panel decision ${assessment.decisionStatus}`} style={{ margin: 0, display: 'block' }}>
-      <strong>{DECISION_SHORT[assessment.decisionStatus]}</strong>
-      <p style={{ fontSize: 14, marginTop: 4 }}>
-        {top.length
-          ? `${openSteps ? `Provisional shortlist (${openSteps} step${openSteps > 1 ? 's' : ''} open)` : 'Worth testing'}: ${top.map((c) => `${METHOD_INFO[c.setup.method].name} – ${c.setup.technique}`).join(', ')}.`
-          : 'No setup is recommended without conditions yet.'}
-        {blocks > 0 && ` ${blocks} premise${blocks > 1 ? 's' : ''} in the request cannot be confirmed – see below.`}
-      </p>
-      {open > 0 && (
-        <p style={{ fontSize: 14, marginTop: 8 }}>
-          {open} open question{open > 1 ? 's' : ''} to clarify with the client – marked “?” on the decision path.
-        </p>
-      )}
-    </section>
-  )
-}
 import type { HistoryEntry } from '../lib.ts'
+
+const EMPTY_TREE: TreeResponse = {
+  model: '',
+  decisions: [],
+  latencyMs: 0,
+  passagesRead: 0,
+  usage: { inputTokens: 0, outputTokens: 0 },
+  stats: { decided: 0, suggested: 0, open: 0, rejectedQuotes: 0, verifiedSources: 0 },
+}
 
 interface Props {
   settings: Settings
@@ -52,6 +31,8 @@ export default function AssessPage({ settings, methods }: Props) {
   const [exampleId, setExampleId] = useState('')
   const [raw, setRaw] = useState<Record<string, RawDimension> | null>(null)
   const [overrides, setOverrides] = useState<Record<string, string>>({})
+  const [notes, setNotes] = useState<Record<string, string>>({})
+  const [savedAt, setSavedAt] = useState<string | undefined>(undefined)
   const [model, setModel] = useState('')
   const [latency, setLatency] = useState<number | null>(null)
   const [busy, setBusy] = useState(false)
@@ -95,6 +76,8 @@ export default function AssessPage({ settings, methods }: Props) {
 
   const dims = useMemo(() => (raw ? resolveDimensions(raw, overrides, settings) : null), [raw, overrides, settings])
   const assessment = useMemo(() => (dims ? assess(dims, methods) : null), [dims, methods])
+  // the empty path shown before the first analysis: every step open, no methods yet
+  const emptyAssessment = useMemo(() => assess(resolveDimensions(rawFromDecisions([]), {}, settings), methods), [settings, methods])
 
   async function analyze(input: string, keepOverrides: boolean, fresh = false) {
     if (!input.trim()) {
@@ -114,12 +97,17 @@ export default function AssessPage({ settings, methods }: Props) {
       setModel(res.model)
       setLatency(res.latencyMs)
       setOverrides(nextOverrides)
+      if (!keepOverrides) {
+        setNotes({})
+        setSavedAt(undefined)
+      }
       const entry: HistoryEntry = {
         id: keepOverrides && currentId ? currentId : crypto.randomUUID(),
         title: input.trim().slice(0, 70),
         text: input,
         raw: dimensions,
         overrides: nextOverrides,
+        notes: keepOverrides ? notes : {},
         model: res.model,
         tree: res,
         createdAt: new Date().toISOString(),
@@ -136,20 +124,48 @@ export default function AssessPage({ settings, methods }: Props) {
     }
   }
 
+  // functional updates, so several decisions in a row (e.g. "accept all suggestions") all stick
   function setOverride(id: string, value: string | undefined) {
-    const next = { ...overrides }
-    if (value === undefined) delete next[id]
-    else next[id] = value
-    setOverrides(next)
-    if (currentId) {
-      const h = history.map((e) => (e.id === currentId ? { ...e, overrides: next } : e))
-      setHistory(h)
-      store.saveHistory(h)
-    }
+    setOverrides((prev) => {
+      const next = { ...prev }
+      if (value === undefined) delete next[id]
+      else next[id] = value
+      if (currentId)
+        setHistory((h) => {
+          const nh = h.map((e) => (e.id === currentId ? { ...e, overrides: next } : e))
+          store.saveHistory(nh)
+          return nh
+        })
+      return next
+    })
+  }
+
+  /** Update the current history entry (notes, saved state) and keep it in the browser. */
+  function patchEntry(patch: Partial<HistoryEntry>) {
+    if (!currentId) return
+    const h = history.map((e) => (e.id === currentId ? { ...e, ...patch } : e))
+    setHistory(h)
+    store.saveHistory(h)
+  }
+
+  function setNote(id: string, value: string) {
+    const next = { ...notes, [id]: value }
+    if (!value) delete next[id]
+    setNotes(next)
+    patchEntry({ notes: next })
+  }
+
+  async function saveCase(c: Omit<SolvedCase, 'createdAt'>) {
+    const saved = await casesApi.save(c)
+    const at = saved.updatedAt ?? saved.createdAt
+    setSavedAt(at)
+    patchEntry({ savedAt: at })
   }
 
   function openEntry(e: HistoryEntry) {
     setText(e.text)
+    setNotes(e.notes ?? {})
+    setSavedAt(e.savedAt)
     setExampleId(EXAMPLE_CASES.find((c) => c.text === e.text)?.id ?? '')
     setRaw(e.raw)
     setOverrides(e.overrides)
@@ -162,6 +178,8 @@ export default function AssessPage({ settings, methods }: Props) {
 
   function newCase() {
     setText('')
+    setNotes({})
+    setSavedAt(undefined)
     setExampleId('')
     setRaw(null)
     setOverrides({})
@@ -203,13 +221,25 @@ export default function AssessPage({ settings, methods }: Props) {
       </aside>
 
       <div className="stack">
-        <div className="intake">
-          <section className="panel case-input">
-            <div className="panel-head">
-              <h2>Customer enquiry</h2>
-              <div className="right">
+        <section className="panel case-input reading">
+          <div className="panel-head">
+            <h2>Customer enquiry</h2>
+            <span className="hint">Paste what the customer wrote, or load an example.</span>
+          </div>
+          <div className="panel-body intake-row">
+            <textarea
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value)
+                if (exampleId && e.target.value !== EXAMPLE_CASES.find((c) => c.id === exampleId)?.text) setExampleId('')
+              }}
+              placeholder="Paste what the customer wrote, e.g. “We need to monitor moisture and hydrocarbon contamination in soil…”"
+              aria-label="Customer enquiry"
+            />
+            <div className="intake-side">
+              <label className="side-field">
+                Example
                 <select
-                  aria-label="Load an example enquiry"
                   value={exampleId}
                   onChange={(e) => {
                     const ex = EXAMPLE_CASES.find((c) => c.id === e.target.value)
@@ -232,69 +262,51 @@ export default function AssessPage({ settings, methods }: Props) {
                     ))}
                   </optgroup>
                 </select>
-              </div>
-            </div>
-            <div className="panel-body">
-              <textarea
-                value={text}
-                onChange={(e) => {
-                  setText(e.target.value)
-                  if (exampleId && e.target.value !== EXAMPLE_CASES.find((c) => c.id === exampleId)?.text) setExampleId('')
-                }}
-                placeholder="Paste what the customer wrote, e.g. “We need to monitor moisture and hydrocarbon contamination in soil…”"
-                aria-label="Customer enquiry"
-              />
-              <div className="case-actions">
-                <button className="btn primary" disabled={busy} onClick={() => analyze(text, false)}>
-                  {busy ? <Elapsed since={since} /> : 'Analyse enquiry'}
+              </label>
+              <label className="side-field">
+                Sources
+                <select value={sources} onChange={(e) => chooseSources(e.target.value as SourceMode)} disabled={busy}>
+                  <option value="original">AFS originals only</option>
+                  <option value="all">Originals + added sources</option>
+                </select>
+              </label>
+              <button className="btn primary" disabled={busy} onClick={() => analyze(text, false)}>
+                {busy ? <Elapsed since={since} /> : 'Analyse enquiry'}
+              </button>
+              {raw && (
+                <button className="btn" disabled={busy} onClick={newCase}>
+                  New enquiry
                 </button>
-                {raw && (
-                  <button className="btn" disabled={busy} onClick={newCase}>
-                    New enquiry
-                  </button>
-                )}
-                <label className="source-mode">
-                  Sources
-                  <select value={sources} onChange={(e) => chooseSources(e.target.value as SourceMode)} disabled={busy}>
-                    <option value="original">AFS originals only</option>
-                    <option value="all">Originals + added sources</option>
-                  </select>
-                </label>
-                {raw && !busy && (
-                  <span className="status">
-                    {model}
-                    {tree?.cachedAt ? ' · stored result for this exact input' : latency !== null ? ` · ${(latency / 1000).toFixed(1)} s` : ''}
-                    {tree?.cachedAt && (
-                      <button className="linkbtn" onClick={() => analyze(text, true, true)} title="Run all models again instead of showing the stored result">
-                        Run again
-                      </button>
-                    )}
-                  </span>
-                )}
-              </div>
-              {error && <p className="error">{error}</p>}
+              )}
+              {raw && !busy && (
+                <span className="status">
+                  {model}
+                  {tree?.cachedAt ? ' · stored result for this exact input' : latency !== null ? ` · ${(latency / 1000).toFixed(1)} s` : ''}
+                  {tree?.cachedAt && (
+                    <button className="linkbtn" onClick={() => analyze(text, true, true)} title="Run all models again instead of showing the stored result">
+                      Run again
+                    </button>
+                  )}
+                </span>
+              )}
             </div>
-          </section>
-          {assessment ? (
-            <Summary assessment={assessment} />
-          ) : (
-            <section className="panel how-to">
-              <div className="panel-body">
-                <strong>How the assessment works</strong>
-                <ol>
-                  <li>The model decides each step of the AFS method table – only with a quote from the enquiry as evidence.</li>
-                  <li>Steps without evidence stay open: you decide them (“action needed”).</li>
-                  <li>Rules from the AFS material narrow the 19 method setups and cite their source.</li>
-                </ol>
-              </div>
-            </section>
-          )}
-        </div>
+          </div>
+          {error && <p className="error intake-error">{error}</p>}
+        </section>
 
         {assessment ? (
           <>
             {tree ? (
-              <DecisionTree key={currentId ?? 'case'} tree={tree} text={history.find((h) => h.id === currentId)?.text ?? text} assessment={assessment} methods={methods} overrides={overrides} onOverride={setOverride} />
+              <DecisionTree key={currentId ?? 'case'} tree={tree} text={history.find((h) => h.id === currentId)?.text ?? text} assessment={assessment}
+                methods={methods}
+                overrides={overrides}
+                onOverride={setOverride}
+                caseId={currentId}
+                notes={notes}
+                onNote={setNote}
+                savedAt={savedAt}
+                onSaveCase={saveCase}
+              />
             ) : (
               <section className="panel placeholder">
                 <strong>This entry was analysed with the earlier classifier</strong>
@@ -303,10 +315,20 @@ export default function AssessPage({ settings, methods }: Props) {
             )}
           </>
         ) : (
-          <section className="panel placeholder">
-            <strong>No enquiry analysed yet</strong>
-            Paste a customer enquiry or load an example, then choose “Analyse enquiry”.
-          </section>
+          <DecisionTree
+            key="empty"
+            tree={EMPTY_TREE}
+            text=""
+            assessment={emptyAssessment}
+            methods={methods}
+            overrides={{}}
+            onOverride={() => {}}
+            placeholder={
+              busy
+                ? { title: 'Reading the enquiry…', text: 'The decision path fills in as soon as every step is classified.' }
+                : { title: 'No enquiry analysed yet', text: 'Paste a customer enquiry or load an example, then choose “Analyse enquiry”.' }
+            }
+          />
         )}
       </div>
     </div>
