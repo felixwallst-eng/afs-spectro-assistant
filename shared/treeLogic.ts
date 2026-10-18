@@ -62,3 +62,18 @@ export function deriveSteps(decisions: Decision[]): void {
   if (i >= 0) decisions[i] = next
   else decisions.push(next)
 }
+
+/** decided: stated by the customer · suggested: AFS sources point to a value, expert accepts ·
+ *  conflict: customer text and AFS sources disagree · expert: set or accepted by the expert ·
+ *  action: missing and blocking · minor: missing, not blocking ·
+ *  deferred: the expert left it open on purpose – to be asked from the customer */
+export type NodeStatus = 'decided' | 'suggested' | 'conflict' | 'expert' | 'action' | 'minor' | 'deferred'
+
+export function nodeStatus(id: string, decisions: Decision[], overrides: Record<string, string>): NodeStatus {
+  if (overrides[id] !== undefined) return overrides[id] === DIM_BY_ID[id]?.unknownLabel ? 'deferred' : 'expert'
+  const d = decisions.find((x) => x.id === id)
+  if (basisOf(d) === 'customer' && d?.value) return 'decided'
+  if (basisOf(d) === 'sources' && d?.value) return 'suggested'
+  if (basisOf(d) === 'conflict') return 'conflict'
+  return (DIM_BY_ID[id]?.priority ?? 3) <= 2 ? 'action' : 'minor'
+}
