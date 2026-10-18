@@ -6,6 +6,36 @@ import type { AgentModelKey, AgentResponse, BriefResponse } from '../shared/agen
 import type { DocMeta, DocPatch } from '../shared/docs.ts'
 import type { ClassifyResponse, MethodSetup, RawDimension, Settings } from '../shared/types.ts'
 
+// ------------------------------------------------------------ workspace
+// Each browser gets its own workspace id. Everything an expert changes in the knowledge base (re-reading or editing the cards of
+// a source, switching sources off, notes, uploads, solved cases) is stored under this id on the server, so it never changes what
+// other users get. "Start fresh" takes a new id: back to the curated knowledge base of the repository.
+
+let memoryWorkspace = ''
+export function workspaceId(): string {
+  try {
+    let id = localStorage.getItem('afs.workspace')
+    if (!id) {
+      id = crypto.randomUUID()
+      localStorage.setItem('afs.workspace', id)
+    }
+    return id
+  } catch {
+    return (memoryWorkspace ||= crypto.randomUUID())
+  }
+}
+export function resetWorkspace() {
+  try {
+    localStorage.setItem('afs.workspace', crypto.randomUUID())
+  } catch {
+    memoryWorkspace = crypto.randomUUID()
+  }
+}
+
+/** fetch with the workspace header – used for every API call in this module. */
+const fetch = (input: string, init: RequestInit = {}) =>
+  window.fetch(input, { ...init, headers: { ...(init.headers as Record<string, string> | undefined), 'x-afs-workspace': workspaceId() } })
+
 export async function classifyText(text: string, only?: string[]): Promise<ClassifyResponse> {
   const res = await fetch('/api/classify', {
     method: 'POST',

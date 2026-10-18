@@ -158,6 +158,8 @@ The supplied materials are already part of the repository, so no extra step is n
 
 To update a document's cards, use **Knowledge base → Cards** to remove cards or re-read the document, and **Reset to curated** to return to the files in the repository. To add a new document, upload the PDF on the Knowledge base page. It is read page by page into cards, which you can then review.
 
+**Every browser has its own workspace.** Re-reads, removed cards, switched-off sources, notes, uploads and solved cases are stored under a random workspace id of the browser and never change what other users get; **Reset all my changes** on the Knowledge base page goes back to the curated state. Requests without a workspace (the scripts in `scripts/`) always use the curated cards. To make a change permanent for everyone, download the cards as JSON and commit them to `knowledge/cards/`.
+
 ## Reproducing the answers and the evaluation
 
 All scripts talk to the running app (`npm run dev`, or `--url https://<your-worker>`).
@@ -205,7 +207,7 @@ For comparison, the language-model pipeline found 8/9 premises on H01–H06, but
   - The gold standards are drafts by the team.
   - Solved cases are not yet used by the classifier.
 - **Wording of the written assessment can vary between runs**, while the underlying decisions and sources do not.
-- **Local data:** history and settings live in the browser; knowledge base and solved cases live in the Cloudflare KV namespace.
+- **Local data:** history and settings live in the browser; changes to the knowledge base and solved cases live in the Cloudflare KV namespace, separately for each browser workspace. The curated knowledge base itself is read-only and versioned in the repository.
 
 ## Repository layout
 

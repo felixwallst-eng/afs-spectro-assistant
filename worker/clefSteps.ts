@@ -61,7 +61,7 @@ const choiceQuestion = (d: DimensionDef, extra = '') => ({
   criteria: Object.fromEntries(Object.entries(d.labels).map(([k, l]) => [k, l.description])),
 })
 
-export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRequest): Promise<TreeResponse> {
+export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRequest, ws = ''): Promise<TreeResponse> {
   const started = Date.now()
   const ai = aiBinding as Runner
   const sources = req.sources ?? 'all'
@@ -77,8 +77,9 @@ export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: Ste
   }
 
   // ------------------------------------------------------------ knowledge
-  const docs = (await listDocs(kv)).filter((d) => d.enabled && (sources === 'all' || d.origin === 'original'))
-  const sets = await loadCards(kv, docs.map((d) => d.id))
+  // knowledge as this browser's workspace sees it; without a workspace: the curated, shared state
+  const docs = (await listDocs(kv, ws)).filter((d) => d.enabled && (sources === 'all' || d.origin === 'original'))
+  const sets = await loadCards(kv, docs.map((d) => d.id), ws)
   const title = (id: string) => docs.find((d) => d.id === id)?.title ?? id
   const cardsOf = (stepId: string) => sets.flatMap((s) => s.cards).filter((c) => c.step === stepId)
   const toRef = (c: KnowledgeCard): SourcePassage => ({ docId: c.docId, docTitle: title(c.docId), page: c.page, quote: c.quote, cardId: c.id, claim: c.claim })

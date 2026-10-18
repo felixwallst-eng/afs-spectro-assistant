@@ -6,7 +6,7 @@ import type { Thresholds } from '../shared/tree.ts'
 import { runSteps } from './steps.ts'
 import { runClefSteps } from './clefSteps.ts'
 import { buildCards, deleteCard, getCards, resetCards } from './cards.ts'
-import { listDocs } from './docs.ts'
+import { canChange, listDocs, workspaceOf } from './docs.ts'
 import { handleCases } from './cases.ts'
 import { runReport } from './report.ts'
 import type { ReportInput } from '../shared/report.ts'
@@ -17,6 +17,8 @@ const MAX_TEXT = 8000
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
+    // the browser's own workspace: its changes to the knowledge base never reach other users
+    const ws = workspaceOf(request)
 
     if (url.pathname === '/api/classify' && request.method === 'POST') {
       let body: { text?: unknown; only?: unknown }
@@ -45,7 +47,7 @@ export default {
         // "single": the earlier one-call pipeline, kept for comparison in the reproducibility test
         if (body?.pipeline === 'single') return Response.json(await runTree(env.AI, env.DOCS, { text, model }))
         if (body?.pipeline === 'clef')
-          return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all', thresholds: parseThresholds(body?.thresholds), citations: body?.citations === 'relevance' ? 'relevance' : 'support' }))
+          return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all', thresholds: parseThresholds(body?.thresholds), citations: body?.citations === 'relevance' ? 'relevance' : 'support' }, ws))
         return Response.json(
           await runSteps(env.AI, env.DOCS, {
             text,
@@ -95,20 +97,23 @@ export default {
       const docId = decodeURIComponent(cardRoute[1])
       try {
         if (request.method === 'GET') {
-          const set = await getCards(env.DOCS, docId)
+          const set = await getCards(env.DOCS, docId, ws)
           return set ? Response.json(set) : Response.json({ error: 'This document has not been read yet.' }, { status: 404 })
         }
+        // every change below is stored in this browser's workspace only
+        if (request.method !== 'GET' && !(await canChange(env.DOCS, docId, ws)))
+          return Response.json({ error: 'Document not found in this workspace – reload the page.' }, { status: 404 })
         if (request.method === 'POST' && !cardRoute[2]) {
-          const doc = (await listDocs(env.DOCS)).find((d) => d.id === docId)
+          const doc = (await listDocs(env.DOCS, ws)).find((d) => d.id === docId)
           if (!doc) return Response.json({ error: 'Document not found.' }, { status: 404 })
-          return Response.json(await buildCards(env.AI, env.DOCS, docId, doc.title))
+          return Response.json(await buildCards(env.AI, env.DOCS, docId, doc.title, ws))
         }
         if (request.method === 'DELETE' && !cardRoute[2]) {
-          const set = await resetCards(env.DOCS, docId)
+          const set = await resetCards(env.DOCS, docId, ws)
           return set ? Response.json(set) : Response.json({ error: 'No curated cards for this document.' }, { status: 404 })
         }
         if (request.method === 'DELETE' && cardRoute[2]) {
-          const set = await deleteCard(env.DOCS, docId, decodeURIComponent(cardRoute[2]))
+          const set = await deleteCard(env.DOCS, docId, decodeURIComponent(cardRoute[2]), ws)
           return set ? Response.json(set) : Response.json({ error: 'No cards for this document.' }, { status: 404 })
         }
       } catch (err) {
@@ -142,7 +147,7 @@ export default {
     const caseRoute = url.pathname.match(/^\/api\/cases(?:\/([^/]+))?$/)
     if (caseRoute) {
       try {
-        const res = await handleCases(request, env.DOCS, caseRoute[1] ? decodeURIComponent(caseRoute[1]) : undefined)
+        const res = await handleCases(request, env.DOCS, ws, caseRoute[1] ? decodeURIComponent(caseRoute[1]) : undefined)
         if (res) return res
       } catch (err) {
         return Response.json({ error: `Saving the case failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 })

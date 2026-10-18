@@ -7,6 +7,12 @@ import { TREE_NODES } from '../shared/tree.ts'
 import { chat, parseJson } from './agent.ts'
 import { SEED_CARDS } from './seedCards.ts'
 
+// Workspaces: every browser sends its own id (x-afs-workspace). Re-reads and edits of the bundled sources (S01–S04, A01)
+// are stored under that id only, so they never change what other users get. Without an id (scripts, benchmark) the curated
+// cards from the repository are always used. Uploads belong to the workspace that added them and keep their cards in cards:<id>.
+const isBundled = (docId: string) => docId in SEED_CARDS
+const cardsKey = (docId: string, ws: string) => (isBundled(docId) ? (ws ? `ws:${ws}:cards:${docId}` : null) : `cards:${docId}`)
+
 const CHUNK_CHARS = 12_000 // pages are read in parts of about 3,000 tokens
 const PER_CHUNK = 14
 
@@ -37,7 +43,7 @@ const STEP_GUIDE = TREE_NODES.map((n) => {
 }).join('\n')
 
 /** Read the whole document and store its verified knowledge cards. */
-export async function buildCards(aiBinding: unknown, kv: KVNamespace, docId: string, docTitle: string, modelKey: AgentModelKey = 'gptoss'): Promise<CardSet> {
+export async function buildCards(aiBinding: unknown, kv: KVNamespace, docId: string, docTitle: string, ws = '', modelKey: AgentModelKey = 'gptoss'): Promise<CardSet> {
   const ai = aiBinding as Ai
   const pages = (await kv.get<string[]>(`text:${docId}`, 'json')) ?? []
   if (!pages.length) throw new Error(`${docId} has no page text yet – open the Knowledge base tab once so it is indexed.`)
@@ -80,39 +86,44 @@ export async function buildCards(aiBinding: unknown, kv: KVNamespace, docId: str
   const order = new Map(TREE_NODES.map((n, i) => [n.id, i]))
   cards.sort((a, b) => (order.get(a.step)! - order.get(b.step)!) || a.page - b.page || a.id.localeCompare(b.id))
   const set: CardSet = { docId, createdAt: new Date().toISOString(), model: AGENT_MODELS[modelKey].name, pagesRead: pages.length, cards, rejected }
-  await kv.put(`cards:${docId}`, JSON.stringify(set))
+  const k = cardsKey(docId, ws)
+  if (k) await kv.put(k, JSON.stringify(set)) // bundled source without workspace: returned only, never stored
   return set
 }
 
-/** The cards of one document: the expert-edited / re-read copy in KV, else the curated file. */
-export async function getCards(kv: KVNamespace, docId: string): Promise<(CardSet & { curated: boolean }) | null> {
-  const stored = await kv.get<CardSet>(`cards:${docId}`, 'json')
+/** The cards of one document: this workspace's edited / re-read copy, else the curated file. */
+export async function getCards(kv: KVNamespace, docId: string, ws = ''): Promise<(CardSet & { curated: boolean }) | null> {
+  const k = cardsKey(docId, ws)
+  const stored = k ? await kv.get<CardSet>(k, 'json') : null
   const seed = SEED_CARDS[docId]
   // a stored copy wins only if it is newer than the curated file (expert edit or re-read after curation)
   if (stored && (!seed || stored.createdAt > seed.createdAt)) return { ...stored, curated: false }
   return seed ? { ...seed, curated: true } : null
 }
 
-export async function loadCards(kv: KVNamespace, docIds: string[]): Promise<CardSet[]> {
-  const sets = await Promise.all(docIds.map((id) => getCards(kv, id)))
+export async function loadCards(kv: KVNamespace, docIds: string[], ws = ''): Promise<CardSet[]> {
+  const sets = await Promise.all(docIds.map((id) => getCards(kv, id, ws)))
   return sets.filter((s): s is CardSet & { curated: boolean } => s !== null)
 }
 
-/** Drop the KV copy so the curated cards apply again. */
-export async function resetCards(kv: KVNamespace, docId: string) {
-  await kv.delete(`cards:${docId}`)
-  return getCards(kv, docId)
+/** Drop this workspace's copy so the curated cards apply again. */
+export async function resetCards(kv: KVNamespace, docId: string, ws = '') {
+  const k = cardsKey(docId, ws)
+  if (k && isBundled(docId)) await kv.delete(k)
+  return getCards(kv, docId, ws)
 }
 
 /** Remove a single card (expert review). */
-export async function deleteCard(kv: KVNamespace, docId: string, cardId: string): Promise<CardSet | null> {
-  const current = await getCards(kv, docId)
+export async function deleteCard(kv: KVNamespace, docId: string, cardId: string, ws = ''): Promise<CardSet | null> {
+  const k = cardsKey(docId, ws)
+  if (!k) throw new Error('Changes to the bundled sources need a workspace id.')
+  const current = await getCards(kv, docId, ws)
   if (!current) return null
   const { curated: _curated, ...set } = current
   void _curated
   set.cards = set.cards.filter((c) => c.id !== cardId)
   set.createdAt = new Date().toISOString()
   set.model = `${set.model.replace(/ · edited by expert$/, '')} · edited by expert`
-  await kv.put(`cards:${docId}`, JSON.stringify(set))
+  await kv.put(k, JSON.stringify(set))
   return set
 }

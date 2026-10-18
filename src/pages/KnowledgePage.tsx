@@ -4,7 +4,7 @@ import type { DocMeta } from '../../shared/docs.ts'
 import { DIM_BY_ID } from '../../shared/dimensions.ts'
 import type { CardSet } from '../../shared/cards.ts'
 import { TREE_NODES } from '../../shared/tree.ts'
-import { cardsApi, casesApi, docsApi } from '../lib.ts'
+import { cardsApi, casesApi, docsApi, resetWorkspace } from '../lib.ts'
 import type { SolvedCase } from '../../shared/solvedCases.ts'
 import { extractPageTexts } from '../pdfText.ts'
 import { useOpenSource } from '../sourceContext.ts'
@@ -107,7 +107,7 @@ function CardsPanel({ doc, onChanged }: { doc: DocMeta; onChanged: (count: numbe
     <div className="kb-cards">
       <div className="kb-cards-head">
         <p className="kb-muted">
-          {set.curated ? 'Curated cards from the repository' : `Read by ${set.model}`} · {fmtDate(set.createdAt)} · all {set.pagesRead} pages · {set.cards.length} statements
+          {set.curated ? 'Curated cards from the repository' : `Read by ${set.model} – your version, in this browser only`} · {fmtDate(set.createdAt)} · all {set.pagesRead} pages · {set.cards.length} statements
           {set.rejected > 0 && `, ${set.rejected} discarded because their quote was not found in the document`}. Every quote was checked against the PDF text. Remove a card
           if it should not be used.
         </p>
@@ -116,7 +116,7 @@ function CardsPanel({ doc, onChanged }: { doc: DocMeta; onChanged: (count: numbe
             Download JSON
           </button>
           {!set.curated && doc.origin !== 'uploaded' && (
-            <button className="linkbtn" onClick={reset} title="Discard edits and re-reads, use the curated cards again">
+            <button className="linkbtn" onClick={reset} title="Discard your edits and re-reads, use the curated cards again">
               Reset to curated
             </button>
           )}
@@ -297,6 +297,22 @@ export default function KnowledgePage({ focusCase }: { focusCase?: string | null
           decision steps, each with a verified quote. Assessments then use all cards of the active documents, so the same enquiry always gets the same
           knowledge. Expert notes are passed along with every card of a document.
         </p>
+        <p className="kb-workspace">
+          <span>
+            <strong>Your changes stay in this browser.</strong> Re-reading or editing cards, switching sources off, notes, uploads and solved cases are kept
+            for you only – every other user always works with the curated knowledge base.
+          </span>
+          <button
+            className="btn small"
+            onClick={() => {
+              resetWorkspace()
+              window.location.reload()
+            }}
+            title="Discard all your changes and uploads and go back to the curated knowledge base"
+          >
+            Reset all my changes
+          </button>
+        </p>
 
         {pending ? (
           <UploadForm
@@ -380,7 +396,7 @@ export default function KnowledgePage({ focusCase }: { focusCase?: string | null
                           {d.cards} cards
                         </button>
                         {d.cardsCurated && <span className="tag curated">curated</span>}
-                        <button className="linkbtn kb-muted" onClick={() => read(d)} title="Read the whole document again">
+                        <button className="linkbtn kb-muted" onClick={() => read(d)} title="Read the whole document again with the language model – the new cards apply in this browser only">
                           Re-read
                         </button>
                       </>

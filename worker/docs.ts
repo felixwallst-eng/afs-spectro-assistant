@@ -3,7 +3,9 @@ import { getCards } from './cards.ts'
 import type { DocMeta, DocPatch } from '../shared/docs.ts'
 
 // KV layout
-//   meta:<id>   DocMeta (uploads) or a DocPatch override (originals)
+//   meta:<id>   DocMeta of an upload (with the owning workspace)
+//   ws:<workspace>:meta:<id>   DocPatch of a bundled source (switched off, notes …) – this browser only
+//   ws:<workspace>:cards:<id>  re-read or edited cards of a bundled source – this browser only
 //   file:<id>   PDF bytes (uploads only; originals are static assets)
 //   text:<id>   string[] – extracted text per page (for retrieval and highlighting)
 //   cards:<id>  CardSet – knowledge cards read from the whole document
@@ -13,16 +15,23 @@ const json = (data: unknown, status = 200) => Response.json(data, { status })
 // bundled documents (originals and curated added sources) are static assets: they can be switched off, not deleted
 const isOriginal = (id: string) => BUNDLED_DOCS.some((d) => d.id === id)
 
-export async function listDocs(kv: KVNamespace): Promise<DocMeta[]> {
+/** Workspace id sent by the browser (x-afs-workspace); '' = none, i.e. the shared curated state only. */
+export function workspaceOf(request: Request): string {
+  const ws = request.headers.get('x-afs-workspace') ?? ''
+  return /^[A-Za-z0-9-]{8,64}$/.test(ws) ? ws : ''
+}
+
+/** The bundled sources (with this workspace's own settings) and the uploads of this workspace. */
+export async function listDocs(kv: KVNamespace, ws = ''): Promise<DocMeta[]> {
   const originals = await Promise.all(
-    BUNDLED_DOCS.map(async (d) => ({ ...d, ...((await kv.get<DocPatch>(`meta:${d.id}`, 'json')) ?? {}) })),
+    BUNDLED_DOCS.map(async (d) => ({ ...d, ...((ws && (await kv.get<DocPatch>(`ws:${ws}:meta:${d.id}`, 'json'))) || {}) })),
   )
-  const keys = await kv.list({ prefix: 'meta:u-' })
-  const uploads = (await Promise.all(keys.keys.map((k) => kv.get<DocMeta>(k.name, 'json')))).filter((d): d is DocMeta => d !== null)
+  const keys = ws ? await kv.list({ prefix: 'meta:u-' }) : { keys: [] }
+  const uploads = (await Promise.all(keys.keys.map((k) => kv.get<DocMeta>(k.name, 'json')))).filter((d): d is DocMeta => d !== null && d.owner === ws)
   uploads.sort((a, b) => b.addedAt.localeCompare(a.addedAt))
   const indexed = new Set((await kv.list({ prefix: 'text:' })).keys.map((k) => k.name.slice(5)))
   const all = [...originals, ...uploads]
-  const sets = await Promise.all(all.map((d) => getCards(kv, d.id)))
+  const sets = await Promise.all(all.map((d) => getCards(kv, d.id, ws)))
   return all.map((d, i) => ({ ...d, indexed: indexed.has(d.id), ...(sets[i] ? { cards: sets[i]!.cards.length, cardsAt: sets[i]!.createdAt, cardsCurated: sets[i]!.curated } : {}) }))
 }
 
@@ -36,17 +45,26 @@ function cleanPatch(body: Record<string, unknown>): DocPatch {
 }
 
 /** Handles /api/docs routes; returns null for other paths. */
+/** May this workspace change the document? Bundled sources: only with a workspace (changes stay in it). Uploads: only the owner. */
+export async function canChange(kv: KVNamespace, id: string, ws: string): Promise<boolean> {
+  if (!ws) return false
+  if (isOriginal(id)) return true
+  return (await kv.get<DocMeta>(`meta:${id}`, 'json'))?.owner === ws
+}
+
 export async function handleDocs(request: Request, kv: KVNamespace): Promise<Response | null> {
+  const ws = workspaceOf(request)
   const url = new URL(request.url)
   const parts = url.pathname.split('/').filter(Boolean) // ['api','docs',id?,'file'?]
   if (parts[0] !== 'api' || parts[1] !== 'docs') return null
   const id = parts[2] ? decodeURIComponent(parts[2]) : undefined
 
   // GET /api/docs
-  if (!id && request.method === 'GET') return json(await listDocs(kv))
+  if (!id && request.method === 'GET') return json(await listDocs(kv, ws))
 
   // POST /api/docs  (multipart: file, title, summary, notes, pageTexts)
   if (!id && request.method === 'POST') {
+    if (!ws) return json({ error: 'Uploads need a browser workspace – reload the page.' }, 400)
     const form = await request.formData()
     const file = form.get('file')
     if (!(file instanceof File)) return json({ error: 'Choose a PDF file to upload.' }, 400)
@@ -77,6 +95,7 @@ export async function handleDocs(request: Request, kv: KVNamespace): Promise<Res
       summary: fields.summary ?? '',
       notes: fields.notes ?? '',
       enabled: true,
+      owner: ws,
     }
     await kv.put(`file:${newId}`, bytes)
     if (pageTexts.length) await kv.put(`text:${newId}`, JSON.stringify(pageTexts))
@@ -97,9 +116,14 @@ export async function handleDocs(request: Request, kv: KVNamespace): Promise<Res
   if (parts[3] === 'text' && request.method === 'PUT') {
     const pages = (await request.json().catch(() => null)) as unknown
     if (!Array.isArray(pages) || pages.length === 0) return json({ error: 'Body must be a non-empty array of page texts.' }, 400)
-    if (!isOriginal(id) && !(await kv.get(`meta:${id}`))) return json({ error: 'Document not found.' }, 404)
+    if (isOriginal(id)) {
+      // shared page texts of a bundled PDF are written once (first visit) and never replaced
+      if (await kv.get(`text:${id}`)) return json({ indexed: id, pages: pages.length })
+    } else {
+      if (!(await canChange(kv, id, ws))) return json({ error: 'Document not found.' }, 404)
+      await kv.delete(`cards:${id}`) // new text: the cards have to be read again
+    }
     await kv.put(`text:${id}`, JSON.stringify(pages.map(String)))
-    await kv.delete(`cards:${id}`) // new text: the cards have to be read again
     return json({ indexed: id, pages: pages.length })
   }
 
@@ -107,20 +131,21 @@ export async function handleDocs(request: Request, kv: KVNamespace): Promise<Res
   if (request.method === 'PATCH') {
     const patch = cleanPatch((await request.json().catch(() => ({}))) as Record<string, unknown>)
     const stamp = patch.notes !== undefined ? { notesUpdatedAt: new Date().toISOString() } : {}
+    if (!(await canChange(kv, id, ws))) return json({ error: 'Document not found.' }, 404)
     if (isOriginal(id)) {
-      const prev = (await kv.get<DocPatch>(`meta:${id}`, 'json')) ?? {}
-      await kv.put(`meta:${id}`, JSON.stringify({ ...prev, ...patch, ...stamp }))
+      const prev = (await kv.get<DocPatch>(`ws:${ws}:meta:${id}`, 'json')) ?? {}
+      await kv.put(`ws:${ws}:meta:${id}`, JSON.stringify({ ...prev, ...patch, ...stamp }))
     } else {
-      const prev = await kv.get<DocMeta>(`meta:${id}`, 'json')
-      if (!prev) return json({ error: 'Document not found.' }, 404)
+      const prev = (await kv.get<DocMeta>(`meta:${id}`, 'json'))!
       await kv.put(`meta:${id}`, JSON.stringify({ ...prev, ...patch, ...stamp }))
     }
-    return json((await listDocs(kv)).find((d) => d.id === id))
+    return json((await listDocs(kv, ws)).find((d) => d.id === id))
   }
 
   // DELETE /api/docs/:id  (uploads only)
   if (request.method === 'DELETE') {
     if (isOriginal(id)) return json({ error: 'Original AFS documents cannot be deleted. Turn off “Used by AI” instead.' }, 400)
+    if (!(await canChange(kv, id, ws))) return json({ error: 'Document not found.' }, 404)
     await Promise.all([kv.delete(`meta:${id}`), kv.delete(`file:${id}`), kv.delete(`text:${id}`), kv.delete(`cards:${id}`)])
     return json({ deleted: id })
   }

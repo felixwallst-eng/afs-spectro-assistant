@@ -17,6 +17,8 @@ export interface DocMeta {
   notes: string
   /** Whether the assistant may use this document. */
   enabled: boolean
+  /** Uploads only: the browser workspace that added it (only that workspace sees and uses it). */
+  owner?: string
   notesUpdatedAt?: string
   /** Page texts stored, so the assistant can search and cite this document. */
   indexed?: boolean
