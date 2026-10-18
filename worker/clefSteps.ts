@@ -23,7 +23,7 @@ import { listDocs } from './docs.ts'
 //   premise check (customer assumptions that the AFS rules contradict).
 // The evidence shown to the expert is the relevant cards (verified quotes) – no generated text.
 
-export const CLEF_PIPELINE_VERSION = 'clef-v5'
+export const CLEF_PIPELINE_VERSION = 'clef-v6'
 const MAX_QUESTIONS = 60
 const TREE_IDS = new Set(TREE_NODES.map((n) => n.id))
 /** Steps that are never suggested from a tentative reading of the text – stated or open. */
@@ -207,6 +207,19 @@ export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: Ste
     }
   })
 
+  if ((req.citations ?? 'support') === 'support') {
+    const better = await citeAndExplain(
+      decisions,
+      req.text,
+      treeDefs,
+      cardsOf,
+      relevantByStep,
+      toRef,
+      run,
+    )
+    better.forEach((d, i) => (decisions[i] = d))
+  }
+
   // other facts and flags feed the premise check. A premise warning only asks the expert to check
   // something, so a missed premise costs more than a false alarm: they count from PREMISE_AT on.
   const premiseFacts: Record<string, Pick> = {}
@@ -241,3 +254,142 @@ export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: Ste
     },
   }
 }
+
+// ---------------------------------------------------------------- references and reasoning (Clef only)
+//   C  Clef picks the sentence of the enquiry that states the value (the sentences are the answer options).
+//   A  For every step with a value, Clef rates each knowledge card of that step against the decided value
+//      for this customer: supports · adds a limit or warning · background only · about something else.
+//      Only supporting and cautioning cards are shown as references; the rest stays under "other passages".
+//   D  The reasoning is assembled from fixed sentences around the quote and the strongest card.
+
+const SUPPORT_AT = 0.5
+const QUOTE_AT = 0.4
+const MAX_SUPPORT = 3
+const MAX_CAUTION = 2
+
+export function splitSentences(text: string): string[] {
+  return text
+    .replace(/\s+/g, ' ')
+    .split(/(?<=[.!?])\s+(?=[A-Z0-9“"(])/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 3)
+    .slice(0, 30)
+}
+
+const lower1 = (s: string) => s.charAt(0).toLowerCase() + s.slice(1)
+const noDot = (s: string) => s.replace(/[.\s]+$/, '')
+
+async function citeAndExplain(
+  decisions: Decision[],
+  text: string,
+  defs: DimensionDef[],
+  cardsOf: (stepId: string) => KnowledgeCard[],
+  relevantByStep: Map<string, KnowledgeCard[]>,
+  toRef: (c: KnowledgeCard) => SourcePassage,
+  run: (state: string, questions: Record<string, unknown>) => Promise<Record<string, Answer>>,
+): Promise<Decision[]> {
+  const name = (d: DimensionDef, v?: string | null) => (v ? (d.labels[v]?.name ?? v) : '')
+  const shown = (d: Decision) => (d.basis === 'conflict' ? (d.alternative ?? d.value) : d.value)
+  const sentences = splitSentences(text)
+
+  // C: where the customer says it
+  const quoteQs: Record<string, unknown> = {}
+  defs.forEach((def, i) => {
+    const d = decisions[i]
+    if (!d.value || !sentences.length) return
+    quoteQs[def.id] = {
+      type: 'choice',
+      instructions: `Which sentence of the customer text states or plainly implies: ${def.title} = “${name(def, d.value)}”?`,
+      criteria: { ...Object.fromEntries(sentences.map((s, k) => [`s${k}`, s])), none: 'No sentence states or implies this.' },
+    }
+  })
+
+  // A: which cards support the decided value for this customer
+  const supportCall = (def: DimensionDef, value: string) => {
+    const cards = cardsOf(def.id)
+    if (!cards.length) return Promise.resolve({} as Record<string, Answer>)
+    const decision = `${def.title} = “${name(def, value)}”`
+    return run(
+      `${text}\n\nDecision for this customer: ${decision}.`,
+      Object.fromEntries(
+        cards.map((c) => [
+          c.id,
+          {
+            type: 'choice',
+            instructions: `How does this statement from the AFS literature relate to the decision ${decision} for this customer? Statement: ${c.claim} Source sentence: "${c.quote}"`,
+            criteria: {
+              supports: `It directly supports ${name(def, value)} for this kind of sample, process or measurement task.`,
+              caution: 'It applies to this case and adds a limit, condition or warning to this choice.',
+              background: 'It is general background on the topic but does not decide this point for this customer.',
+              unrelated: 'It is about a different kind of sample, process or task.',
+            },
+          },
+        ]),
+      ),
+    )
+  }
+
+  const [quotes, ...ratings] = await Promise.all([
+    Object.keys(quoteQs).length ? run(text, quoteQs) : Promise.resolve({} as Record<string, Answer>),
+    ...defs.map((def, i) => {
+      const v = shown(decisions[i])
+      return v ? supportCall(def, v) : Promise.resolve({} as Record<string, Answer>)
+    }),
+  ])
+
+  return defs.map((def, i) => {
+    const d = decisions[i]
+    const v = shown(d)
+    const cards = cardsOf(def.id)
+    const relevant = relevantByStep.get(def.id) ?? []
+    const rating = ratings[i]
+    const prob = (c: KnowledgeCard, role: string) => {
+      const a = rating[c.id]
+      return a?.choice === role ? (a.probabilities?.[role] ?? a.confidence ?? 0) : 0
+    }
+    // a card that names another value cannot support this one
+    const supports = cards
+      .filter((c) => (!c.value || c.value === v) && prob(c, 'supports') >= SUPPORT_AT)
+      .sort((x, y) => prob(y, 'supports') - prob(x, 'supports'))
+      .slice(0, MAX_SUPPORT)
+    const cautions = cards
+      .filter((c) => !supports.includes(c) && prob(c, 'caution') >= SUPPORT_AT)
+      .sort((x, y) => prob(y, 'caution') - prob(x, 'caution'))
+      .slice(0, MAX_CAUTION)
+    const refs = [...supports.map((c) => ({ ...toRef(c), role: 'supports' as const })), ...cautions.map((c) => ({ ...toRef(c), role: 'caution' as const }))]
+    const used = new Set(refs.map((r) => r.cardId))
+    const rest = cards.filter((c) => !used.has(c.id))
+    const related = [...rest.filter((c) => relevant.includes(c)), ...rest.filter((c) => !relevant.includes(c))].map(toRef)
+
+    const q = quotes[def.id]
+    const qPick = q?.choice && q.choice !== 'none' && (q.confidence ?? q.probabilities?.[q.choice] ?? 0) >= QUOTE_AT ? sentences[Number(q.choice.slice(1))] : undefined
+    const sup = refs.filter((r) => r.role === 'supports').map((_, k) => k + 1)
+    const cau = refs.map((r, k) => (r.role === 'caution' ? k + 1 : 0)).filter(Boolean)
+    const mark = (ns: number[]) => (ns.length ? ` [${ns.join(', ')}]` : '')
+    const firstClaim = supports[0] ? noDot(supports[0].claim) : ''
+    const cautionNote = cautions[0] ? ` Note${mark(cau)}: ${lower1(noDot(cautions[0].claim))}.` : ''
+    // [E] becomes a chip that opens the enquiry with this passage highlighted
+    const quoted = qPick ? `“${noDot(qPick)}” [E]` : ''
+
+    let reasoning: string
+    if (d.basis === 'customer' && d.value) {
+      reasoning = qPick
+        ? `The customer writes ${quoted} – that is ${name(def, d.value)}.`
+        : `Read from the customer text as ${name(def, d.value)}.`
+      if (sup.length) reasoning += ` The AFS material agrees${mark(sup)}: ${lower1(firstClaim)}.`
+      reasoning += cautionNote
+    } else if (d.basis === 'conflict' && d.value && d.alternative) {
+      reasoning = `The customer text points to ${name(def, d.value)}${qPick ? ` (${quoted})` : ''}, but for a case like this the AFS material points to ${name(def, d.alternative)}${mark(sup)}${firstClaim ? `: ${lower1(firstClaim)}` : ''}. Check which applies before deciding.`
+    } else if (d.basis === 'sources' && d.value) {
+      reasoning = qPick
+        ? `Not stated outright. The closest passage is ${quoted}, which suggests ${name(def, d.value)}.`
+        : `The customer does not state this. The most likely value is ${name(def, d.value)}.`
+      if (sup.length) reasoning += ` This matches the AFS material${mark(sup)}: ${lower1(firstClaim)}.`
+      reasoning += `${cautionNote} Please confirm.`
+    } else {
+      reasoning = `Neither the enquiry nor the AFS material decides this. Ask the customer: ${def.clarification ?? def.question}`
+    }
+    return { ...d, refs, related, reasoning, ...(qPick ? { enquiryQuote: qPick } : {}) }
+  })
+}
+

@@ -211,7 +211,8 @@ function UploadForm({ file, onDone, onCancel }: { file: File; onDone: (d: DocMet
   )
 }
 
-export default function KnowledgePage() {
+/** focusCase: a solved case to open and scroll to (e.g. from a hint on the assessment page). */
+export default function KnowledgePage({ focusCase }: { focusCase?: string | null } = {}) {
   const open = useOpenSource()
   const [docs, setDocs] = useState<DocMeta[] | null>(null)
   const [error, setError] = useState('')
@@ -450,7 +451,7 @@ export default function KnowledgePage() {
         )}
       </div>
     </section>
-    <SolvedCasesPanel />
+    <SolvedCasesPanel focus={focusCase ?? null} />
     </div>
   )
 }
@@ -463,10 +464,10 @@ const BASIS_TEXT: Record<string, string> = {
 }
 
 /** Enquiries the expert walked through: the worked examples next to the documents. */
-function SolvedCasesPanel() {
+function SolvedCasesPanel({ focus }: { focus: string | null }) {
   const [cases, setCases] = useState<SolvedCase[] | null>(null)
   const [error, setError] = useState('')
-  const [open, setOpen] = useState<string | null>(null)
+  const [open, setOpen] = useState<string | null>(focus)
   const [confirm, setConfirm] = useState<string | null>(null)
 
   useEffect(() => {
@@ -507,7 +508,11 @@ function SolvedCasesPanel() {
               const expert = c.steps.filter((s) => s.byExpert || s.note)
               const isOpen = open === c.id
               return (
-                <li key={c.id} className={isOpen ? 'open' : ''}>
+                <li
+                  key={c.id}
+                  className={`${isOpen ? 'open' : ''} ${c.id === focus ? 'focus' : ''}`}
+                  ref={c.id === focus ? (el) => el?.scrollIntoView({ block: 'start', behavior: 'smooth' }) : undefined}
+                >
                   <button className="case-row" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen}>
                     <span className="case-title">{c.title}{c.enquiry.length > c.title.length ? '…' : ''}</span>
                     <span className="case-meta">

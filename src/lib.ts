@@ -1,3 +1,4 @@
+import type { ReportInput, ReportResponse } from '../shared/report.ts'
 import type { SolvedCase } from '../shared/solvedCases.ts'
 import type { CardSet } from '../shared/cards.ts'
 import type { SourceMode, TreeResponse, Thresholds } from '../shared/tree.ts'
@@ -101,6 +102,12 @@ export const agentApi = {
 export const treeApi = {
   run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean; pipeline?: 'clef' | 'steps'; thresholds?: Thresholds } = {}) =>
     api<TreeResponse>(fetch('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, model, ...opts }) })),
+}
+
+/** Written assessment of a decided case (language model writes, everything else is fixed). */
+export const reportApi = {
+  write: (input: ReportInput, model: AgentModelKey) =>
+    api<ReportResponse>(fetch('/api/report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ input, model }) })),
 }
 
 /** Solved cases: enquiries the expert walked through, added to the knowledge base as worked examples. */

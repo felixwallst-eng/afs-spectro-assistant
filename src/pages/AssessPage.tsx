@@ -4,6 +4,7 @@ import { assess, resolveDimensions } from '../../shared/engine.ts'
 import { DEFAULT_SETTINGS } from '../../shared/types.ts'
 import type { MethodSetup, RawDimension, Settings } from '../../shared/types.ts'
 import DecisionTree from '../components/DecisionTree.tsx'
+import Report from '../components/Report.tsx'
 import { casesApi, store, treeApi } from '../lib.ts'
 import type { SolvedCase } from '../../shared/solvedCases.ts'
 import { rawFromDecisions } from '../treeModel.ts'
@@ -306,6 +307,17 @@ export default function AssessPage({ settings, methods }: Props) {
                 onNote={setNote}
                 savedAt={savedAt}
                 onSaveCase={saveCase}
+              />
+            ) : null}
+            {tree ? (
+              <Report
+                key={`report-${currentId ?? 'case'}`}
+                text={history.find((h) => h.id === currentId)?.text ?? text}
+                tree={tree}
+                assessment={assessment}
+                overrides={overrides}
+                notes={notes}
+                model={settings.agentModel ?? 'gptoss'}
               />
             ) : (
               <section className="panel placeholder">

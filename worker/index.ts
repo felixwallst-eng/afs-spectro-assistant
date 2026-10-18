@@ -8,6 +8,8 @@ import { runClefSteps } from './clefSteps.ts'
 import { buildCards, deleteCard, getCards, resetCards } from './cards.ts'
 import { listDocs } from './docs.ts'
 import { handleCases } from './cases.ts'
+import { runReport } from './report.ts'
+import type { ReportInput } from '../shared/report.ts'
 import type { AgentRequest } from '../shared/agent.ts'
 
 const MAX_TEXT = 8000
@@ -35,7 +37,7 @@ export default {
     }
 
     if (url.pathname === '/api/tree' && request.method === 'POST') {
-      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown; seedBase?: unknown; stepsOnly?: unknown; thresholds?: unknown } | null
+      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown; seedBase?: unknown; stepsOnly?: unknown; thresholds?: unknown; citations?: unknown } | null
       const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
       if (!text) return Response.json({ error: 'Enter the customer enquiry text.' }, { status: 400 })
       const model = body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss'
@@ -43,7 +45,7 @@ export default {
         // "single": the earlier one-call pipeline, kept for comparison in the reproducibility test
         if (body?.pipeline === 'single') return Response.json(await runTree(env.AI, env.DOCS, { text, model }))
         if (body?.pipeline === 'clef')
-          return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all', thresholds: parseThresholds(body?.thresholds) }))
+          return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all', thresholds: parseThresholds(body?.thresholds), citations: body?.citations === 'relevance' ? 'relevance' : 'support' }))
         return Response.json(
           await runSteps(env.AI, env.DOCS, {
             text,
@@ -111,6 +113,28 @@ export default {
         }
       } catch (err) {
         return Response.json({ error: `Reading the document failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
+      }
+    }
+
+    // written assessment from the decided path: /api/report
+    if (url.pathname === '/api/report' && request.method === 'POST') {
+      const raw = await request.text()
+      if (raw.length > 200_000) return Response.json({ error: 'The assessment input is too large.' }, { status: 413 })
+      const body = (() => {
+        try {
+          return JSON.parse(raw) as { input?: ReportInput; model?: unknown }
+        } catch {
+          return null
+        }
+      })()
+      const input = body?.input
+      if (!input || typeof input.enquiry !== 'string' || !Array.isArray(input.steps) || !Array.isArray(input.evidence))
+        return Response.json({ error: 'Send the decided assessment as { input }.' }, { status: 400 })
+      try {
+        const key = body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss'
+        return Response.json(await runReport(env.AI, env.DOCS, input, key))
+      } catch (err) {
+        return Response.json({ error: `Writing the assessment failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
       }
     }
 

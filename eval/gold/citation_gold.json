@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "version": "2026-10-18 draft A",
+    "annotator": "draft by the assistant from the case texts and the curated cards – to be checked by the team",
+    "rule": "Per development case and step: 'show' = cards an AFS expert would show as evidence for this customer (recall is measured on these); 'ok' = acceptable to show but not needed. Any other card shown as a reference counts as not relevant (precision).",
+    "split": "development cases D01–D08 only"
+  },
+  "cases": {
+    "D01": {
+      "sample_state": { "show": ["S01-5", "S01-1"], "ok": ["S04-1"] },
+      "interface_mode": { "show": ["S01-13", "S01-20"], "ok": ["S01-15", "S01-17", "S04-6"] },
+      "spectral_range": { "show": [], "ok": ["S01-42"] },
+      "target_property_type": { "show": ["S01-26"], "ok": [] },
+      "optical_variability": { "show": [], "ok": ["S01-31"] },
+      "concentration_level": { "show": [], "ok": ["S01-35"] }
+    },
+    "D02": {
+      "sample_state": { "show": ["S01-9", "S01-7", "S01-11"], "ok": ["S01-8", "S01-12"] },
+      "interface_mode": { "show": ["S01-21"], "ok": ["S01-13", "S01-17", "S01-20"] },
+      "spectral_range": { "show": [], "ok": [] },
+      "target_property_type": { "show": ["S01-30"], "ok": [] },
+      "optical_variability": { "show": ["S01-33"], "ok": ["S01-31", "S01-34"] },
+      "concentration_level": { "show": [], "ok": ["S01-35"] }
+    },
+    "D03": {
+      "sample_state": { "show": ["S01-10"], "ok": ["S01-6", "S01-11", "S01-12"] },
+      "interface_mode": { "show": [], "ok": ["S01-13", "S01-17", "S01-21"] },
+      "spectral_range": { "show": [], "ok": [] },
+      "target_property_type": { "show": [], "ok": ["S01-30"] },
+      "optical_variability": { "show": ["S01-34"], "ok": ["S01-31", "S01-33"] },
+      "concentration_level": { "show": [], "ok": ["S01-37", "S01-38"] }
+    },
+    "D04": {
+      "sample_state": { "show": [], "ok": [] },
+      "interface_mode": { "show": ["S01-13"], "ok": ["S01-15", "S01-20", "S04-6"] },
+      "spectral_range": { "show": [], "ok": [] },
+      "target_property_type": { "show": ["S01-28"], "ok": [] },
+      "optical_variability": { "show": [], "ok": ["S01-31"] },
+      "concentration_level": { "show": [], "ok": [] }
+    },
+    "D05": {
+      "sample_state": { "show": [], "ok": ["S01-7"] },
+      "interface_mode": { "show": [], "ok": ["S01-13", "S04-6"] },
+      "spectral_range": { "show": [], "ok": [] },
+      "target_property_type": { "show": ["S01-27"], "ok": ["S01-28", "S01-29"] },
+      "optical_variability": { "show": [], "ok": ["S01-31", "S01-34"] },
+      "concentration_level": { "show": [], "ok": [] }
+    },
+    "D06": {
+      "sample_state": { "show": [], "ok": ["S01-8"] },
+      "interface_mode": { "show": ["S02-4", "S01-20"], "ok": ["S01-13", "S02-2"] },
+      "spectral_range": { "show": ["S02-10", "S02-11"], "ok": ["S01-42"] },
+      "target_property_type": { "show": [], "ok": [] },
+      "optical_variability": { "show": [], "ok": [] },
+      "concentration_level": { "show": [], "ok": [] }
+    },
+    "D07": {
+      "sample_state": { "show": ["S02-1"], "ok": [] },
+      "interface_mode": { "show": ["S02-5"], "ok": ["S01-13", "S01-20"] },
+      "spectral_range": { "show": [], "ok": [] },
+      "target_property_type": { "show": [], "ok": [] },
+      "optical_variability": { "show": [], "ok": [] },
+      "concentration_level": { "show": [], "ok": [] }
+    },
+    "D08": {
+      "sample_state": { "show": ["S04-5", "S01-4", "S01-3"], "ok": ["S04-1", "S04-2", "S04-3", "S04-4"] },
+      "interface_mode": { "show": [], "ok": [] },
+      "spectral_range": { "show": [], "ok": ["S02-11"] },
+      "target_property_type": { "show": ["S04-8", "S01-24"], "ok": ["S01-25", "S03-4"] },
+      "optical_variability": { "show": ["S04-9"], "ok": ["S01-31", "S01-32"] },
+      "concentration_level": { "show": [], "ok": [] }
+    }
+  }
+}

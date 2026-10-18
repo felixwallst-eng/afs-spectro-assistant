@@ -727,3 +727,67 @@ select { background: var(--sunk); color: var(--ink); }
 .tree-detail.deferred { border-left-color: var(--unknown); }
 .ask-btn { margin-left: 6px; }
 .accept-all { font-weight: 600; }
+
+/* open points as questions for the customer */
+.cq { margin: 0 0 12px; }
+.cq-toggle { background: #142233; border-color: #2f4a63; color: #d6e6f5; }
+.cq-toggle:hover { border-color: #7fd3ff; }
+.cq-panel { margin-top: 8px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid #060c14; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35); }
+.cq-hint { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.cq-panel textarea { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; line-height: 1.55; resize: vertical; background: var(--sunk); color: var(--ink); }
+.cq-actions { display: flex; gap: 14px; align-items: center; margin-top: 8px; }
+.ref-role { display: inline-block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--cond); background: var(--cond-bg); border-radius: 3px; padding: 0 4px; margin-right: 6px; vertical-align: 1px; }
+.ref-chip.enquiry { background: #e3efe6; color: #1f6b44; }
+.ref-chip.enquiry:hover { background: #1f6b44; color: #fff; }
+button.eq-mark.focus { background: #fde58a; box-shadow: inset 0 -2px 0 #b8860b, 0 0 0 2px #fde58a; animation: eq-flash 1.2s ease-out 1; }
+@keyframes eq-flash { 0% { box-shadow: inset 0 -2px 0 #b8860b, 0 0 0 8px rgba(253, 229, 138, .9); } 100% { box-shadow: inset 0 -2px 0 #b8860b, 0 0 0 2px #fde58a; } }
+
+/* ---------------------------------------------------------------- written assessment */
+.report-panel .rp-start { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; color: var(--muted); font-size: 14px; max-width: 760px; }
+.rp-stale { background: var(--cond-bg); color: var(--cond); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 13.5px; margin-bottom: 12px; }
+.report-print {
+  background: var(--surface); color: var(--ink); border-radius: var(--radius); padding: 28px 34px; border: 1px solid #060c14;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45); max-width: 900px; font-size: 14.5px; line-height: 1.6;
+}
+.rp-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 14px; }
+.rp-head h2 { font-size: 19px; margin-top: 4px; }
+.rp-kicker { font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.rp-date { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.rp-status { background: var(--sunk); border-left: 4px solid var(--accent); padding: 8px 12px; border-radius: 4px; margin-bottom: 6px; }
+.rp-status strong { margin-right: 6px; }
+.rp-block { margin-top: 16px; break-inside: avoid; }
+.rp-block h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); margin-bottom: 6px; }
+.rp-block ul, .rp-block ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.rp-block p { margin: 0 0 6px; }
+.rp-enquiry { margin: 0; padding: 8px 14px; border-left: 3px solid var(--line); color: var(--muted); font-style: italic; }
+.rp-method strong { color: var(--ink); }
+.rp-cites { display: inline-flex; gap: 3px; margin-left: 2px; vertical-align: 1px; }
+.rp-cites .cite { font-size: 11px; }
+.rp-sources { font-size: 13.5px; color: var(--muted); }
+.rp-foot { margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint); }
+.rp-actions { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.rp-provisional { border: 1.5px solid #c58a1c; background: #fdf6e7; border-radius: 4px; padding: 10px 14px; margin: 10px 0 0; font-size: 14px; }
+.rp-provisional ol { margin: 6px 0 0; padding-left: 20px; }
+.rp-q-step { font-weight: 600; }
+.rp-change { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.rp-change th, .rp-change td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.rp-change th { width: 38%; font-weight: 600; }
+.rp-premises { border: 1.5px solid #c58a1c; background: #fdf6e7; border-radius: 4px; padding: 10px 14px; margin: 10px 0 0; font-size: 14px; }
+.rp-premises.block { border-color: #a0384a; background: #fbeef1; }
+.rp-premises ul { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+.rp-sev { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: #8a5a0c; margin-right: 4px; }
+.rp-premises li.block .rp-sev { color: #a0384a; }
+.rp-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.rp-team { font-size: 11.5px; font-weight: 600; letter-spacing: .04em; color: var(--accent); white-space: nowrap; }
+.rp-credit { display: block; margin-top: 4px; font-weight: 600; color: var(--muted); }
+.site-foot { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; padding: 22px 16px 28px; margin-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
+.site-foot strong { color: var(--muted); font-weight: 600; }
+.site-foot .sep { opacity: .5; }
+/* similar solved cases (remove with src/components/SimilarCases.tsx) */
+.similar-cases { margin-top: 14px; padding: 10px 12px; border-radius: var(--radius-sm); background: #eef4f0; border: 1px solid #cfe2d6; }
+.similar-cases h4 { margin: 0 0 4px !important; color: #1f6b44 !important; }
+.similar-cases ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13.5px; }
+.sc-match { font-size: 11px; font-weight: 700; color: #1f6b44; background: #dcebe1; border-radius: 3px; padding: 0 5px; }
+.sc-enquiry { margin: 6px 0 0; padding: 4px 10px; border-left: 3px solid #cfe2d6; color: var(--muted); font-style: italic; font-size: 13px; }
+.sc-note { font-size: 11.5px; color: var(--faint); margin-top: 6px; }
+.case-list > li.focus { border-color: #2f7a5a; box-shadow: 0 0 0 2px rgba(111, 220, 174, 0.35); scroll-margin-top: 16px; }

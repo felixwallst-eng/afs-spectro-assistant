@@ -167,7 +167,7 @@ export const DIMENSIONS: DimensionDef[] = [
       not_stated: L('Not stated', 'The client says nothing about the fiber link or its spectral range.'),
     },
     unknownLabel: 'not_stated',
-    priority: 3,
+    priority: 2,
     clarification: 'Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?',
     sources: [{ source: 'S02', page: 'p.6–8' }],
   },

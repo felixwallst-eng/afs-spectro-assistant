@@ -22,6 +22,18 @@ type TabId = (typeof TABS)[number]['id']
 
 export default function App() {
   const [tab, setTab] = useState<TabId>('assess')
+  // a solved case to open in the knowledge base (sent by the similar-case hint on the assessment page)
+  const [focusCase, setFocusCase] = useState<string | null>(null)
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail
+      if (!id) return
+      setFocusCase(id)
+      setTab('knowledge')
+    }
+    window.addEventListener('afs:open-case', onOpen)
+    return () => window.removeEventListener('afs:open-case', onOpen)
+  }, [])
   const [source, setSource] = useState<SourceRef | null>(null)
   const [settings, setSettingsState] = useState<Settings>(() => {
     const saved = { ...DEFAULT_SETTINGS, ...store.settings(DEFAULT_SETTINGS) }
@@ -50,12 +62,12 @@ export default function App() {
     <SourceContext.Provider value={setSource}>
       <header className="topbar">
         <div className="brand">
-          <strong>Spectroscopy Assessment</strong>
-          <span>First technical review of in-line measurement enquiries</span>
+          <strong>AFS Spectroscopy Assessment</strong>
+          <span>by Team Hallucination Nation</span>
         </div>
         <nav className="tabs" role="tablist">
           {TABS.map((t) => (
-            <button key={t.id} role="tab" className="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}>
+            <button key={t.id} role="tab" className="tab" aria-selected={tab === t.id} onClick={() => (setTab(t.id), setFocusCase(null))}>
               {t.label}
             </button>
           ))}
@@ -67,10 +79,21 @@ export default function App() {
         <div hidden={tab !== 'assess'}>
           <AssessPage settings={settings} methods={methods} />
         </div>
-        {tab === 'knowledge' && <KnowledgePage />}
+        {tab === 'knowledge' && <KnowledgePage key={focusCase ?? 'kb'} focusCase={focusCase} />}
         {tab === 'methods' && <MethodsPage methods={methods} setMethods={setMethods} />}
         {tab === 'settings' && <SettingsPage settings={settings} setSettings={setSettings} />}
       </main>
+      <footer className="site-foot">
+        <span>
+          Greetings from Karlsruhe <span aria-label="castle" role="img">🏰</span>
+        </span>
+        <span className="sep">·</span>
+        <span>
+          Made by <strong>Team Hallucination Nation</strong>
+        </span>
+        <span className="sep">·</span>
+        <span>National AI Hackathon 2026 by SchubKI for Art Fiber Systems</span>
+      </footer>
       {source && <SourceViewer key={JSON.stringify(source)} refTo={source} onClose={() => setSource(null)} />}
     </SourceContext.Provider>
   )

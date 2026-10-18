@@ -14,6 +14,7 @@ import { useOpenSource } from '../sourceContext.ts'
 import { nodeStatus, remainingPerLevel } from '../treeModel.ts'
 import type { NodeStatus } from '../treeModel.ts'
 import CiteLink from './CiteLink.tsx'
+import SimilarCaseHint from './SimilarCases.tsx' // similar solved cases (remove with the file)
 
 interface Props {
   tree: TreeResponse
@@ -81,6 +82,8 @@ export default function DecisionTree({ tree, text, assessment, methods, override
   // the detail panel is always open and starts at the enquiry; the expert walks through from there
   const [selState, setSel] = useState<Selection>({ kind: 'root' })
   const [draft, setDraft] = useState<string | null>(null)
+  // the step whose customer quote is highlighted when the enquiry is opened from a node
+  const [enquiryFocus, setEnquiryFocus] = useState<string | null>(null)
   const panelRef = useRef<HTMLElement>(null)
   const values = Object.fromEntries(Object.values(assessment.dimensions).map((d) => [d.id, d.value]))
   const decisionOf = (id: string): Decision | undefined => tree.decisions.find((d) => d.id === id)
@@ -107,8 +110,26 @@ export default function DecisionTree({ tree, text, assessment, methods, override
   const openIds = levels.filter((l) => !l.decided).map((l) => l.node.id)
   // steps nobody has looked at yet (left open on purpose by the expert does not count)
   const unhandled = levels.filter((l) => !l.decided && l.status !== 'deferred').length
-  const deferred = levels.filter((l) => l.status === 'deferred')
   const suggestions = levels.filter((l) => l.status === 'suggested')
+  // open points of the decision path as questions for the customer: missing steps, conflicts, suggestions to confirm
+  const questions: string[] = (() => {
+    const out: string[] = []
+    const seen = new Set<string>()
+    const ask = (id: string, q: string) => {
+      if (seen.has(id) || !q) return
+      seen.add(id)
+      out.push(q)
+    }
+    for (const l of levels) {
+      if (l.decided) continue
+      const d = decisionOf(l.node.id)
+      if (l.status === 'suggested' && l.suggested >= 0) ask(l.node.id, `${l.def.title}: we assume “${l.def.labels[l.options[l.suggested]].name}”. Is that correct?`)
+      else if (l.status === 'conflict' && d?.value && d.alternative)
+        ask(l.node.id, `${l.def.title}: your description points to “${l.def.labels[d.value]?.name}”, but similar processes are usually “${l.def.labels[d.alternative]?.name}”. Which applies to your case?`)
+      else ask(l.node.id, l.def.clarification ?? l.def.question)
+    }
+    return out
+  })()
   const provisional = openIds.length > 0
   const risks = new Map(assessment.candidates.filter((c) => c.status !== 'excluded').map((c) => [c.setup.id, openRisks(c.setup, values, openIds)]))
   const leaves = recommended.slice(0, MAX_LEAVES)
@@ -342,11 +363,18 @@ export default function DecisionTree({ tree, text, assessment, methods, override
 
   // ------------------------------------------------------------ walking through the path
   const go = (s: Selection) => {
+    setEnquiryFocus(null)
     if (s.kind === 'node') pickNode(s.id)
     else {
       setSel(s)
       setDraft(null)
     }
+  }
+  /** Opens the enquiry with this step's customer quote highlighted. */
+  const openEnquiryAt = (stepId: string) => {
+    setSel({ kind: 'root' })
+    setDraft(null)
+    setEnquiryFocus(stepId)
   }
   const prev = idx > 0 ? seq[idx - 1] : null
   const next = idx < seq.length - 1 ? seq[idx + 1] : null
@@ -452,19 +480,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
           <p className="tree-actions ok">Every blocking step is decided – by a verified quote from the enquiry or by you.</p>
         )}
 
-        {!placeholder && deferred.length > 0 && (
-          <p className="tree-actions deferred">
-            To ask the customer:{' '}
-            {deferred.map((l, i) => (
-              <span key={l.node.id}>
-                {i > 0 && ' · '}
-                <button className="linkbtn" onClick={() => pickNode(l.node.id)} title={l.def.clarification}>
-                  {l.def.title}
-                </button>
-              </span>
-            ))}
-          </p>
-        )}
+        {!placeholder && questions.length > 0 && <CustomerQuestions questions={questions} />}
         <div className="tree-stage">
           {placeholder && (
             <div className="tree-empty-msg">
@@ -528,8 +544,8 @@ export default function DecisionTree({ tree, text, assessment, methods, override
                 role="button"
                 tabIndex={0}
                 aria-label="Show the customer enquiry"
-                onClick={() => setSel({ kind: 'root' })}
-                onKeyDown={keyAct(() => setSel({ kind: 'root' }))}
+                onClick={() => go({ kind: 'root' })}
+                onKeyDown={keyAct(() => go({ kind: 'root' }))}
               >
                 <rect x={X0 - 34} y={midY - 22} width={68} height={76} className="hit" />
                 <circle cx={X0} cy={midY} r={11} />
@@ -575,7 +591,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
 
         {!placeholder && (
           <>
-        {sel.kind === 'root' && <EnquiryDetail text={text} tree={tree} onPick={(id) => pickNode(id)} />}
+        {sel.kind === 'root' && <EnquiryDetail key={enquiryFocus ?? 'all'} text={text} tree={tree} focus={enquiryFocus} onPick={(id) => go({ kind: 'node', id })} />}
         {level && (
           <NodeDetail
             key={level.node.id}
@@ -588,6 +604,8 @@ export default function DecisionTree({ tree, text, assessment, methods, override
             onOverride={(v) => (onOverride(level.node.id, v), setDraft(null))}
             note={notes[level.node.id] ?? ''}
             onNote={onNote ? (t) => onNote(level.node.id, t) : undefined}
+            onEnquiry={() => openEnquiryAt(level.node.id)}
+            extra={<SimilarCaseHint stepId={level.node.id} values={values} text={text} />} // similar solved cases (remove with the file)
           />
         )}
         {leaf && <LeafDetail c={leaf} all={assessment.candidates} openCount={openIds.length} risks={risks.get(leaf.setup.id) ?? []} />}
@@ -650,7 +668,11 @@ function DetailHead({ title, sub, chip }: { title: string; sub?: string; chip?: 
 }
 
 /** The customer's text with every verified quote marked; a mark opens its step. */
-function EnquiryDetail({ text, tree, onPick }: { text: string; tree: TreeResponse; onPick: (id: string) => void }) {
+function EnquiryDetail({ text, tree, focus, onPick }: { text: string; tree: TreeResponse; focus?: string | null; onPick: (id: string) => void }) {
+  const focusRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    focusRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [])
   const treeIds = new Set(TREE_NODES.map((n) => n.id))
   const quotes = tree.decisions.filter((d) => d.value && d.enquiryQuote)
   // locate quotes in the original text (exact first, then case-insensitive)
@@ -670,7 +692,7 @@ function EnquiryDetail({ text, tree, onPick }: { text: string; tree: TreeRespons
     const label = def.kind === 'flag' ? def.title : `${def.title}: ${def.labels[s.d.value!]?.name}`
     parts.push(
       treeIds.has(s.d.id) ? (
-        <button key={k} className="eq-mark tree" title={label} onClick={() => onPick(s.d.id)}>
+        <button key={k} ref={s.d.id === focus ? focusRef : undefined} className={`eq-mark tree ${s.d.id === focus ? 'focus' : ''}`} title={`${label} – open this step`} onClick={() => onPick(s.d.id)}>
           {text.slice(s.start, s.end)}
         </button>
       ) : (
@@ -684,7 +706,14 @@ function EnquiryDetail({ text, tree, onPick }: { text: string; tree: TreeRespons
   parts.push(text.slice(at))
   return (
     <div className="tree-detail root-detail">
-      <DetailHead title="Customer enquiry" sub="Marked passages are the verified evidence the model used. Click a blue one to open its step." />
+      <DetailHead
+        title="Customer enquiry"
+        sub={
+          focus
+            ? `The highlighted passage is the evidence for “${DIM_BY_ID[focus]?.title}”. Click a marked passage to open its step.`
+            : 'Marked passages are the evidence for the decisions. Click one to open its step.'
+        }
+      />
       <p className="eq-text">{parts}</p>
       {spans.length > 0 && (
         <ul className="eq-legend">
@@ -704,12 +733,18 @@ function EnquiryDetail({ text, tree, onPick }: { text: string; tree: TreeRespons
 }
 
 /** Reasoning text with [1], [2, 3] markers turned into reference chips that open the cited page. */
-function ReasoningText({ text, refs }: { text: string; refs: SourcePassage[] }) {
+function ReasoningText({ text, refs, onEnquiry }: { text: string; refs: SourcePassage[]; onEnquiry?: () => void }) {
   const open = useOpenSource()
-  const parts = text.split(/(\[\d+(?:,\s*\d+)*\])/g)
+  const parts = text.split(/(\[\d+(?:,\s*\d+)*\]|\[E\])/g)
   return (
     <p className="td-text">
       {parts.map((part, i) => {
+        if (part === '[E]')
+          return onEnquiry ? (
+            <button key={i} className="ref-chip enquiry" title="Show this passage in the customer enquiry" onClick={onEnquiry}>
+              E
+            </button>
+          ) : null
         const m = part.match(/^\[(\d+(?:,\s*\d+)*)\]$/)
         if (!m) return <span key={i}>{part}</span>
         return (
@@ -741,7 +776,10 @@ function RefList({ refs, numbered }: { refs: SourcePassage[]; numbered: boolean 
             <span className="ref-doc">
               {r.docId} p.{r.page}
             </span>
-            <span className="ref-title">{r.claim ?? r.docTitle}</span>
+            <span className="ref-title">
+              {r.role === 'caution' && <span className="ref-role">Caution</span>}
+              {r.claim ?? r.docTitle}
+            </span>
             <span className="ref-open">open ›</span>
           </button>
         </li>
@@ -768,6 +806,9 @@ function NodeDetail(p: {
   onOverride: (v: string | undefined) => void
   note: string
   onNote?: (text: string) => void
+  onEnquiry: () => void
+  /** Optional block shown above the expert note (e.g. similar solved cases). */
+  extra?: ReactNode
 }) {
   const { level: lv, decision: d } = p
   const refs = d?.refs ?? []
@@ -831,11 +872,6 @@ function NodeDetail(p: {
           <button className="btn small primary" disabled={!p.draft || (lv.decided && p.draft === p.current)} onClick={() => p.draft && p.onOverride(p.draft)}>
             {suggestion && p.draft === suggestion ? 'Accept suggestion' : 'Confirm'}
           </button>
-          {lv.status !== 'deferred' && lv.def.unknownLabel && (
-            <button className="btn small ask-btn" onClick={() => p.onOverride(lv.def.unknownLabel)} title="The information is not available: leave the step open and collect it as a question for the customer">
-              Still unknown – ask the customer
-            </button>
-          )}
           {p.overridden && (
             <button className="linkbtn" onClick={() => p.onOverride(undefined)}>
               Reset to model
@@ -847,10 +883,13 @@ function NodeDetail(p: {
       <div className="td-body">
         {d?.clef && <ClefTrace d={d} def={lv.def} />}
         <h4>Reasoning</h4>
-        {d?.reasoning ? <ReasoningText text={d.reasoning} refs={refs} /> : <p className="td-small">No reasoning available for this step.</p>}
-        {d?.basis === 'customer' && d.enquiryQuote && (
+        {d?.reasoning ? <ReasoningText text={d.reasoning} refs={refs} onEnquiry={d.enquiryQuote ? p.onEnquiry : undefined} /> : <p className="td-small">No reasoning available for this step.</p>}
+        {d?.basis === 'customer' && d.enquiryQuote && !d.reasoning?.includes(d.enquiryQuote.replace(/[.\s]+$/, '').slice(0, 30)) && (
           <p className="td-small">
-            Customer wrote: <q className="td-q">{d.enquiryQuote}</q>
+            Customer wrote: <q className="td-q">{d.enquiryQuote}</q>{' '}
+            <button className="ref-chip enquiry" title="Show this passage in the customer enquiry" onClick={p.onEnquiry}>
+              E
+            </button>
           </p>
         )}
         {d?.rejected && <p className="td-rejected">{d.rejected}</p>}
@@ -874,6 +913,8 @@ function NodeDetail(p: {
           </details>
         )}
       </div>
+
+      {p.extra}
 
       {p.onNote && (
         <label className={`td-note ${lv.status === 'decided' && !p.note ? 'quiet' : ''}`}>
@@ -1296,6 +1337,56 @@ function CaseSaveBar({ openSteps, expertSteps, noted, savedAt, onSave }: { openS
       <button className="btn primary" disabled={!done || busy} onClick={save}>
         {busy ? 'Saving…' : savedAt ? 'Save again' : 'Add to knowledge base'}
       </button>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------- open points as questions for the customer
+
+function CustomerQuestions({ questions }: { questions: string[] }) {
+  const [open, setOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const initial = `To assess suitable measurement setups for your application, we need a few more details:\n\n${questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}`
+  const [draft, setDraft] = useState(initial)
+  const [base, setBase] = useState(initial)
+  // the questions change when steps are decided: start again from the new list
+  if (base !== initial) {
+    setBase(initial)
+    setDraft(initial)
+  }
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(draft)
+    } catch {
+      // older browsers / no permission: select the text so Cmd+C works
+      const ta = document.getElementById('customer-questions') as HTMLTextAreaElement | null
+      ta?.select()
+      document.execCommand('copy')
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <div className="cq">
+      <button className="btn small cq-toggle" onClick={() => setOpen(!open)} aria-expanded={open}>
+        ✉ Questions for the customer ({questions.length})
+      </button>
+      {open && (
+        <div className="cq-panel reading">
+          <p className="cq-hint">Every open point as a question – edit if needed, then paste it into your reply to the customer.</p>
+          <textarea id="customer-questions" value={draft} onChange={(e) => setDraft(e.target.value)} rows={Math.min(14, questions.length + 4)} />
+          <div className="cq-actions">
+            <button className="btn primary small" onClick={copy}>
+              {copied ? 'Copied ✓' : 'Copy to clipboard'}
+            </button>
+            {draft !== initial && (
+              <button className="linkbtn" onClick={() => setDraft(initial)}>
+                Reset text
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

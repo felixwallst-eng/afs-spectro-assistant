@@ -43,6 +43,9 @@ export interface StepsRequest {
   stepsOnly?: boolean
   /** Clef only: confidence thresholds from the settings page (defaults: DEFAULT_SETTINGS). */
   thresholds?: Thresholds
+  /** Clef only: how references are chosen. 'support' (default) checks every card against the decided value;
+   *  'relevance' is the earlier single relevance check (kept for the benchmark comparison). */
+  citations?: 'support' | 'relevance'
 }
 
 export interface Thresholds {
@@ -61,6 +64,8 @@ export interface SourcePassage {
   /** Knowledge card the reference comes from, and its statement. */
   cardId?: string
   claim?: string
+  /** Clef's judgement for this case: the passage supports the value, or adds a limit / warning. */
+  role?: 'supports' | 'caution'
 }
 
 /** Where a step's value comes from. */
