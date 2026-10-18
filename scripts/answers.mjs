@@ -53,10 +53,10 @@ function render(c, tree, input, res, generatedAt) {
         .split(/\s*,\s*/)
         .map((id) => ev.find((e) => e.id === id))
         .filter(Boolean)
-        .map((e) => `${e.source} ${e.page}`)
+        .map((e) => `${e.source}${e.page ? ` ${e.page}` : ''}`)
       return refs.length ? `[${[...new Set(refs)].join('; ')}]` : ''
     })
-  const list = (items, ordered = false) => items.map((t, i) => `${ordered ? `${i + 1}.` : '-'} ${cite(t)}`).join('\n')
+  const list = (items, ordered = false) => items.map((t, i) => `${ordered ? `${i + 1}.` : '-'} ${cite(String(t).replace(/^(?:\d+[.)]|[-•*])\s+/, ''))}`).join('\n')
   const usedIds = new Set(
     JSON.stringify(r)
       .match(/E\d+/g)
@@ -83,7 +83,7 @@ function render(c, tree, input, res, generatedAt) {
     L.push('Assumptions in the request, checked against the AFS material:')
     L.push('')
     for (const p of [...input.premises].sort((a, b) => Number(b.severity === 'block') - Number(a.severity === 'block'))) {
-      const src = p.evidence.map((id) => ev.find((e) => e.id === id)).filter(Boolean).map((e) => `${e.source} ${e.page}`)
+      const src = p.evidence.map((id) => ev.find((e) => e.id === id)).filter(Boolean).map((e) => `${e.source}${e.page ? ` ${e.page}` : ''}`)
       L.push(`- **${p.severity === 'block' ? 'Contradicts the AFS material' : 'Needs checking'}:** ${p.text}${src.length ? ` [${src.join('; ')}]` : ''}`)
     }
   }
@@ -132,7 +132,7 @@ function render(c, tree, input, res, generatedAt) {
     'Sources',
     ev
       .filter((e) => usedIds.has(e.id))
-      .map((e) => `- **${e.source} ${e.page}** – ${e.text}${e.quote ? `  \n  Quoted passage: “${e.quote}”` : ''}`)
+      .map((e) => `- **${e.source}${e.page ? ` ${e.page}` : ''}** – ${e.text}${e.quote ? `  \n  Quoted passage: “${e.quote}”` : ''}`)
       .join('\n'),
   )
   L.push('')

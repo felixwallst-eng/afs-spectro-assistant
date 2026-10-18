@@ -68,7 +68,8 @@ export function buildReportInput(p: ReportSource): ReportInput {
     const v = p.assessment.dimensions[n.id]?.value
     return !(st === 'decided' || st === 'expert') || !v || v === DIM_BY_ID[n.id].unknownLabel
   }).map((n) => n.id)
-  const openSteps = openIds.map((id) => ({ title: DIM_BY_ID[id].title, question: DIM_BY_ID[id].clarification ?? DIM_BY_ID[id].question }))
+  // outside the supported scope (e.g. clinical use) the step questions do not apply – the premise check explains why
+  const openSteps = p.assessment.decisionStatus === 'out_of_scope' ? [] : openIds.map((id) => ({ title: DIM_BY_ID[id].title, question: DIM_BY_ID[id].clarification ?? DIM_BY_ID[id].question }))
   const values = Object.fromEntries(Object.values(p.assessment.dimensions).map((d) => [d.id, d.value]))
 
   const treeIds = new Set(TREE_NODES.map((n) => n.id))
