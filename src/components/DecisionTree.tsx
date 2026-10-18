@@ -320,9 +320,20 @@ export default function DecisionTree({ tree, text, assessment, methods, override
         {leaf && <LeafDetail c={leaf} onClose={() => setSel(null)} />}
 
         <p className="ev-meta">
-          {tree.model} · {(tree.latencyMs / 1000).toFixed(1)} s · read {tree.passagesRead} knowledge passages · {tree.stats.decided} steps stated by the customer
-          {tree.stats.suggested !== undefined && ` · ${tree.stats.suggested} suggested from AFS sources`} · {tree.stats.verifiedSources} references verified
+          {tree.model} · {(tree.latencyMs / 1000).toFixed(1)} s
+          {tree.pipeline === 'steps' ? (
+            <>
+              {' '}· {tree.calls} model calls (one per step, {tree.decisions.find((d) => d.votes)?.votes?.runs ?? 1} runs each, majority vote)
+              {tree.docsRead && tree.docsRead.length > 0 && ` · knowledge: ${tree.docsRead.length} documents read completely (${tree.docsRead.reduce((a, d) => a + d.pages, 0)} pages, ${tree.passagesRead} cards)`}
+              {tree.sources === 'original' && ' · AFS originals only'}
+              {tree.docsUnread && tree.docsUnread.length > 0 && ` · not read yet: ${tree.docsUnread.join(', ')}`}
+            </>
+          ) : (
+            ` · read ${tree.passagesRead} knowledge passages`
+          )}
+          {' '}· {tree.stats.decided} stated by the customer · {tree.stats.suggested ?? 0} suggested from sources · {tree.stats.verifiedSources} references verified
           {tree.stats.rejectedQuotes > 0 && ` · ${tree.stats.rejectedQuotes} quotes rejected (not found)`}
+          {tree.cachedAt && ' · stored result'}
         </p>
       </div>
     </section>
@@ -415,7 +426,7 @@ function ReasoningText({ text, refs }: { text: string; refs: SourcePassage[] }) 
               const r = refs[Number(n) - 1]
               if (!r) return null
               return (
-                <button key={n} className="ref-chip" title={`${r.docTitle}, p.${r.page} – open with the passage highlighted`} onClick={() => open({ source: r.docId, page: r.page, quote: r.quote, title: r.docTitle })}>
+                <button key={n} className="ref-chip" title={`${r.claim ? r.claim + '\n' : ''}${r.docTitle}, p.${r.page} – open with the passage highlighted`} onClick={() => open({ source: r.docId, page: r.page, quote: r.quote, title: r.docTitle })}>
                   {n}
                 </button>
               )
@@ -433,12 +444,12 @@ function RefList({ refs, numbered }: { refs: SourcePassage[]; numbered: boolean 
     <ol className={`ref-list ${numbered ? '' : 'plain'}`}>
       {refs.map((r, i) => (
         <li key={i}>
-          <button className="ref-line" title={r.quote} onClick={() => open({ source: r.docId, page: r.page, quote: r.quote, title: r.docTitle })}>
+          <button className="ref-line" title={`${r.docTitle}: “${r.quote}”`} onClick={() => open({ source: r.docId, page: r.page, quote: r.quote, title: r.docTitle })}>
             {numbered && <span className="ref-chip static">{i + 1}</span>}
             <span className="ref-doc">
               {r.docId} p.{r.page}
             </span>
-            <span className="ref-title">{r.docTitle}</span>
+            <span className="ref-title">{r.claim ?? r.docTitle}</span>
             <span className="ref-open">open ›</span>
           </button>
         </li>
@@ -492,7 +503,14 @@ function NodeDetail(p: {
 
       {/* decision first: the expert sees the proposal and can accept or change it right away */}
       <div className={`td-decide ${lv.status}`}>
-        <p className="td-headline">{headline}</p>
+        <p className="td-headline">
+          {headline}
+          {d?.votes && d.votes.runs > 1 && (
+            <span className={`votes ${d.votes.agree === d.votes.runs ? 'all' : d.votes.agree > d.votes.runs / 2 ? 'most' : 'none'}`} title={d.votes.outcomes.map((o) => `${o.label} ×${o.count}`).join('\n')}>
+              {d.votes.agree > d.votes.runs / 2 ? `${d.votes.agree}/${d.votes.runs} runs agree` : `runs disagree`}
+            </span>
+          )}
+        </p>
         <div className="td-choose">
           {lv.options.map((o) => (
             <button key={o} className={`pill ${p.draft === o ? 'on' : ''} ${lv.decided && p.current === o ? 'current' : ''} ${suggestion === o ? 'sugg' : ''}`} onClick={() => p.setDraft(o)}>

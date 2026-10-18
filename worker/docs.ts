@@ -1,10 +1,13 @@
 import { MAX_UPLOAD_BYTES, ORIGINAL_DOCS } from '../shared/docs.ts'
+import { getCards } from './cards.ts'
 import type { DocMeta, DocPatch } from '../shared/docs.ts'
 
 // KV layout
 //   meta:<id>   DocMeta (uploads) or a DocPatch override (originals)
 //   file:<id>   PDF bytes (uploads only; originals are static assets)
 //   text:<id>   string[] – extracted text per page (for retrieval and highlighting)
+//   cards:<id>  CardSet – knowledge cards read from the whole document
+//   run:<hash>  cached assessment (see worker/steps.ts)
 
 const json = (data: unknown, status = 200) => Response.json(data, { status })
 const isOriginal = (id: string) => ORIGINAL_DOCS.some((d) => d.id === id)
@@ -17,7 +20,9 @@ export async function listDocs(kv: KVNamespace): Promise<DocMeta[]> {
   const uploads = (await Promise.all(keys.keys.map((k) => kv.get<DocMeta>(k.name, 'json')))).filter((d): d is DocMeta => d !== null)
   uploads.sort((a, b) => b.addedAt.localeCompare(a.addedAt))
   const indexed = new Set((await kv.list({ prefix: 'text:' })).keys.map((k) => k.name.slice(5)))
-  return [...originals, ...uploads].map((d) => ({ ...d, indexed: indexed.has(d.id) }))
+  const all = [...originals, ...uploads]
+  const sets = await Promise.all(all.map((d) => getCards(kv, d.id)))
+  return all.map((d, i) => ({ ...d, indexed: indexed.has(d.id), ...(sets[i] ? { cards: sets[i]!.cards.length, cardsAt: sets[i]!.createdAt, cardsCurated: sets[i]!.curated } : {}) }))
 }
 
 function cleanPatch(body: Record<string, unknown>): DocPatch {
@@ -93,6 +98,7 @@ export async function handleDocs(request: Request, kv: KVNamespace): Promise<Res
     if (!Array.isArray(pages) || pages.length === 0) return json({ error: 'Body must be a non-empty array of page texts.' }, 400)
     if (!isOriginal(id) && !(await kv.get(`meta:${id}`))) return json({ error: 'Document not found.' }, 404)
     await kv.put(`text:${id}`, JSON.stringify(pages.map(String)))
+    await kv.delete(`cards:${id}`) // new text: the cards have to be read again
     return json({ indexed: id, pages: pages.length })
   }
 
@@ -114,7 +120,7 @@ export async function handleDocs(request: Request, kv: KVNamespace): Promise<Res
   // DELETE /api/docs/:id  (uploads only)
   if (request.method === 'DELETE') {
     if (isOriginal(id)) return json({ error: 'Original AFS documents cannot be deleted. Turn off “Used by AI” instead.' }, 400)
-    await Promise.all([kv.delete(`meta:${id}`), kv.delete(`file:${id}`), kv.delete(`text:${id}`)])
+    await Promise.all([kv.delete(`meta:${id}`), kv.delete(`file:${id}`), kv.delete(`text:${id}`), kv.delete(`cards:${id}`)])
     return json({ deleted: id })
   }
 

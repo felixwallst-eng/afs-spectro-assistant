@@ -18,6 +18,11 @@ export interface DocMeta {
   notesUpdatedAt?: string
   /** Page texts stored, so the assistant can search and cite this document. */
   indexed?: boolean
+  /** Number of knowledge cards extracted from the whole document (undefined = not read yet). */
+  cards?: number
+  cardsAt?: string
+  /** true = the curated cards from the repository are in use (no edits stored). */
+  cardsCurated?: boolean
 }
 
 /** Fields an expert can edit. */

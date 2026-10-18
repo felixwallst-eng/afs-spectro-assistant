@@ -1,4 +1,5 @@
-import type { TreeResponse } from '../shared/tree.ts'
+import type { CardSet } from '../shared/cards.ts'
+import type { SourceMode, TreeResponse } from '../shared/tree.ts'
 import type { AgentModelKey, AgentResponse, BriefResponse } from '../shared/agent.ts'
 import type { DocMeta, DocPatch } from '../shared/docs.ts'
 import type { ClassifyResponse, MethodSetup, RawDimension, Settings } from '../shared/types.ts'
@@ -93,19 +94,36 @@ export const agentApi = {
 }
 
 export const treeApi = {
-  run: (text: string, model: AgentModelKey) =>
-    api<TreeResponse>(fetch('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, model }) })),
+  run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean } = {}) =>
+    api<TreeResponse>(fetch('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, model, ...opts }) })),
 }
 
-/** Index bundled original PDFs (page texts -> KV) so the agent can search and cite them. */
+/** Knowledge cards: each document is read completely once; analyses use the verified cards. */
+export const cardsApi = {
+  build: (id: string) => api<CardSet>(fetch(`/api/docs/${encodeURIComponent(id)}/cards`, { method: 'POST' })),
+  get: (id: string) => api<CardSet>(fetch(`/api/docs/${encodeURIComponent(id)}/cards`)),
+  remove: (docId: string, cardId: string) => api<CardSet>(fetch(`/api/docs/${encodeURIComponent(docId)}/cards/${encodeURIComponent(cardId)}`, { method: 'DELETE' })),
+  /** Back to the curated cards from the repository (drops edits and re-reads). */
+  reset: (docId: string) => api<CardSet>(fetch(`/api/docs/${encodeURIComponent(docId)}/cards`, { method: 'DELETE' })),
+}
+
+/** Index bundled original PDFs (page texts -> KV), then let the model read each one into knowledge cards. */
 export async function ensureOriginalsIndexed(extract: (url: string) => Promise<string[]>) {
-  const docs = await docsApi.list()
+  let docs = await docsApi.list()
   for (const d of docs.filter((x) => x.origin === 'original' && !x.indexed)) {
     try {
       const pages = await extract(d.url)
       await api(fetch(`/api/docs/${encodeURIComponent(d.id)}/text`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(pages) }))
     } catch (e) {
       console.warn(`Could not index ${d.id}:`, e)
+    }
+  }
+  docs = await docsApi.list()
+  for (const d of docs.filter((x) => x.origin === 'original' && x.indexed && x.cards === undefined)) {
+    try {
+      await cardsApi.build(d.id)
+    } catch (e) {
+      console.warn(`Could not read ${d.id} into knowledge cards:`, e)
     }
   }
 }

@@ -1,0 +1,108 @@
+{
+  "docId": "S04",
+  "createdAt": "2026-10-18T10:00:00.000Z",
+  "model": "Curated (Claude, quotes verified against the PDF text)",
+  "pagesRead": 6,
+  "rejected": 0,
+  "cards": [
+    {
+      "id": "S04-1",
+      "docId": "S04",
+      "page": 1,
+      "step": "sample_state",
+      "value": "soft_solid_or_tissue",
+      "claim": "Fiber probes are indispensable for local analysis of inhomogeneous solids (pharma and food products, soils, tissue).",
+      "quote": "The application of fiber optic probes can be moreover indispensable for the spectroscopic analysis of solid inhomogeneous samples"
+    },
+    {
+      "id": "S04-2",
+      "docId": "S04",
+      "page": 1,
+      "step": "sample_state",
+      "value": "rigid_solid",
+      "claim": "ATR is not optimal for solid objects; biological tissue is an important exception.",
+      "quote": "Although ATR spectroscopy is not optimal for the analysis of solid objects, its application for the analysis of biological tissues by fiber-based probes is one of the most important exceptions."
+    },
+    {
+      "id": "S04-3",
+      "docId": "S04",
+      "page": 2,
+      "step": "sample_state",
+      "value": "soft_solid_or_tissue",
+      "claim": "Fluorescence light reaches a few millimetres into tissue, while ATR samples only a few micrometres.",
+      "quote": "light used in fluorimetry can penetrate to the depth of a few millimeters into the tissue"
+    },
+    {
+      "id": "S04-4",
+      "docId": "S04",
+      "page": 4,
+      "step": "sample_state",
+      "value": null,
+      "claim": "ATR needs a tight contact with the probe head – true for liquids and soft solids.",
+      "quote": "which is true for liquid or soft solid samples and their components, allowing a tight contact with the probe head"
+    },
+    {
+      "id": "S04-5",
+      "docId": "S04",
+      "page": 4,
+      "step": "sample_state",
+      "value": "soft_solid_or_tissue",
+      "claim": "The combined probe targets inhomogeneous solids because both methods measure at the same point.",
+      "quote": "The main focus of the proposed technology is on analyzing nonhomogeneous solid samples, because it enables simultaneous measurements at the same point on the sample surface."
+    },
+    {
+      "id": "S04-6",
+      "docId": "S04",
+      "page": 1,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Fiber probes enable sampling-free measurements in situ.",
+      "quote": "Fiber optics and probes on its basis enable sampling-free measurements in situ, thereby essentially expanding the scope of optical analysis compared to the traditional lab spectroscopy."
+    },
+    {
+      "id": "S04-7",
+      "docId": "S04",
+      "page": 4,
+      "step": "target_property_type",
+      "value": "fluorescent_species",
+      "claim": "The MIR + fluorescence probe only applies to samples with at least one fluorescent component.",
+      "quote": "Of course, it is limited to the samples containing at least one fluorescent component that often has a biological or natural origin."
+    },
+    {
+      "id": "S04-8",
+      "docId": "S04",
+      "page": 4,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "No single method separated the three tissue classes; the combined IR + fluorescence data did.",
+      "quote": "However, none of the individual techniques was sufficient to completely separate the three sample classes on the PCA score plots"
+    },
+    {
+      "id": "S04-9",
+      "docId": "S04",
+      "page": 3,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Inhomogeneous tissue (fat) gave low measurement reproducibility.",
+      "quote": "Low measurement reproducibility of the fat samples (broad standard deviation in Figure 2a) is explained by higher inhomogeneity of this tissue type"
+    },
+    {
+      "id": "S04-10",
+      "docId": "S04",
+      "page": 4,
+      "step": "budget",
+      "value": "high",
+      "claim": "Needing two separate spectrometers limits multispectral analysis.",
+      "quote": "One of the main disadvantages of the multispectral analysis limiting its wide dissemination is the use of two separate spectrometers to register IR and fluorescence spectra."
+    },
+    {
+      "id": "S04-11",
+      "docId": "S04",
+      "page": 5,
+      "step": "budget",
+      "value": "low",
+      "claim": "The probe is a suitable interface for low-cost multisensor systems instead of universal lab spectroscopy.",
+      "quote": "The developed probe provides a well suited measure- ment interface for low-cost multisensor systems optimized for various particular applications as an alternative to the universal lab spectroscopy."
+    }
+  ]
+}

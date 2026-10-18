@@ -44,5 +44,3 @@ materials/
 !.dev.vars.example
 materials/
 
-# AFS PDFs – local only until publication is cleared
-public/sources/

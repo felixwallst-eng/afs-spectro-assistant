@@ -1,0 +1,99 @@
+{
+  "docId": "S03",
+  "createdAt": "2026-10-18T10:00:00.000Z",
+  "model": "Curated (Claude, quotes verified against the PDF text)",
+  "pagesRead": 17,
+  "rejected": 0,
+  "cards": [
+    {
+      "id": "S03-1",
+      "docId": "S03",
+      "page": 2,
+      "step": "sample_state",
+      "value": "soft_solid_or_tissue",
+      "claim": "NIR light penetrates up to about 3 mm into tissue – deeper than other suitable spectral regions.",
+      "quote": "It is important that the NIR light penetrates into the sample by up to 3 mm"
+    },
+    {
+      "id": "S03-2",
+      "docId": "S03",
+      "page": 2,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Fiber-based probes give the flexibility needed under clinical conditions, e.g. during surgery.",
+      "quote": "Another important advantage of the NIR diagnostics of tissue tumors, compared to traditional methods, is the measurement flexibility due to the application of fiber-based light guides and probes, which is necessary under clinical conditions (e.g., during a surgery)."
+    },
+    {
+      "id": "S03-3",
+      "docId": "S03",
+      "page": 5,
+      "step": "interface_mode",
+      "value": null,
+      "claim": "In the improved prototype, the reflectance data were acquired 3–4 mm above the tissue surface (probe tip touching).",
+      "quote": "In the latter case, therefore, the data was acquired at a distance of 3–4 mm above the tissue surface."
+    },
+    {
+      "id": "S03-4",
+      "docId": "S03",
+      "page": 2,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "Diffuse reflectance NIR is a promising method for distinguishing tissue types (tumour vs normal).",
+      "quote": "Diffuse reflectance near-infrared (NIR) spectroscopy is one of the most promising methods for optical tissue analysis."
+    },
+    {
+      "id": "S03-5",
+      "docId": "S03",
+      "page": 3,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "The study used ex vivo samples at an early research stage; in vivo spectra can differ.",
+      "quote": "It is common practice to use ex vivo samples at the early research stages, as in the present proof-of-concept study."
+    },
+    {
+      "id": "S03-6",
+      "docId": "S03",
+      "page": 10,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "A usable diagnostic model needs a large representative patient set – beyond the scope of the study.",
+      "quote": "The practicable diagnostic model should be built at a later stage of the method development, using a large representative set of patients, and should then be permanently updated with new data."
+    },
+    {
+      "id": "S03-7",
+      "docId": "S03",
+      "page": 14,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "The LED sensor is only a proof of concept for tumour discrimination; further studies are needed.",
+      "quote": "This study provides a proof-of-concept demonstration of the LED-based sensor for tumor discrimination."
+    },
+    {
+      "id": "S03-8",
+      "docId": "S03",
+      "page": 14,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Cancer tissue showed very high measurement variance – the main weakness of the sensor.",
+      "quote": "The main disadvantage of the LED-based sensor in its present form is a very high measurement variance in cancer tissue samples (Figure 9)."
+    },
+    {
+      "id": "S03-9",
+      "docId": "S03",
+      "page": 2,
+      "step": "budget",
+      "value": "low",
+      "claim": "Inexpensive few-wavelength sensors can perform as well as full-scale spectroscopy for a specific task.",
+      "quote": "Inexpensive sensors may perform as well as the respective full-scale spectroscopic techniques, or even better"
+    },
+    {
+      "id": "S03-10",
+      "docId": "S03",
+      "page": 14,
+      "step": "budget",
+      "value": "low",
+      "claim": "LED sensing should dramatically reduce purchase and maintenance prices compared with full-range spectroscopy.",
+      "quote": "A significant technical simplification of the LED-based sensing, compared to the conventional full-range spectroscopy, should result in a dramatic reduction of the device’s purchase and maintenance prices."
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import Recommendations from '../components/Recommendations.tsx'
 import DecisionTree from '../components/DecisionTree.tsx'
 import { store, treeApi } from '../lib.ts'
 import { rawFromDecisions } from '../treeModel.ts'
-import type { TreeResponse } from '../../shared/tree.ts'
+import type { SourceMode, TreeResponse } from '../../shared/tree.ts'
 import { METHOD_INFO } from '../../shared/knowledge.ts'
 import type { Assessment } from '../../shared/types.ts'
 
@@ -56,11 +56,26 @@ export default function AssessPage({ settings, methods }: Props) {
   const [currentId, setCurrentId] = useState<string | null>(null)
   const [tree, setTree] = useState<TreeResponse | null>(null)
   const [since, setSince] = useState<number | null>(null)
+  const [sources, setSources] = useState<SourceMode>(() => {
+    try {
+      return localStorage.getItem('afs.sources') === 'original' ? 'original' : 'all'
+    } catch {
+      return 'all'
+    }
+  })
+  const chooseSources = (m: SourceMode) => {
+    setSources(m)
+    try {
+      localStorage.setItem('afs.sources', m)
+    } catch {
+      /* storage unavailable */
+    }
+  }
 
   const dims = useMemo(() => (raw ? resolveDimensions(raw, overrides, settings) : null), [raw, overrides, settings])
   const assessment = useMemo(() => (dims ? assess(dims, methods) : null), [dims, methods])
 
-  async function analyze(input: string, keepOverrides: boolean) {
+  async function analyze(input: string, keepOverrides: boolean, fresh = false) {
     if (!input.trim()) {
       setError('Paste or type the customer enquiry first.')
       return
@@ -69,7 +84,7 @@ export default function AssessPage({ settings, methods }: Props) {
     setError('')
     try {
       setSince(Date.now())
-      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss')
+      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss', { sources, fresh })
       const nextOverrides = keepOverrides ? overrides : {}
       const dimensions = rawFromDecisions(res.decisions)
       setTree(res)
@@ -199,10 +214,22 @@ export default function AssessPage({ settings, methods }: Props) {
                     New enquiry
                   </button>
                 )}
+                <label className="source-mode">
+                  Sources
+                  <select value={sources} onChange={(e) => chooseSources(e.target.value as SourceMode)} disabled={busy}>
+                    <option value="original">AFS originals only</option>
+                    <option value="all">Originals + added sources</option>
+                  </select>
+                </label>
                 {raw && !busy && (
                   <span className="status">
                     {model}
-                    {latency !== null ? ` · ${(latency / 1000).toFixed(1)} s` : ''}
+                    {tree?.cachedAt ? ' · stored result for this exact input' : latency !== null ? ` · ${(latency / 1000).toFixed(1)} s` : ''}
+                    {tree?.cachedAt && (
+                      <button className="linkbtn" onClick={() => analyze(text, true, true)} title="Run all models again instead of showing the stored result">
+                        Run again
+                      </button>
+                    )}
                   </span>
                 )}
               </div>

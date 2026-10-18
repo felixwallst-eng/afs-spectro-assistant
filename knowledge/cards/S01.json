@@ -1,0 +1,378 @@
+{
+  "docId": "S01",
+  "createdAt": "2026-10-18T10:00:00.000Z",
+  "model": "Curated (Claude, quotes verified against the PDF text)",
+  "pagesRead": 19,
+  "rejected": 0,
+  "cards": [
+    {
+      "id": "S01-1",
+      "docId": "S01",
+      "page": 5,
+      "step": "sample_state",
+      "value": "powder_or_granular",
+      "claim": "NIR penetrates several millimetres even into dense solids and powders because of low absorption and strong scattering.",
+      "quote": "NIR spectroscopy, with its relatively large penetration depth (up to several millimetres) even into dense solid samples due to low absorption and strong scattering"
+    },
+    {
+      "id": "S01-2",
+      "docId": "S01",
+      "page": 5,
+      "step": "sample_state",
+      "value": null,
+      "claim": "Mid-IR absorbs so strongly that only very thin layers (<50 µm) can be measured – in practice via ATR.",
+      "quote": "strong absorption in the mid-IR region limits the corresponding spectral method to the analysis of very thin samples (usually less than 50 μm), but it opens up the possibility of using attenuated total reflectance (ATR)"
+    },
+    {
+      "id": "S01-3",
+      "docId": "S01",
+      "page": 10,
+      "step": "sample_state",
+      "value": "soft_solid_or_tissue",
+      "claim": "Mid-IR ATR fiber probes analyse liquids and elastic solids such as biological tissue.",
+      "quote": "ATR fiber probes (Fig.1) enable the analysis of liquids and solid elastic samples, such as biological tissue, using specialized probes utilizing high-transmission fiber optics in the Mid-IR region."
+    },
+    {
+      "id": "S01-4",
+      "docId": "S01",
+      "page": 14,
+      "step": "sample_state",
+      "value": "soft_solid_or_tissue",
+      "claim": "Heterogeneous solids like tissue need a combined probe that measures both methods at exactly the same point.",
+      "quote": "A multispectral fiber probe, e.g. one combining MIR-ATR and fluorescence techniques into a single fiber optic probe shaft allows for the simultaneous acquisition of complementary chemical information from the exact same measurement point"
+    },
+    {
+      "id": "S01-5",
+      "docId": "S01",
+      "page": 15,
+      "step": "sample_state",
+      "value": "powder_or_granular",
+      "claim": "For powder blends (tablet press feed frame) NIR reflection and Raman probes measure the blend as it passes the probe tip.",
+      "quote": "As the powder blend passes the probe tip, the system captures spectra at high speeds without interrupting the production flow."
+    },
+    {
+      "id": "S01-6",
+      "docId": "S01",
+      "page": 16,
+      "step": "sample_state",
+      "value": "clear_liquid",
+      "claim": "Clear liquids with low optical density: transmission or transflection probes with a defined 1–10 mm path give high sensitivity for low concentrations.",
+      "quote": "For highly transparent liquids with low optical density, UV-Transmission or Transflection probes are ideal"
+    },
+    {
+      "id": "S01-7",
+      "docId": "S01",
+      "page": 16,
+      "step": "sample_state",
+      "value": "opaque_scattering_liquid",
+      "claim": "Opaque, turbid or highly concentrated media saturate a transmission setup because light cannot pass through the sample.",
+      "quote": "as the media becomes more opaque, turbid, or highly concentrated, the signal in a standard transmission setup becomes saturated because the light cannot penetrate the bulk of the sample"
+    },
+    {
+      "id": "S01-8",
+      "docId": "S01",
+      "page": 16,
+      "step": "sample_state",
+      "value": "opaque_scattering_liquid",
+      "claim": "For high optical density liquids an ATR probe is used: the evanescent wave gives a path of a few micrometres, so black or highly scattering fluids can be measured without dilution.",
+      "quote": "In these high-OD scenarios, a UV-ATR (Attenuated Total Reflection) probe is used."
+    },
+    {
+      "id": "S01-9",
+      "docId": "S01",
+      "page": 17,
+      "step": "sample_state",
+      "value": "opaque_scattering_liquid",
+      "claim": "Opaque or highly concentrated dairy products (yogurt, butter, milk concentrates) are measured in-line with NIR diffuse reflection.",
+      "quote": "Inline NIR Reflection is primarily used for opaque or highly concentrated dairy products, such as yogurt, butter, or whole milk concentrates."
+    },
+    {
+      "id": "S01-10",
+      "docId": "S01",
+      "page": 18,
+      "step": "sample_state",
+      "value": "clear_liquid",
+      "claim": "For transparent or semi-transparent liquids (skim milk, whey, permeate) NIR transmission is the preferred method.",
+      "quote": "NIR Transmission is the preferred method for transparent or semi-transparent liquids, such as skim milk, whey, or permeate."
+    },
+    {
+      "id": "S01-11",
+      "docId": "S01",
+      "page": 18,
+      "step": "sample_state",
+      "value": "opaque_scattering_liquid",
+      "claim": "Transmission fails once the product becomes thick or fat-rich; reflection works in highly scattering media but is less representative for clear liquids.",
+      "quote": "it fails when the milk becomes too \"thick\" or fat-rich, as the light cannot penetrate the sample"
+    },
+    {
+      "id": "S01-12",
+      "docId": "S01",
+      "page": 18,
+      "step": "sample_state",
+      "value": null,
+      "claim": "A transflection probe can sometimes cover both low-fat (clearer) and high-fat products with one interface.",
+      "quote": "In some cases, a Transflection probe can already be a combined solution working well for low-fat and high-fat containing milk products."
+    },
+    {
+      "id": "S01-13",
+      "docId": "S01",
+      "page": 3,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "In-process measurement works directly in the flow or reactor without sampling – no delay and no contamination risk.",
+      "quote": "It allows for in-process analysis, i.e., directly in the process flow or reactor without sampling, eliminating delays and the risk of sample contamination."
+    },
+    {
+      "id": "S01-14",
+      "docId": "S01",
+      "page": 4,
+      "step": "interface_mode",
+      "value": null,
+      "claim": "Penetration depth differs between NIR, mid-IR and Raman, so each needs its own interface (ATR, transmission, transflection, reflection).",
+      "quote": "Different absorption coefficients of light in NIR, Mid-IR, and Raman spectroscopy, as well as the depth of its penetration into a given dense medium (solid, liquid, or powder) also requires different measurement interfaces and techniques, such as various fiber optic probes: ATR, Transmission, Transflexion, Reflection, etc."
+    },
+    {
+      "id": "S01-15",
+      "docId": "S01",
+      "page": 5,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Immersible probes from UV to mid-IR measure liquids, soft and powdered solids in situ.",
+      "quote": "Immersible fiber optic probes operating in various spectral regions from UV to mid-IR are increasingly being used for measuring liquid and soft or powdered solid samples."
+    },
+    {
+      "id": "S01-16",
+      "docId": "S01",
+      "page": 10,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Probe-based analysis is used in-line and in-process, and in situ for field tests or during surgery.",
+      "quote": "Probe-based analysis is gaining widespread use in online analysis, such as in-line, in-process (chemical, biotechnological, natural) environments, as well as in-situ measurements, such as for field testing or for spectral diagnostics during surgery."
+    },
+    {
+      "id": "S01-17",
+      "docId": "S01",
+      "page": 10,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "NIR is the most common method for online analysis with fiber probes.",
+      "quote": "Near-IR vibrational spectroscopy (NIR) is the most common online analysis method performed using fiber optic probes."
+    },
+    {
+      "id": "S01-18",
+      "docId": "S01",
+      "page": 10,
+      "step": "interface_mode",
+      "value": "non_contact_at_distance",
+      "claim": "Because solids and dispersions scatter NIR light strongly, diffuse reflectance can measure without contact, at a distance.",
+      "quote": "high light scattering by solid and dispersed samples, which enables measurements using diffuse reflectance, including measurements without direct contact with the sample, at a distance"
+    },
+    {
+      "id": "S01-19",
+      "docId": "S01",
+      "page": 13,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "For tissue diagnostics the probe tip is brought into direct contact with the tissue during the operation.",
+      "quote": "The experimental procedure involves the direct contact of the probe tip with the tissue during an operation, such as for kidney, colon, or rectal cancer."
+    },
+    {
+      "id": "S01-20",
+      "docId": "S01",
+      "page": 15,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Fiber optics let the spectrometer stay away from vibration and dust while the probe sits in the process.",
+      "quote": "The use of fiber optics is critical here, as it allows the sensitive spectrometers to be located safely away from the vibration and dust of the manufacturing floor."
+    },
+    {
+      "id": "S01-21",
+      "docId": "S01",
+      "page": 17,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "For dairy, the reflection probe is flush-mounted into a pipe or vat in contact with the flowing product.",
+      "quote": "Experimentally, the probe is flush-mounted into a pipe or vat to interact directly with the flowing medium."
+    },
+    {
+      "id": "S01-22",
+      "docId": "S01",
+      "page": 5,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "UV spectra of mixtures overlap strongly; quantification needs chemometrics (low selectivity).",
+      "quote": "the strong overlap of spectral signals in UV spectra complicates the analysis of real samples and makes the use of chemometric algorithms a necessary component of qualitative mixture analysis methods"
+    },
+    {
+      "id": "S01-23",
+      "docId": "S01",
+      "page": 5,
+      "step": "target_property_type",
+      "value": "fluorescent_species",
+      "claim": "Fluorimetry only works for substances that fluoresce – most chemicals do not.",
+      "quote": "However, most chemicals do not exhibit this property."
+    },
+    {
+      "id": "S01-24",
+      "docId": "S01",
+      "page": 7,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "Classifying biological tissues required combining fluorescence and IR.",
+      "quote": "The combination of fluorescence and IR spectroscopy also proved necessary for classifying biological tissues."
+    },
+    {
+      "id": "S01-25",
+      "docId": "S01",
+      "page": 13,
+      "step": "target_property_type",
+      "value": "sample_classification",
+      "claim": "Tissue diagnostics is a classification task (normal vs malignant) solved with PCA / PLS-DA models.",
+      "quote": "These models automatically categorize the tissue as \"normal\" or \"malignant,\" providing instant diagnostic results that serve as a \"spectral biopsy\"."
+    },
+    {
+      "id": "S01-26",
+      "docId": "S01",
+      "page": 15,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "API content in powder blends: NIR and Raman give complementary chemical information.",
+      "quote": "The combination of these techniques is particularly effective because it captures complementary chemical information: NIR detects hydrogen bonds and asymmetric polar groups, while Raman provides information on the molecular backbone and symmetrical non-polar groups."
+    },
+    {
+      "id": "S01-27",
+      "docId": "S01",
+      "page": 16,
+      "step": "target_property_type",
+      "value": "turbidity_or_cell_density",
+      "claim": "Biomass can be followed with low-cost UV/Vis, because turbidity correlates with cell density.",
+      "quote": "UV/Vis spectroscopy can be deployed as a low- cost, robust tool for real-time biomass monitoring, as cell suspension turbidity correlates well with cell density."
+    },
+    {
+      "id": "S01-28",
+      "docId": "S01",
+      "page": 16,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "Specific metabolites (glucose, acetate, lactate) are detected with Raman; it suits aqueous media because water absorbs weakly.",
+      "quote": "Raman spectroscopy can be used in the same reactor to provide a \"molecular fingerprint\" for direct detection of specific metabolites like glucose, acetate, or lactate."
+    },
+    {
+      "id": "S01-29",
+      "docId": "S01",
+      "page": 16,
+      "step": "target_property_type",
+      "value": "fluorescent_species",
+      "claim": "Fluorescence detects named fluorophores (NADH, tryptophan, riboflavin) at nM–µM levels.",
+      "quote": "Fluorescence spectroscopy can be used for high- sensitivity detection (down to the nM-μM range) of critical cofactors and amino acids like NADH, tryptophan, and riboflavin."
+    },
+    {
+      "id": "S01-30",
+      "docId": "S01",
+      "page": 17,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "Fat and protein in milk are quantified from NIR reflection spectra after scatter correction with PLS regression.",
+      "quote": "Data processing may involve converting the reflectance values to absorbance and applying Multiplicative Scatter Correction (MSC) or Standard Normal Variate (SNV) transformations to remove physical interference caused by the scattering nature of the milk particles before using Partial Least Squares (PLS) regression to quantify fat and protein."
+    },
+    {
+      "id": "S01-31",
+      "docId": "S01",
+      "page": 7,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Sample inhomogeneity and process turbulence must be considered when choosing the measurement technique.",
+      "quote": "Morphological factors, such as sample inhomogeneity (e.g., biological tissue) or process turbulence, must also be considered when selecting a measurement technique."
+    },
+    {
+      "id": "S01-32",
+      "docId": "S01",
+      "page": 8,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Where inhomogeneity and rapid changes coexist, multispectral probes become essential.",
+      "quote": "Situations are also possible where problems of inhomogeneity and rapid changes in the sample coexist. In these cases, the use of multispectral probes becomes essential."
+    },
+    {
+      "id": "S01-33",
+      "docId": "S01",
+      "page": 17,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Reflection is sensitive to surface properties and fat globule size – texture changes affect the signal.",
+      "quote": "Because the light does not penetrate deeply, the method is sensitive to the surface characteristics and fat globule size."
+    },
+    {
+      "id": "S01-34",
+      "docId": "S01",
+      "page": 18,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "When the physical state changes along the process, calibrations for several interfaces keep the measurement robust.",
+      "quote": "By maintaining both, a lab can calibrate models for every stage of production - from raw milk intake to final evaporation - ensuring that no matter how the physical state of the milk changes during processing, the inline monitoring remains accurate and robust."
+    },
+    {
+      "id": "S01-35",
+      "docId": "S01",
+      "page": 16,
+      "step": "concentration_level",
+      "value": "major_component",
+      "claim": "NIR tracks major components (mM range) but may miss trace compounds below 0.1 %.",
+      "quote": "NIR spectroscopy is effective for tracking major components like glucose or glycerol in the millimolar range but may lack the sensitivity to detect trace compounds below 0.1 percent."
+    },
+    {
+      "id": "S01-36",
+      "docId": "S01",
+      "page": 16,
+      "step": "concentration_level",
+      "value": "trace",
+      "claim": "Trace-level fluorophores (nM–µM) need fluorescence spectroscopy.",
+      "quote": "Fluorescence spectroscopy can be used for high- sensitivity detection (down to the nM-μM range) of critical cofactors and amino acids like NADH, tryptophan, and riboflavin."
+    },
+    {
+      "id": "S01-37",
+      "docId": "S01",
+      "page": 16,
+      "step": "concentration_level",
+      "value": "minor_component",
+      "claim": "Transmission with a defined path allows accurate quantification of low-concentration analytes in clear liquids.",
+      "quote": "they pass light through a defined path length (typically 1 mm to 10 mm), allowing for high sensitivity and accurate quantification of low- concentration analytes"
+    },
+    {
+      "id": "S01-38",
+      "docId": "S01",
+      "page": 18,
+      "step": "concentration_level",
+      "value": "minor_component",
+      "claim": "Transmission through the whole cross-section gives higher accuracy for low-concentration components.",
+      "quote": "This technique generally offers higher accuracy for low-concentration components because the light interacts with the entire volume of the sampled cross-section, providing a more representative chemical signature."
+    },
+    {
+      "id": "S01-39",
+      "docId": "S01",
+      "page": 2,
+      "step": "budget",
+      "value": "low",
+      "claim": "Optical multisensor systems are inexpensive, compact and portable.",
+      "quote": "These inexpensive, compact, and portable systems are increasingly being used for field and rapid analysis."
+    },
+    {
+      "id": "S01-40",
+      "docId": "S01",
+      "page": 5,
+      "step": "budget",
+      "value": null,
+      "claim": "NIR works with ordinary glass optics and standard lamps – simple hardware, well suited to remote fiber measurements.",
+      "quote": "allows the use of ordinary glass for optics, as well as standard lamps as light sources, making it ideal for online applications, including remote measurements via fiber optic probes"
+    },
+    {
+      "id": "S01-41",
+      "docId": "S01",
+      "page": 9,
+      "step": "budget",
+      "value": "high",
+      "claim": "Combining several benchtop spectrometers is bulky and expensive.",
+      "quote": "The cost of such spectrometers is also quite high."
+    }
+  ]
+}

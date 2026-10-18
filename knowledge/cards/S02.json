@@ -1,0 +1,90 @@
+{
+  "docId": "S02",
+  "createdAt": "2026-10-18T10:00:00.000Z",
+  "model": "Curated (Claude, quotes verified against the PDF text)",
+  "pagesRead": 20,
+  "rejected": 0,
+  "cards": [
+    {
+      "id": "S02-1",
+      "docId": "S02",
+      "page": 14,
+      "step": "sample_state",
+      "value": "melt_or_paste",
+      "claim": "API in hot polymer melt was measured with a diamond ATR probe.",
+      "quote": "Spectra of API in hot polymer obtained with Diamond cone ATR probe coupled to iC10 FTIR (MTAC)"
+    },
+    {
+      "id": "S02-2",
+      "docId": "S02",
+      "page": 7,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Silica fiber cables of 100–300 m allow a remote analyzer – for the Vis-NIR range.",
+      "quote": "Robust 100-300m cables made with Silica fibers of low OH-content (<0.1ppm OH) enable remote industrial process-control"
+    },
+    {
+      "id": "S02-3",
+      "docId": "S02",
+      "page": 8,
+      "step": "interface_mode",
+      "value": null,
+      "claim": "Mid-IR needs polycrystalline (PIR) fibers, which transmit 3–16 µm.",
+      "quote": "PIR-fiber transmission range 3-16μm is in the perfect match with Black Body Spectral Radiance at 0-100°C and Finger-Print Region of Molecular Vibrations"
+    },
+    {
+      "id": "S02-4",
+      "docId": "S02",
+      "page": 13,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Water in petroleum is measured with sealed ATR probes (ZrO2 or diamond tip in a PEEK shaft).",
+      "quote": "measurement of water content in petroleum ATR-Probes with ATR-tips from ZrO 2 (& Diamond, etc.) sealed in PEEK-shaft"
+    },
+    {
+      "id": "S02-5",
+      "docId": "S02",
+      "page": 14,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "Polymer extrusion is controlled in-line with NIR reflection and MIR ATR probes.",
+      "quote": "NIR-Reflex & MIR-ATR-spectroscopy to control polymer extrusion in-line"
+    },
+    {
+      "id": "S02-6",
+      "docId": "S02",
+      "page": 3,
+      "step": "target_property_type",
+      "value": null,
+      "claim": "AFS compares the spectral data of the customer's process across methods before choosing the process-control solution.",
+      "quote": "Comparison of spectral data for customer process enables to select the best process-control solution"
+    },
+    {
+      "id": "S02-7",
+      "docId": "S02",
+      "page": 4,
+      "step": "budget",
+      "value": "low",
+      "claim": "Once a process is stable, a simple sensor is usually adequate in production; full spectroscopy is mainly for development.",
+      "quote": "it is simply used for development, so when the process is stable it is not needed - as a simple sensor version is adequate in commercial production"
+    },
+    {
+      "id": "S02-8",
+      "docId": "S02",
+      "page": 18,
+      "step": "budget",
+      "value": "low",
+      "claim": "Distributed spectral IoT sensors have lower installation cost.",
+      "quote": "Advantage - Lower cost for installation"
+    },
+    {
+      "id": "S02-9",
+      "docId": "S02",
+      "page": 18,
+      "step": "budget",
+      "value": "high",
+      "claim": "A central full-spectrum analyzer with multiplexer gives higher accuracy at higher cost.",
+      "quote": "Advantage - High accuracy due to the higher performance of full spectra process analyzer"
+    }
+  ]
+}

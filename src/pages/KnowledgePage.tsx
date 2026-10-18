@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { MAX_UPLOAD_BYTES } from '../../shared/docs.ts'
 import type { DocMeta } from '../../shared/docs.ts'
-import { docsApi } from '../lib.ts'
+import { DIM_BY_ID } from '../../shared/dimensions.ts'
+import type { CardSet } from '../../shared/cards.ts'
+import { TREE_NODES } from '../../shared/tree.ts'
+import { cardsApi, docsApi } from '../lib.ts'
 import { extractPageTexts } from '../pdfText.ts'
 import { useOpenSource } from '../sourceContext.ts'
 
@@ -35,8 +38,8 @@ function DocDetails({ doc, onSaved, onCancel }: { doc: DocMeta; onSaved: (d: Doc
         <input value={title} onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label>
-        Summary for the assistant
-        <small>What the document covers. The assistant reads only these summaries first and then opens the documents that fit the enquiry.</small>
+        Summary
+        <small>What the document covers – shown to colleagues in the knowledge base.</small>
         <textarea rows={3} value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="e.g. Application note on NIR transflection probes for clear process liquids, with probe dimensions and cleaning procedure." />
       </label>
       <label>
@@ -54,6 +57,100 @@ function DocDetails({ doc, onSaved, onCancel }: { doc: DocMeta; onSaved: (d: Doc
         </button>
         {doc.notesUpdatedAt && <span className="kb-muted">Note updated {fmtDate(doc.notesUpdatedAt)}</span>}
       </div>
+    </div>
+  )
+}
+
+/** The knowledge cards of one document, grouped by decision step; the expert can open or remove each. */
+function CardsPanel({ doc, onChanged }: { doc: DocMeta; onChanged: (count: number, curated: boolean) => void }) {
+  const open = useOpenSource()
+  const [set, setSet] = useState<CardSet | null>(null)
+  const [error, setError] = useState('')
+  useEffect(() => {
+    cardsApi.get(doc.id).then(setSet).catch((e) => setError(e instanceof Error ? e.message : String(e)))
+  }, [doc.id, doc.cardsAt])
+
+  async function remove(cardId: string) {
+    try {
+      const next = await cardsApi.remove(doc.id, cardId)
+      setSet(next)
+      onChanged(next.cards.length, false)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  async function reset() {
+    try {
+      const next = await cardsApi.reset(doc.id)
+      setSet(next)
+      onChanged(next.cards.length, true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  function download() {
+    if (!set) return
+    const { curated: _c, ...data } = set
+    void _c
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
+    const a = Object.assign(document.createElement('a'), { href: url, download: `${doc.id}.json` })
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  if (error) return <p className="error">{error}</p>
+  if (!set) return <p className="kb-muted">Loading cards…</p>
+  return (
+    <div className="kb-cards">
+      <div className="kb-cards-head">
+        <p className="kb-muted">
+          {set.curated ? 'Curated cards from the repository' : `Read by ${set.model}`} · {fmtDate(set.createdAt)} · all {set.pagesRead} pages · {set.cards.length} statements
+          {set.rejected > 0 && `, ${set.rejected} discarded because their quote was not found in the document`}. Every quote was checked against the PDF text. Remove a card
+          if it should not be used.
+        </p>
+        <div>
+          <button className="linkbtn" onClick={download} title="Save these cards as JSON, e.g. to version them in the repository">
+            Download JSON
+          </button>
+          {!set.curated && doc.origin === 'original' && (
+            <button className="linkbtn" onClick={reset} title="Discard edits and re-reads, use the curated cards again">
+              Reset to curated
+            </button>
+          )}
+        </div>
+      </div>
+      {TREE_NODES.map((n) => {
+        const cards = set.cards.filter((c) => c.step === n.id)
+        if (!cards.length) return null
+        const def = DIM_BY_ID[n.id]
+        return (
+          <div key={n.id} className="kb-card-group">
+            <h4>
+              {def.title} <span className="kb-muted">· {cards.length}</span>
+            </h4>
+            <ul>
+              {cards.map((c) => (
+                <li key={c.id} className="kb-card">
+                  <div>
+                    <p>
+                      {c.claim}
+                      {c.value && <span className="chip clef kb-card-value">{def.labels[c.value]?.name}</span>}
+                    </p>
+                    <button className="kb-card-quote" title="Open the page with this sentence highlighted" onClick={() => open({ source: doc.id, page: c.page, quote: c.quote, title: doc.title })}>
+                      p.{c.page} · “{c.quote}”
+                    </button>
+                  </div>
+                  <button className="linkbtn danger" onClick={() => remove(c.id)} aria-label="Remove this card">
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -120,6 +217,8 @@ export default function KnowledgePage() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [pending, setPending] = useState<File | null>(null)
   const [dragOver, setDragOver] = useState(false)
+  const [reading, setReading] = useState<Set<string>>(new Set())
+  const [showCards, setShowCards] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -158,6 +257,24 @@ export default function KnowledgePage() {
     }
   }
 
+  /** Let the model read the whole document into knowledge cards (about a minute). */
+  async function read(d: DocMeta) {
+    setReading((r) => new Set(r).add(d.id))
+    setError('')
+    try {
+      const set = await cardsApi.build(d.id)
+      setDocs((prev) => (prev ?? []).map((x) => (x.id === d.id ? { ...x, cards: set.cards.length, cardsAt: set.createdAt, cardsCurated: false } : x)))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setReading((r) => {
+        const n = new Set(r)
+        n.delete(d.id)
+        return n
+      })
+    }
+  }
+
   const active = docs?.filter((d) => d.enabled).length ?? 0
 
   return (
@@ -172,8 +289,9 @@ export default function KnowledgePage() {
       </div>
       <div className="panel-body">
         <p className="kb-intro">
-          The assistant first reads the summary of every active document, then opens only the documents that fit the enquiry. Expert notes are
-          passed along whenever a document is cited.
+          Every document is read completely once, when it is added: the model turns each page into knowledge cards – statements that matter for the
+          decision steps, each with a verified quote. Assessments then use all cards of the active documents, so the same enquiry always gets the same
+          knowledge. Expert notes are passed along with every card of a document.
         </p>
 
         {pending ? (
@@ -183,6 +301,7 @@ export default function KnowledgePage() {
             onDone={(d) => {
               setDocs((prev) => [...(prev ?? []), d])
               setPending(null)
+              if (d.pages) void read(d)
             }}
           />
         ) : (
@@ -219,6 +338,7 @@ export default function KnowledgePage() {
                 <th>Document</th>
                 <th>Source</th>
                 <th>Pages</th>
+                <th>Read by AI</th>
                 <th>Size</th>
                 <th>Added</th>
                 <th>Used by AI</th>
@@ -247,6 +367,27 @@ export default function KnowledgePage() {
                     {!d.indexed && <span className="kb-muted kb-unindexed">Not searchable yet</span>}
                   </td>
                   <td>{d.pages ?? '–'}</td>
+                  <td className="kb-read">
+                    {reading.has(d.id) ? (
+                      <span className="kb-reading">Reading all pages…</span>
+                    ) : d.cards !== undefined ? (
+                      <>
+                        <button className="linkbtn" onClick={() => setShowCards(showCards === d.id ? null : d.id)}>
+                          {d.cards} cards
+                        </button>
+                        {d.cardsCurated && <span className="tag curated">curated</span>}
+                        <button className="linkbtn kb-muted" onClick={() => read(d)} title="Read the whole document again">
+                          Re-read
+                        </button>
+                      </>
+                    ) : d.indexed ? (
+                      <button className="btn small" onClick={() => read(d)}>
+                        Read document
+                      </button>
+                    ) : (
+                      <span className="kb-muted">Text not extracted yet</span>
+                    )}
+                  </td>
                   <td>{fmtSize(d.size)}</td>
                   <td>{fmtDate(d.addedAt)}</td>
                   <td>
@@ -279,9 +420,16 @@ export default function KnowledgePage() {
                       ))}
                   </td>
                 </tr>,
+                showCards === d.id && (
+                  <tr key={`${d.id}-cards`} className="kb-details-row">
+                    <td colSpan={8}>
+                      <CardsPanel doc={d} onChanged={(n, curated) => setDocs((prev) => (prev ?? []).map((x) => (x.id === d.id ? { ...x, cards: n, cardsCurated: curated } : x)))} />
+                    </td>
+                  </tr>
+                ),
                 expanded === d.id && (
                   <tr key={`${d.id}-details`} className="kb-details-row">
-                    <td colSpan={7}>
+                    <td colSpan={8}>
                       <DocDetails
                         doc={d}
                         onCancel={() => setExpanded(null)}

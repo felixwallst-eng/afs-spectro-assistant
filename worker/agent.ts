@@ -33,8 +33,11 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   ])
 }
 
-export async function chat(ai: Runner, model: string, key: AgentModelKey, system: string, user: string, maxTokens: number) {
-  const out = (await withTimeout(ai.run(model, {
+/** Whether the current model accepted a `seed`; switched off after the first rejection. */
+let seedSupported = true
+
+export async function chat(ai: Runner, model: string, key: AgentModelKey, system: string, user: string, maxTokens: number, opts: { seed?: number } = {}) {
+  const input = {
     messages: [
       { role: 'system', content: system },
       { role: 'user', content: user },
@@ -44,7 +47,17 @@ export async function chat(ai: Runner, model: string, key: AgentModelKey, system
     // gpt-oss: JSON is requested in the prompt; the parser extracts it either way
     ...(key === 'gptoss' ? {} : { response_format: { type: 'json_object' } }),
     reasoning_effort: key === 'kimi' ? 'none' : 'low',
-  }), MODEL_TIMEOUT_MS)) as ChatResult
+  }
+  let out: ChatResult
+  if (opts.seed !== undefined && seedSupported) {
+    try {
+      out = (await withTimeout(ai.run(model, { ...input, seed: opts.seed }), MODEL_TIMEOUT_MS)) as ChatResult
+    } catch (err) {
+      if (!/seed/i.test(String(err))) throw err
+      seedSupported = false // the model rejects the parameter – continue without it
+      out = (await withTimeout(ai.run(model, input), MODEL_TIMEOUT_MS)) as ChatResult
+    }
+  } else out = (await withTimeout(ai.run(model, input), MODEL_TIMEOUT_MS)) as ChatResult
   // chat-completions shape, legacy `response`, or Responses-API `output` (gpt-oss) – take whichever is present
   const fromOutput = (out.output ?? [])
     .flatMap((o) => o.content ?? [])

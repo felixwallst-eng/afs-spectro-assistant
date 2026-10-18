@@ -2,6 +2,9 @@ import { classify } from './clef.ts'
 import { handleDocs } from './docs.ts'
 import { runAgent, runBrief } from './agent.ts'
 import { runTree } from './tree.ts'
+import { runSteps } from './steps.ts'
+import { buildCards, deleteCard, getCards, resetCards } from './cards.ts'
+import { listDocs } from './docs.ts'
 import type { AgentRequest } from '../shared/agent.ts'
 
 const MAX_TEXT = 8000
@@ -29,11 +32,22 @@ export default {
     }
 
     if (url.pathname === '/api/tree' && request.method === 'POST') {
-      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown } | null
+      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown } | null
       const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
       if (!text) return Response.json({ error: 'Enter the customer enquiry text.' }, { status: 400 })
+      const model = body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss'
       try {
-        return Response.json(await runTree(env.AI, env.DOCS, { text, model: body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss' }))
+        // "single": the earlier one-call pipeline, kept for comparison in the reproducibility test
+        if (body?.pipeline === 'single') return Response.json(await runTree(env.AI, env.DOCS, { text, model }))
+        return Response.json(
+          await runSteps(env.AI, env.DOCS, {
+            text,
+            model,
+            sources: body?.sources === 'original' ? 'original' : 'all',
+            fresh: body?.fresh === true,
+            votes: typeof body?.votes === 'number' ? Math.max(1, Math.min(5, Math.round(body.votes))) : undefined,
+          }),
+        )
       } catch (err) {
         return Response.json({ error: `Assessment failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
       }
@@ -64,6 +78,33 @@ export default {
 
     if (url.pathname === '/api/health') {
       return Response.json({ status: 'ok' })
+    }
+
+    // knowledge cards: /api/docs/:id/cards[/:cardId]
+    const cardRoute = url.pathname.match(/^\/api\/docs\/([^/]+)\/cards(?:\/([^/]+))?$/)
+    if (cardRoute) {
+      const docId = decodeURIComponent(cardRoute[1])
+      try {
+        if (request.method === 'GET') {
+          const set = await getCards(env.DOCS, docId)
+          return set ? Response.json(set) : Response.json({ error: 'This document has not been read yet.' }, { status: 404 })
+        }
+        if (request.method === 'POST' && !cardRoute[2]) {
+          const doc = (await listDocs(env.DOCS)).find((d) => d.id === docId)
+          if (!doc) return Response.json({ error: 'Document not found.' }, { status: 404 })
+          return Response.json(await buildCards(env.AI, env.DOCS, docId, doc.title))
+        }
+        if (request.method === 'DELETE' && !cardRoute[2]) {
+          const set = await resetCards(env.DOCS, docId)
+          return set ? Response.json(set) : Response.json({ error: 'No curated cards for this document.' }, { status: 404 })
+        }
+        if (request.method === 'DELETE' && cardRoute[2]) {
+          const set = await deleteCard(env.DOCS, docId, decodeURIComponent(cardRoute[2]))
+          return set ? Response.json(set) : Response.json({ error: 'No cards for this document.' }, { status: 404 })
+        }
+      } catch (err) {
+        return Response.json({ error: `Reading the document failed: ${err instanceof Error ? err.message : String(err)}` }, { status: 502 })
+      }
     }
 
     if (url.pathname.startsWith('/api/docs')) {

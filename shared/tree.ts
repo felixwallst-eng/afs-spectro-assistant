@@ -19,6 +19,19 @@ export interface TreeRequest {
   model?: AgentModelKey
 }
 
+/** Which documents an assessment may use: only the supplied AFS originals, or also uploaded sources. */
+export type SourceMode = 'original' | 'all'
+
+export interface StepsRequest {
+  text: string
+  model?: AgentModelKey
+  sources?: SourceMode
+  /** Ignore a cached result and run the models again. */
+  fresh?: boolean
+  /** Independent runs per step (majority vote). Default 3. */
+  votes?: number
+}
+
 /** A verbatim passage from an AFS document, verified against the indexed page text. */
 export interface SourcePassage {
   docId: string
@@ -26,6 +39,9 @@ export interface SourcePassage {
   page: number
   /** Text to highlight in the viewer (a key sentence, or the whole retrieved passage). */
   quote: string
+  /** Knowledge card the reference comes from, and its statement. */
+  cardId?: string
+  claim?: string
 }
 
 /** Where a step's value comes from. */
@@ -55,6 +71,8 @@ export interface Decision {
   related?: SourcePassage[]
   /** Why a proposed value was not accepted, e.g. its quote is not in the enquiry. */
   rejected?: string
+  /** Majority vote over independent runs: how many agreed with the result, and what each run said. */
+  votes?: { runs: number; agree: number; outcomes: { label: string; count: number }[] }
 }
 
 export interface TreeResponse {
@@ -65,4 +83,15 @@ export interface TreeResponse {
   passagesRead: number
   usage: { inputTokens: number; outputTokens: number }
   stats: { decided: number; suggested: number; open: number; rejectedQuotes: number; verifiedSources: number }
+  /** steps: one call per step with majority vote; single: one call for everything (earlier pipeline). */
+  pipeline?: 'single' | 'steps'
+  sources?: SourceMode
+  /** Model calls made for this result. */
+  calls?: number
+  /** Set when the result comes from the cache (identical input already assessed). */
+  cachedAt?: string
+  /** Documents whose knowledge cards were used: every page of these was read when they were added. */
+  docsRead?: { docId: string; title: string; pages: number; cards: number }[]
+  /** Enabled documents that have not been read into cards yet. */
+  docsUnread?: string[]
 }
