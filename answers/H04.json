@@ -5,7 +5,7 @@
     "title": "Reuse of a silica link for petroleum MIR ATR",
     "text": "We want to investigate water content in a petroleum line using MIR ATR. The analyzer would be in another building. We already have a silica fiber cable from a visible or NIR measurement setup and would like to reuse it. The link length, routing and operating conditions have not yet been supplied. Can the assistant approve this concept?"
   },
-  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "generatedAt": "2026-10-18T17:42:58.665Z",
   "tree": {
     "model": "Cloudflare Clef (classifier)",
     "decisions": [
@@ -794,7 +794,7 @@
         "value": "no"
       }
     ],
-    "latencyMs": 2849,
+    "latencyMs": 2638,
     "passagesRead": 64,
     "usage": {
       "inputTokens": 0,
@@ -2096,50 +2096,51 @@
       "requirementsStated": [
         "Investigate water content in a petroleum line using MIR ATR",
         "In‑process probe required",
-        "Remote analyzer location (different building)",
-        "Existing silica fiber cable for visible/NIR is to be reused",
-        "Single product stream, non‑aqueous matrix",
-        "Process monitoring with clearly defined target"
+        "Remote analyzer in another building",
+        "Existing silica fiber cable for visible/NIR intended for reuse",
+        "Single stream, clearly defined target, process monitoring",
+        "Non‑aqueous matrix",
+        "NIR capability confirmed"
       ],
       "keyUnknowns": [
-        "Physical state and optical appearance of the sample at the measurement point (clear, turbid, opaque liquid, paste, etc.)",
-        "Whether turbidity, bubbles or other optical variability occur during operation",
-        "Target water concentration range and required detection limit"
+        "Physical state and optical appearance of the sample at the measurement point",
+        "Whether turbidity, optical density, texture or bubbles vary during the process",
+        "Concentration range of water and required detection change"
       ],
       "clarificationQuestions": [
-        "What is the exact physical state and optical clarity of the petroleum at the probe location?",
-        "Does the sample exhibit significant turbidity, bubbles or phase changes during normal operation?",
-        "What water concentration range must be measured and what minimum change must be detected?"
+        "What is the physical state and optical appearance of the sample at the measurement point (clear, turbid, opaque liquid, powder, melt, etc.)?",
+        "Do turbidity, optical density, texture or bubbles change during operation, and over what range?",
+        "What water concentration range is expected and what minimum change must be detected?"
       ],
       "recommendation": [
         {
-          "method": "Raman – Raman probe (conditional)",
-          "text": "Worth testing if the sample is a clear or mildly turbid liquid, because Raman offers high chemical selectivity for water in petroleum and can be coupled to a fiber probe [E11]; suitability drops if the sample is a melt, paste or highly opaque liquid [E12]."
+          "method": "Raman – Raman probe",
+          "text": "Worth testing if the sample is a liquid (or solid/powder) and not a melt or paste, because Raman offers high chemical selectivity and can be used with in‑process probes [E10, E11]; suitability is uncertain while the sample state is unknown [E12]."
         },
         {
-          "method": "Raman – Cuvette 90° (conditional)",
-          "text": "Worth testing for laboratory feasibility if the sample can be withdrawn as a clear liquid, as this configuration provides high selectivity but is not suitable for in‑line deployment and fails for powders, pastes or solids [E12, E14]."
+          "method": "Raman – Cuvette 90°",
+          "text": "Worth testing for a laboratory feasibility study if the sample is a liquid, as Raman provides high selectivity and the cuvette geometry is suitable for liquids [E13, E11]; it is not an in‑line solution and drops out for powders, melts or solids [E12, E14]."
         },
         {
-          "method": "Near‑IR (NIR) – Transmission / transflection probe (conditional)",
-          "text": "Worth testing if the petroleum is sufficiently transparent in the 780–2500 nm range, because NIR can be used with the existing silica fiber; it becomes unsuitable for opaque or highly turbid liquids [E12]."
+          "method": "Near‑IR (NIR) – Transmission / transflection probe",
+          "text": "Worth testing if the sample is a clear liquid without strong turbidity, because NIR transmission can probe water content in liquids [E15]; suitability is unknown for other states [E12]."
         }
       ],
-      "measurementConcept": "A sealed ATR probe (e.g., ZrO₂ or diamond tip) inserted directly into the petroleum line, with the probe head in tight contact to the fluid [E1]; fiber link runs from probe to remote MIR analyzer. The current silica cable cannot transmit MIR wavelengths, so a MIR‑transparent fiber (chalcogenide, polycrystalline or hollow‑waveguide) would be required for the final system [E8, E9].",
-      "spectralRange": "MIR ATR requires 2.5–25 µm; the existing silica cable only covers 0.35–2.4 µm, so the MIR range must be verified with a suitable fiber before final design [E8]. NIR feasibility can use 0.78–2.5 µm with the current cable.",
+      "measurementConcept": "An in‑process ATR probe (e.g., sealed ZrO2 or diamond tip) would be immersed in the petroleum line and linked to a remote MIR analyzer via a fiber cable; the current silica cable cannot transmit the required MIR wavelengths, so a polycrystalline, chalcogenide or hollow‑waveguide fiber is needed [E3, E5, E8, E9].",
+      "spectralRange": "MIR ATR requires roughly 2.5–25 µm; silica fibers only cover 0.35–2.4 µm, so the usable range with the existing cable is limited to UV/Vis/NIR and must be verified for any alternative MIR fiber [E8, E6].",
       "risks": [
-        "Silica fiber will not transmit the required MIR wavelengths, making the proposed concept infeasible unless replaced [E8].",
-        "If the petroleum is opaque or highly turbid, transmission‑based methods (NIR, Raman transmission) will fail [E2].",
-        "Uncertain sample state may render ATR contact impossible or degrade signal quality."
+        "Silica fiber will block MIR transmission, making the concept infeasible unless replaced",
+        "If the sample is opaque, turbid or contains bubbles, ATR or transmission may not achieve reliable contact or signal",
+        "Unknown water concentration may be below detection limits of the tested methods"
       ],
       "feasibilityPlan": [
-        "1. Obtain a representative sample of the petroleum at the intended probe location and characterise its physical state and optical clarity.",
-        "2. Perform a laboratory Raman measurement on the sample using a standard Raman probe to assess water signal strength and interference.",
-        "3. Test NIR transmission through a short length of the existing silica fiber with the sample in a cuvette to confirm usable signal levels.",
-        "4. If Raman or NIR show promise, acquire a short segment of MIR‑transparent fiber (e.g., chalcogenide) and repeat a bench‑top ATR measurement with a compatible MIR source to verify water detection.",
-        "5. Compare measured water concentrations against the required detection limit provided by the customer."
+        "Obtain a small volume of the actual petroleum sample and determine its physical state and optical appearance.",
+        "Set up a laboratory ATR probe with a compatible MIR fiber (polycrystalline or chalcogenide) and measure water content using a reference MIR spectrometer.",
+        "Perform parallel Raman measurements on the same sample using a Raman probe and a cuvette setup to compare selectivity and signal strength.",
+        "Conduct NIR transmission measurements on the liquid sample to assess any usable signal in the 780–2500 nm range.",
+        "Compare all results against known water standards to establish detection limits and repeatability."
       ],
-      "decisionBasis": "The concept will be approved if (a) the sample is a clear or mildly turbid liquid allowing tight ATR contact, (b) Raman or NIR measurements on the sample meet the required water detection limit, and (c) a suitable MIR‑transparent fiber can be integrated to deliver the needed spectral range to the remote analyzer. Failure of any of these criteria will lead to a go/no‑go decision."
+      "decisionBasis": "The concept will be approved if a suitable MIR‑transparent fiber can be installed, the ATR probe provides reliable contact with the liquid petroleum, and the chosen method (Raman or NIR) can detect the required water concentration change as defined by the client."
     },
     "evidence": [
       {
@@ -2241,6 +2242,6 @@
       }
     ],
     "model": "gpt-oss 120B",
-    "latencyMs": 10340
+    "latencyMs": 12742
   }
 }

@@ -5,7 +5,7 @@
     "title": "An undefined off specification liquid",
     "text": "We have a liquid process that occasionally goes off specification. We suspect contamination, but we cannot yet name the contaminant or the affected quality variable. We would like you to recommend the best spectroscopy method and exact sensor configuration immediately. What information and first experiment should come before that decision?"
   },
-  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "generatedAt": "2026-10-18T17:42:58.665Z",
   "tree": {
     "model": "Cloudflare Clef (classifier)",
     "decisions": [
@@ -790,7 +790,7 @@
         "value": "no"
       }
     ],
-    "latencyMs": 7255,
+    "latencyMs": 2184,
     "passagesRead": 64,
     "usage": {
       "inputTokens": 0,
@@ -2006,75 +2006,76 @@
     "report": {
       "decisionStatus": "Insufficient information (The measurement target is not defined yet.)",
       "requirementsStated": [
-        "The process stream is a liquid.",
-        "Only a single stream is involved.",
-        "The measurement is for process monitoring.",
-        "The client requests a first assessment and guidance on the next experiment."
+        "The process is a liquid stream that occasionally goes off specification.",
+        "The cause is suspected contamination but the contaminant is unknown.",
+        "The customer wants a recommendation of the best spectroscopy method and exact sensor configuration.",
+        "The process uses a single stream and the measurement is for process monitoring.",
+        "The customer asks for the information and first experiment that should precede a final decision."
       ],
       "keyUnknowns": [
         "Whether the measurement will be performed with an in‑line probe, a non‑contact remote sensor, or on laboratory samples.",
-        "Which fiber link (type, length) is available and whether a mid‑IR fiber can be used.",
-        "The specific constituent or quality variable that must be measured.",
-        "The extent of optical variability (turbidity, bubbles, texture) during the process.",
+        "Which spectral range is required and which fiber link (type, length, possible mid‑IR fiber) can be used.",
+        "What specific constituent or quality variable must be measured.",
+        "How the optical properties of the liquid (turbidity, bubbles, texture) vary during the process.",
         "The concentration range of the target and the magnitude of change that must be detected."
       ],
       "clarificationQuestions": [
-        "Will the sensor be installed in‑line (immersed) or will measurements be taken remotely or on lab samples?",
-        "What fiber type and length are available, and is a mid‑IR‑transparent fiber an option?",
-        "Which chemical species or process quality variable is of interest (e.g., impurity, moisture, polymer content)?",
-        "Does the liquid exhibit significant turbidity, bubbles or other scattering that varies over time?",
-        "What are the expected concentration levels and the minimum detectable change required for control?"
+        "Should the measurement be performed in‑line with an immersible probe, at a distance, or on extracted lab samples?",
+        "What spectral region (mid‑IR, NIR, visible, UV) is expected to contain the relevant absorption or scattering features, and can a mid‑IR fiber be used?",
+        "Which specific contaminant or quality variable needs to be quantified (e.g., a chemical species, total impurity level, colour index)?",
+        "Does the liquid exhibit significant turbidity, bubbles or other optical variability during operation?",
+        "What are the expected concentration levels of the target and the required detection limit for a process alarm?"
       ],
       "recommendation": [
         {
           "method": "Mid‑IR (MIR) – ATR probe",
-          "text": "Worth testing if an in‑line, immersible probe can be used and a mid‑IR‑transparent fiber link is available, because ATR is suited to liquid samples and provides strong molecular absorption signatures [E7, E8]."
+          "text": "Worth testing if an in‑line immersible probe can be used and a mid‑IR fiber link is available, because ATR probes are suited to liquid samples [E8] and cover the 4000–400 cm⁻¹ range [E7]."
         },
         {
           "method": "Raman – Raman probe",
-          "text": "Worth testing if an in‑line probe is feasible, as Raman works on liquids without requiring transmission and can detect a wide range of species [E9, E8]."
+          "text": "Worth testing if an in‑line probe is feasible, as Raman probes work with liquids and operate in the 400–1100 nm range [E9, E8]."
         },
         {
           "method": "Near‑IR (NIR) – Transmission / transflection probe",
-          "text": "Worth testing if the liquid is relatively clear and an in‑line probe can be installed; NIR is suitable for liquids and colloids but may be affected by strong scattering [E10, E11]."
+          "text": "Worth testing if the liquid is sufficiently clear for transmission and an in‑line probe can be installed; NIR probes handle liquid and colloidal samples [E11, E10]."
         },
         {
           "method": "Near‑IR (NIR) – Diffuse reflection probe",
-          "text": "Worth testing if the process medium is scattering (e.g., turbid) and an in‑line probe is acceptable, because diffuse reflection handles scattering media [E12, E13]."
+          "text": "Worth testing if the sample is scattering (e.g., turbid) and an in‑line probe is acceptable, because diffuse‑reflection probes suit scattering media [E13, E12]."
         },
         {
           "method": "UV/Vis – Transmission / transflection probe",
-          "text": "Worth testing if the target absorbs in the UV/Vis range and the liquid is sufficiently transparent for transmission measurements [E14, E8]."
+          "text": "Worth testing if the target absorbs in the UV/Vis region and an in‑line probe can be used; these probes are suited to liquids [E8, E14]."
         },
         {
           "method": "Fluorescence – Fluorimetric probe (conditional)",
-          "text": "Worth testing only if a specific fluorescent species or a justified marker can be defined, since fluorescence requires a known emitter [E15, E16]."
+          "text": "Worth testing only if a specific fluorescent species or marker can be defined, as fluorescence requires a known fluorophore [E16, E15]."
         },
         {
           "method": "Mid‑IR (MIR) – Cuvette (conditional)",
-          "text": "Worth testing in the laboratory as a feasibility step if an in‑line probe is not yet possible; it uses standard cuvettes for liquid absorption [E17, E18]."
+          "text": "Worth testing in the laboratory as a feasibility step if a mid‑IR fiber link is not yet confirmed, because cuvette setups are laboratory‑only [E18, E17]."
         },
         {
           "method": "Mid‑IR (MIR) – ATR platform (conditional)",
-          "text": "Worth testing in the laboratory as a feasibility step when an in‑line probe cannot be installed immediately; provides the same ATR chemistry as an in‑line probe [E19, E18]."
+          "text": "Worth testing in the laboratory as a feasibility step if an in‑line probe cannot be installed initially, since ATR platforms are lab‑based [E18, E19]."
         }
       ],
-      "measurementConcept": "An immersible fiber‑optic probe (ATR, Raman or NIR) placed directly in the liquid stream, with the fiber link running to the spectrometer; the probe tip contacts the process fluid to ensure optical coupling [E4, E5, E6]. If a laboratory test is required, a cuvette or ATR plate can be used with the same fiber link.",
-      "spectralRange": "Mid‑IR 4000–400 cm⁻¹ (2.5–25 µm) for ATR or cuvette, Raman detection in the visible/short‑wave NIR (≈400–1100 nm) with typical 785 nm excitation, and NIR 780–2500 nm for transmission or diffuse reflection. The exact usable range must be confirmed against the available fiber type and length.",
+      "measurementConcept": "An immersible fiber‑optic probe (ATR, Raman or NIR) placed directly in the liquid stream would provide in‑process sampling‑free measurements, as immersible probes are used for liquids in situ [E4, E5, E6]. The probe would be connected to the spectrometer via a suitable fiber link (silica for UV‑Vis/NIR, chalcogenide or fluoride for mid‑IR) of appropriate length for the plant layout. The geometry (ATR contact, transmission or diffuse reflection) will be chosen based on the optical variability of the process fluid.",
+      "spectralRange": "Mid‑IR ATR probes cover 4000–400 cm⁻¹ (2.5–25 µm) [E7]; Raman probes operate with visible/short‑wave NIR excitation (e.g., 785 nm) within 400–1100 nm detection [E9]; NIR transmission and diffuse‑reflection probes span 780–2500 nm [E10, E12]; UV/Vis probes cover the UV and visible region [E14]. The exact range required must be confirmed once the target analyte is identified.",
       "risks": [
-        "If the measurement interface must be non‑contact, all probe‑based methods drop out.",
-        "High turbidity or bubbles could invalidate transmission‑based approaches.",
-        "If only UV/Vis fibers are available, MIR methods cannot be used.",
-        "Without a defined target species, methods such as fluorescence may be unsuitable."
+        "If the process requires non‑contact measurement, all probe‑based methods would be invalid.",
+        "High turbidity or bubbles could invalidate transmission‑based probes.",
+        "A mid‑IR fiber may not be available, limiting MIR methods.",
+        "Without a defined target analyte, spectral region selection may be incorrect."
       ],
       "feasibilityPlan": [
-        "1. Obtain a small sample of the process liquid and measure its baseline optical properties (turbidity, absorption) with a benchtop spectrometer.",
-        "2. Perform a laboratory feasibility test using a MIR ATR crystal or a cuvette to record spectra and identify any characteristic bands of potential contaminants.",
-        "3. Run parallel Raman and NIR measurements on the same sample to compare signal strength and interference from scattering.",
-        "4. Validate the laboratory spectra against an independent reference method (e.g., GC‑MS or HPLC) for known spiked contaminants.",
-        "5. Assess fiber transmission losses for the available fiber type over the required length to confirm that the chosen spectral range can be delivered to an in‑line probe."
+        "Obtain a small sample of the process liquid and measure its baseline optical properties (turbidity, absorption) with a handheld spectrometer.",
+        "Perform laboratory feasibility tests using a mid‑IR ATR crystal and a Raman microscope on the same sample to identify any characteristic bands.",
+        "Compare the laboratory spectra with reference measurements of known contaminants (e.g., standard solutions) to assess detectability.",
+        "If transmission is feasible, test a NIR transmission probe on the sample in a cuvette and record spectra.",
+        "Evaluate the signal‑to‑noise and detection limits against the expected concentration change; document the fiber type and length needed for each method."
       ],
-      "decisionBasis": "A go/no‑go decision will be based on (i) confirmation that the target species produces a detectable spectral feature in the chosen range, (ii) demonstration that the probe can be installed in‑line without excessive fouling, and (iii) meeting the client‑defined detection limit and response time for the process control. Acceptance criteria must be defined by the client once the target variable and required sensitivity are known."
+      "decisionBasis": "The final go/no‑go decision will be based on whether a probe can be installed in‑line, the spectral region that contains diagnostic features for the unknown contaminant, and whether the method meets the required detection limit for the expected concentration change. Acceptance targets will be defined by the client once the specific quality variable and concentration range are known."
     },
     "evidence": [
       {
@@ -2199,6 +2200,6 @@
       }
     ],
     "model": "gpt-oss 120B",
-    "latencyMs": 16618
+    "latencyMs": 22071
   }
 }

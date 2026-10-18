@@ -5,7 +5,7 @@
     "title": "A research sensor requested for immediate surgical use",
     "text": "We read the supplied LED NIR kidney study and want to use the same concept to guide tumor boundary decisions during live surgery. Can we quote its findings as proof that the proposed sensor is ready for that use? We have no new in vivo data and no validation on our own setup. What assessment and next feasibility steps are appropriate?"
   },
-  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "generatedAt": "2026-10-18T17:42:58.665Z",
   "tree": {
     "model": "Cloudflare Clef (classifier)",
     "decisions": [
@@ -792,7 +792,7 @@
         "value": "yes"
       }
     ],
-    "latencyMs": 3056,
+    "latencyMs": 2847,
     "passagesRead": 64,
     "usage": {
       "inputTokens": 0,
@@ -2327,81 +2327,59 @@
         "text": "Mid-IR (MIR) – Cuvette: absorption, samples liquid"
       }
     ],
-    "openSteps": [
-      {
-        "title": "Sample state",
-        "question": "What is the physical state and optical appearance of the sample at the measurement point (powder, clear / turbid / opaque liquid, paste or melt, solid)?"
-      },
-      {
-        "title": "Measurement interface",
-        "question": "Should the measurement be in-line with a probe, contact-free at a distance, or on laboratory samples?"
-      },
-      {
-        "title": "Usable spectral range",
-        "question": "Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?"
-      },
-      {
-        "title": "Optical variability",
-        "question": "Do turbidity, optical density, texture or bubbles of the sample change during the process, and over what range?"
-      },
-      {
-        "title": "Concentration level",
-        "question": "In what concentration range is the target present, and what change must be detected?"
-      }
-    ]
+    "openSteps": []
   },
   "report": {
     "report": {
-      "decisionStatus": "Outside the supported scope (Clinical / in-vivo use requested.) – only research‑feasibility steps can be proposed.",
+      "decisionStatus": "Outside the supported scope (Clinical / in-vivo use requested.)",
       "requirementsStated": [
-        "Use context: Clinical / in‑vivo",
-        "Requested answer: First assessment",
-        "Spectral region: NIR",
-        "Study as proof: yes"
+        "The measurement must be performed in a clinical, in‑vivo setting.",
+        "The target spectral region is near‑infrared (NIR).",
+        "The customer wants to use the published LED NIR kidney study as proof of readiness.",
+        "The measurement goal is classification of tissue (tumour vs normal).",
+        "The customer requests an initial assessment and feasibility steps."
       ],
       "keyUnknowns": [
-        "Physical state and optical appearance of the tissue at the measurement point",
-        "Whether the measurement will be in‑line with a probe, contact‑free, or on excised laboratory samples",
-        "Fiber link type and length; possibility of using an IR‑transparent fiber for mid‑IR",
-        "Extent of turbidity, optical density, texture or bubbles during surgery",
-        "Concentration range of the target analyte and required detection change"
+        "Physical state and optical appearance of the tissue at the measurement point (powder, clear/turbid liquid, paste, melt, solid).",
+        "Whether the probe will be used in‑line, in contact with tissue, or at a distance (non‑contact).",
+        "Which fiber link will be used and whether an IR‑transparent fiber is required.",
+        "Extent of optical variability (turbidity, bubbles, texture) during surgery.",
+        "Concentration range of the diagnostic biomarker and the magnitude of change to be detected."
       ],
       "clarificationQuestions": [
-        "What is the exact physical state of the tissue at the measurement site (solid, soft solid, paste, etc.)?",
-        "Will the sensor be placed in direct contact with tissue, held at a distance, or used on removed samples?",
-        "Which fiber link will connect the probe to the analyser and can it transmit mid‑IR wavelengths?",
-        "How does tissue turbidity or the presence of bubbles vary during the procedure?",
-        "What is the expected concentration range of the diagnostic marker and the minimum change to be detected?"
+        "What is the exact physical state of the tissue at the measurement site?",
+        "Will the sensor be in direct contact with tissue or will it operate remotely?",
+        "What fiber type and length will connect the probe to the analyser, and is a mid‑IR fibre required?"
       ],
       "recommendation": [
         {
-          "method": "Mid‑IR (MIR) – ATR probe",
-          "text": "Worth testing if the tissue can be presented as a liquid, paste or soft solid and the probe can be placed in direct contact; also requires a mid‑IR‑transparent fibre link [E10, E11]."
+          "method": "Mid‑IR – ATR probe",
+          "text": "Worth testing if the tissue can be presented as a liquid, paste or soft solid and if a contact probe can be used; the technique offers high chemical selectivity [E11] but suitability is unknown for the sample state [E12]."
         },
         {
           "method": "Raman – Raman probe",
-          "text": "Worth testing if the measurement can be performed in contact mode on liquid, powder or solid tissue and the probe can be positioned at the surgical site [E13, E11]."
+          "text": "Worth testing if the tissue can be accessed with a contact probe and the sample state includes liquid, powder or solid; Raman provides high chemical selectivity [E11] yet its suitability is unverified for the unknown sample state [E12]."
         },
         {
-          "method": "Mid‑IR (MIR) – Cuvette",
-          "text": "Worth testing only if the sample can be removed, placed in a liquid cuvette and analysed off‑line, with a suitable mid‑IR fibre link [E14, E11]."
+          "method": "Mid‑IR – Cuvette",
+          "text": "Worth testing only if the tissue can be placed in a liquid cuvette and a contact geometry is feasible; it gives high chemical selectivity [E11] but is unsuitable for soft solid or tissue samples [E12]."
         }
       ],
-      "measurementConcept": "A fibre‑optic probe (ATR or Raman) would be positioned at the tissue surface to collect reflected or scattered light; the probe is linked to an analyser via a suitable fibre (silica for NIR, chalcogenide for mid‑IR) [E1, E2, E3]. Geometry and distance must match the chosen interface (contact vs non‑contact).",
-      "spectralRange": "Mid‑IR ATR and cuvette methods cover 4000–400 cm⁻¹ (2.5–25 µm); Raman uses visible/short‑wave NIR (400–1100 nm, e.g. 785 nm excitation). Confirmation of analyser and fibre transmission in the selected band is still required.",
+      "measurementConcept": "A fibre‑optic probe would be positioned at the surgical site to collect diffuse reflectance or Raman scattering from the tissue; the probe would feed light to an analyser via a fibre link, enabling in‑situ classification of tumour boundaries [E1, E2, E3].",
+      "spectralRange": "Mid‑IR methods cover 4000–400 cm⁻¹ (2.5–25 µm) and Raman operates in the visible/short‑wave NIR (400–1100 nm); the exact range that can be delivered by the chosen fibre link must be confirmed.",
       "risks": [
-        "Clinical or in‑vivo use is outside AFS’s supported scope, so any recommendation is limited to laboratory feasibility [E8].",
-        "A published ex‑vivo study does not guarantee performance on a new in‑vivo setup; validation data are mandatory [E9].",
-        "If the tissue state or measurement geometry differs from the method’s suitability, the technique may be unsuitable [E12]."
+        "Clinical/in‑vivo use is outside AFS’s supported scope, so any recommendation is limited to research feasibility [E8].",
+        "The sample state and measurement interface are unknown, which may render the conditional methods unsuitable [E12].",
+        "If only NIR capability is available, mid‑IR methods may be inaccessible."
       ],
       "feasibilityPlan": [
-        "1. Obtain ex‑vivo tissue samples that mimic the intended intra‑operative state (e.g., fresh soft tissue).",
-        "2. Select a probe (ATR or Raman) compatible with the sample state and connect it to the analyser via the chosen fibre.",
-        "3. Record spectra on the samples and on independent reference measurements (e.g., histology) to build a classification model.",
-        "4. Evaluate model performance (accuracy, sensitivity, specificity) against the reference data.",
-        "5. Document any deviations caused by turbidity, bubbles or temperature and assess repeatability."
+        "Obtain ex‑vivo tissue samples that mimic the expected in‑vivo state (e.g., fresh soft tissue).",
+        "Select a probe (ATR or Raman) compatible with the sample state and connect it with the intended fibre link.",
+        "Record spectra on the probe and on a reference benchtop spectrometer under identical conditions.",
+        "Build a classification model (e.g., PLS‑DA) using the probe data and validate against the reference measurements.",
+        "Compare model performance (accuracy, sensitivity) to the published study to assess feasibility."
       ],
-      "decisionBasis": "A go/no‑go decision will be based on achieving classification performance (e.g., >90 % accuracy) on independent reference data and confirming that the probe‑fibre‑analyser chain operates reliably in the required spectral band. Acceptance targets are defined by the client’s clinical decision thresholds."
+      "decisionBasis": "Proceed to a go decision only if the probe‑based model achieves classification performance comparable to the published ex‑vivo study and the fibre link can deliver the required spectral range; otherwise the method is rejected. Acceptance targets are defined by the client’s required diagnostic accuracy for tumour boundary guidance."
     },
     "evidence": [
       {
@@ -2497,6 +2475,6 @@
       }
     ],
     "model": "gpt-oss 120B",
-    "latencyMs": 12624
+    "latencyMs": 25433
   }
 }

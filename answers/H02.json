@@ -5,7 +5,7 @@
     "title": "Composition monitoring across two dairy streams",
     "text": "Our dairy process handles both a relatively clear whey stream and an opaque milk concentrate. We want a pilot for composition monitoring, using laboratory protein and fat results where those variables are relevant. We can compare different measurement interfaces before choosing the installation. What first measurement concepts and comparison experiment would make sense for these two streams?"
   },
-  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "generatedAt": "2026-10-18T17:42:58.665Z",
   "tree": {
     "model": "Cloudflare Clef (classifier)",
     "decisions": [
@@ -798,7 +798,7 @@
         "value": "no"
       }
     ],
-    "latencyMs": 3665,
+    "latencyMs": 2626,
     "passagesRead": 64,
     "usage": {
       "inputTokens": 0,
@@ -2396,55 +2396,55 @@
     "report": {
       "decisionStatus": "Insufficient information (Sample state is unknown.)",
       "requirementsStated": [
-        "Pilot for composition monitoring of a clear whey stream and an opaque milk concentrate",
+        "Pilot composition monitoring for whey (relatively clear) and milk concentrate (opaque)",
         "Use laboratory protein and fat results as reference",
         "Compare different measurement interfaces before final installation",
         "First measurement concepts and comparison experiment needed"
       ],
       "keyUnknowns": [
-        "Physical state and optical appearance of each stream at the measurement point",
+        "Physical state and optical appearance of the sample at the measurement point",
         "Preferred measurement interface (in‑line probe, contact‑free, or laboratory sample)",
-        "Available fiber link and spectral range (UV/Vis/NIR vs. Mid‑IR)",
-        "Extent of turbidity, bubbles or texture changes during processing",
-        "Concentration range of protein and fat and required detection change"
+        "Spectral range that can be delivered by the fiber link (UV/Vis/NIR vs MIR)",
+        "Extent of optical variability (turbidity, bubbles, texture) during processing",
+        "Target concentration ranges and required detection limits for protein and fat"
       ],
       "clarificationQuestions": [
-        "What is the exact physical state (liquid, paste, melt, powder) and optical opacity of the whey and milk concentrate at the point of measurement?",
-        "Should the measurement be performed with an in‑line immersed probe, a flush‑mounted reflection probe, or on withdrawn laboratory samples?",
-        "Which fiber type and length are available, and is a Mid‑IR‑transparent fiber an option?",
-        "How does turbidity or bubble content vary during normal operation of each stream?",
-        "What are the typical protein and fat concentrations and the minimum change that must be detected?"
+        "What is the exact physical state and optical appearance of the whey and milk concentrate at the measurement point (clear, turbid, opaque liquid, paste, etc.)?",
+        "Should the measurement be performed with an in‑line probe, a non‑contact remote sensor, or on extracted laboratory samples?",
+        "Which fiber link will be used and does it support mid‑IR transmission if a MIR method is chosen?",
+        "How does turbidity, bubble content or texture vary during the process for each stream?",
+        "What are the concentration ranges of protein and fat and the minimum change that must be detected?"
       ],
       "recommendation": [
         {
-          "method": "Mid‑IR (MIR) – ATR probe (conditional)",
-          "text": "Worth testing if the streams can be presented as a thin liquid layer (<50 µm) at the probe tip, because ATR gives high chemical selectivity for protein and fat [E16] and works with opaque, highly scattering liquids [E2, E5]."
+          "method": "Mid‑IR – ATR probe",
+          "text": "Worth testing if the samples are liquid, paste or soft and an in‑line probe can be installed, and a mid‑IR‑compatible fiber link is available; ATR works with highly scattering or opaque liquids without dilution [E15][E16][E17]."
         },
         {
-          "method": "Raman – Raman probe (conditional)",
-          "text": "Worth testing if the sample can be accessed by a probe that tolerates liquids, powders or solids, because Raman provides composition selectivity and is less affected by water absorption [E11, E16]."
+          "method": "Raman – Raman probe",
+          "text": "Worth testing if the samples can be presented to an in‑line probe (liquid, powder or solid) and the process tolerates the probe geometry; Raman gives high chemical selectivity for protein and fat [E18][E16][E17]."
         },
         {
-          "method": "Mid‑IR (MIR) – Cuvette (conditional)",
-          "text": "Worth testing in a laboratory feasibility set‑up if a small volume of each stream can be placed in a transmission cuvette, allowing direct comparison with reference analytics [E20, E16]."
+          "method": "Mid‑IR – Cuvette",
+          "text": "Worth testing in a laboratory feasibility set‑up if the samples are liquid and a thin path (<50 µm) can be prepared; useful for initial correlation studies before in‑line deployment [E19][E16][E17][E20]."
         }
       ],
-      "measurementConcept": "Start with an immersible probe mounted flush to the pipe wall for the opaque milk concentrate (reflection/ATR) and a separate probe in a side‑stream of the clear whey (transmission or ATR) [E6, E7]. The probe(s) connect to the analyser via the appropriate fiber (UV/Vis/NIR or Mid‑IR) selected after confirming the required spectral range [E6, E7].",
-      "spectralRange": "Mid‑IR ATR and cuvette methods cover 4000–400 cm⁻¹ (2.5–25 µm) [E15]; Raman uses 400–1100 nm excitation/detection (e.g., 785 nm) [E18]. The usable range must be confirmed against the available fiber link and any wavelength‑dependent attenuation in the process streams.",
+      "measurementConcept": "Use a flush‑mounted reflection probe for the opaque milk concentrate and a transmission or ATR arrangement for the clearer whey; both probes can be linked to the analyser via appropriate fiber (UV/Vis/NIR or MIR) and positioned in the pipe or a bench‑top flow cell [E1][E3][E6].",
+      "spectralRange": "Mid‑IR nominal 4000–400 cm⁻¹ (2.5–25 µm) for ATR and cuvette methods; visible/short‑wave NIR 400–1100 nm for Raman. The exact fiber transmission capability must be verified for the chosen range [E15][E18].",
       "risks": [
-        "If the sample is a thick paste or solid, ATR or Raman probe may not couple efficiently (premise block).",
-        "High turbidity could saturate transmission setups, making cuvette measurements invalid [E5].",
-        "Mid‑IR fibres may not be available, limiting the use of ATR or cuvette methods.",
-        "Variable bubbles or foam could cause scattering artefacts that degrade calibration [E14]."
+        "Sample may be a powder, melt or rigid solid, making ATR or Raman probe unsuitable [E17]",
+        "High turbidity or opacity could saturate transmission setups, reducing signal quality [E5][E3]",
+        "Mid‑IR fibers may not be available or long enough for the plant layout",
+        "Probe fouling or coating by milk fat could degrade performance over time"
       ],
       "feasibilityPlan": [
-        "1. Collect small‑volume samples of whey and milk concentrate at the intended measurement point.",
-        "2. Measure each sample with a laboratory Mid‑IR ATR accessory and with a Raman probe, recording spectra under identical conditions.",
-        "3. Perform reference protein and fat analysis on the same samples using the customer’s laboratory method.",
-        "4. Develop chemometric models (e.g., PLS) linking the spectral data to the reference results and evaluate prediction errors.",
-        "5. Compare probe‑based predictions to reference values and assess repeatability across multiple samples to decide if in‑line implementation is viable."
+        "Collect representative whey and milk‑concentrate samples at the intended measurement point.",
+        "Perform laboratory MIR cuvette measurements on each sample and correlate spectra with the known protein and fat values.",
+        "Set up a bench‑top flow cell with an ATR probe, measure both streams under flow, and record spectra.",
+        "Acquire Raman spectra with a probe compatible with liquids and powders on the same samples.",
+        "Analyse the data with chemometric models (e.g., PLS) and compare prediction errors and robustness across the three techniques."
       ],
-      "decisionBasis": "A go/no‑go decision will be based on whether the probe‑derived protein and fat predictions meet the accuracy and detection‑change targets defined by the client (e.g., <5 % relative error and ability to detect the required concentration change). If the conditional methods satisfy these targets in the feasibility test, the corresponding interface will be selected for pilot deployment."
+      "decisionBasis": "Proceed to full in‑line deployment if a method achieves a strong correlation (e.g., R² > 0.9) with laboratory protein and fat results, meets the required detection change, and demonstrates acceptable robustness to fouling and optical variability; otherwise reject or revisit the measurement concept."
     },
     "evidence": [
       {
@@ -2582,6 +2582,6 @@
       }
     ],
     "model": "gpt-oss 120B",
-    "latencyMs": 18278
+    "latencyMs": 17514
   }
 }

@@ -5,7 +5,7 @@
     "title": "A new formulation after an existing NIR pilot",
     "text": "Our existing NIR pilot follows API concentration in one powder formulation at the tablet press feed frame. We are introducing a different API and excipient blend and would like to reuse the calibration. A colleague suggests adding Raman so that the old calibration will remain valid. What should our first technical assessment and experiment be?"
   },
-  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "generatedAt": "2026-10-18T17:42:58.665Z",
   "tree": {
     "model": "Cloudflare Clef (classifier)",
     "decisions": [
@@ -793,7 +793,7 @@
         "value": "no"
       }
     ],
-    "latencyMs": 3850,
+    "latencyMs": 2373,
     "passagesRead": 64,
     "usage": {
       "inputTokens": 0,
@@ -1486,61 +1486,62 @@
     "report": {
       "decisionStatus": "Provisional feasibility assessment (Shortlist based on stated facts; to be confirmed by a feasibility test.)",
       "requirementsStated": [
-        "Measure API concentration in a powder/granulate blend at the tablet press feed frame",
-        "Single product stream",
-        "Target definition is clearly defined",
-        "Process‑monitoring use case",
-        "Non‑aqueous matrix",
-        "Formulation matrix has changed from the original calibration",
-        "NIR spectroscopy is already in use",
-        "Raman spectroscopy is desired as an additional technique",
-        "Existing NIR calibration is available and would like to reuse it",
-        "In‑process probe will be used for measurement"
+        "Existing NIR pilot follows API concentration in one powder formulation at the tablet press feed frame.",
+        "Desire to reuse the existing calibration with a new API‑excipient blend.",
+        "Consider adding Raman to keep the old calibration valid.",
+        "Single product stream.",
+        "Target definition is clearly defined.",
+        "Use case is process monitoring.",
+        "Matrix is non‑aqueous.",
+        "Formulation matrix is changed.",
+        "NIR measurement is required.",
+        "Raman measurement is required.",
+        "An existing calibration model is already available."
       ],
       "keyUnknowns": [
-        "Usable spectral range – which fiber link (type, length) connects probe to analyser and whether an IR‑transparent fiber can be used",
-        "Optical variability – presence of turbidity, optical density changes, texture or bubbles during the feed frame process",
-        "Concentration level – API concentration range in the new blend and the magnitude of change that must be detected"
+        "Which fiber link (type, length) connects the analyzer to the probe and whether an IR‑transparent fiber can be used if mid‑IR is preferred.",
+        "How the optical properties of the powder (turbidity, density, texture, bubbles) vary during the process.",
+        "What concentration range the API is present in and what magnitude of change must be detected."
       ],
       "clarificationQuestions": [
-        "What fiber type and length are currently installed, and can an IR‑transparent fiber be added if mid‑IR is considered?",
-        "Does the powder feed exhibit significant changes in turbidity, density or bubble formation that could affect reflectance or Raman signal?",
-        "What is the expected API concentration range in the new formulation and the minimum detectable change required for process control?"
+        "What fiber type and length are currently installed, and can an IR‑transparent fiber be added if needed?",
+        "Do the powder’s optical characteristics (turbidity, density, texture, bubbles) change significantly during feeding, and over what range?",
+        "What is the expected API concentration range and the minimum detectable change required for process control?"
       ],
       "recommendation": [
         {
           "method": "Raman – Raman probe",
-          "text": "Worth testing because Raman scattering works on powders, offers high chemical selectivity and uses the same probe geometry as the existing NIR setup [E9, E10, E11]."
+          "text": "Worth testing because Raman probes work with powders and provide high chemical selectivity, which may complement the existing NIR data [E9, E10, E11]."
         },
         {
           "method": "Near‑IR – Diffuse reflection probe",
-          "text": "Worth testing as diffuse‑reflection NIR is proven for powder blends and matches the current in‑line configuration [E12, E10]."
+          "text": "Worth testing if the NIR range remains suitable for the new formulation, as diffuse‑reflection probes are proven for powder samples [E12, E10]."
         },
         {
           "method": "Near‑IR – Surface‑at‑a‑distance probe",
-          "text": "Worth testing if a non‑contact geometry is preferred; it also handles powders effectively [E13, E10]."
+          "text": "Worth testing as an alternative NIR geometry for powders, offering similar spectral coverage without direct contact [E13, E10]."
         },
         {
           "method": "Near‑IR – Integrating sphere (conditional)",
-          "text": "Worth testing in the laboratory to obtain high‑quality reference spectra before moving to an inline probe; not suitable for direct in‑line installation [E14, E15]."
+          "text": "Worth testing in the laboratory only, because the integrating‑sphere setup is not suitable for in‑line installation but can provide reference data for feasibility [E14, E15]."
         }
       ],
-      "measurementConcept": "An in‑process probe will be positioned at the tablet press feed frame to collect either Raman scattered light or diffuse‑reflection NIR from the moving powder stream; the probe is linked to a remote spectrometer via fibre optics, keeping the analyser away from vibration and dust [E1, E3, E5].",
-      "spectralRange": "Raman probe operates in the visible to short‑wave NIR (≈400–1100 nm) with typical 785 nm excitation; NIR diffuse‑reflection probes cover 780–2500 nm. The exact usable range depends on the installed fibre type and length and must be verified for any mid‑IR option [E9, E12, E13].",
+      "measurementConcept": "An in‑line probe will be positioned at the tablet press feed frame to interrogate the powder blend directly; the probe will be linked to the spectrometer via a fiber optic cable whose type and length must be confirmed to support the chosen spectral range [E1, E3, E5].",
+      "spectralRange": "Raman probe operates nominally over 400–1100 nm (e.g., 785 nm excitation) and NIR probes cover 780–2500 nm; the exact usable range depends on the fiber link and must be verified for the installed fiber [E9, E12, E13].",
       "risks": [
-        "Matrix change makes the existing NIR calibration invalid (calibrations are matrix‑specific) [E8]",
-        "Uncertain fibre transmission may limit the spectral range or introduce losses",
-        "Optical variability (turbidity, bubbles) could degrade signal quality",
-        "Unknown API concentration range may require higher sensitivity than the tested methods provide"
+        "Matrix change makes the existing calibration invalid; adding Raman does not preserve the old model [E8].",
+        "If the installed fiber does not transmit the required wavelengths, the chosen method may be unusable.",
+        "Uncharacterised optical variability of the powder could degrade signal quality.",
+        "Unknown API concentration may be outside the detection capability of the tested methods."
       ],
       "feasibilityPlan": [
-        "1. Install the Raman probe on the feed frame and connect it with the current fibre link; acquire Raman spectra of the new blend.",
-        "2. Use the existing NIR diffuse‑reflection probe (or surface‑at‑a‑distance probe) to collect NIR spectra under identical process conditions.",
-        "3. Collect independent reference concentrations (e.g., HPLC) for a set of samples covering the expected API range.",
-        "4. Build preliminary calibration models for Raman and NIR data and evaluate prediction errors against the reference values.",
-        "5. Compare the two techniques for signal quality, robustness to optical variability, and ability to meet the required detection change."
+        "Assemble a laboratory test rig with the Raman probe and a NIR diffuse‑reflection probe using the same powder blend as in the process.",
+        "Prepare reference samples spanning the expected API concentration range (to be defined) and acquire spectra with both probes.",
+        "Build preliminary calibration models for Raman and NIR data and evaluate prediction error against independent reference analysis (e.g., HPLC).",
+        "Simulate process optical variability (e.g., change bulk density, add air bubbles) and record the effect on spectral quality.",
+        "Compare laboratory results with the constraints of the installed fiber link to confirm that the required spectral range can be delivered."
       ],
-      "decisionBasis": "A go decision will be made if a calibration model built from the new blend using Raman and/or NIR meets the client’s acceptable prediction error (as defined in the process monitoring specification). Failure to achieve the target error or inability to obtain reliable spectra due to fibre or optical variability will lead to a no‑go."
+      "decisionBasis": "A go decision will be made if a calibration model built with the new powder blend meets the client’s required prediction accuracy and robustness to matrix variability, as demonstrated in the feasibility test; otherwise the method will be rejected."
     },
     "evidence": [
       {
@@ -1642,6 +1643,6 @@
       }
     ],
     "model": "gpt-oss 120B",
-    "latencyMs": 29934
+    "latencyMs": 26920
   }
 }

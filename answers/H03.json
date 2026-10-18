@@ -5,7 +5,7 @@
     "title": "A fluorescence instrument requested for glucose and viable biomass",
     "text": "We already have a fluorescence spectrometer and would like to use it to report glucose concentration and viable biomass directly during fermentation. Our only justification is that fluorescence can be very sensitive. We have not identified a fluorescent target, marker or reference relationship. What should the assistant tell us?"
   },
-  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "generatedAt": "2026-10-18T17:42:58.665Z",
   "tree": {
     "model": "Cloudflare Clef (classifier)",
     "decisions": [
@@ -786,7 +786,7 @@
         "value": "no"
       }
     ],
-    "latencyMs": 2895,
+    "latencyMs": 1946,
     "passagesRead": 64,
     "usage": {
       "inputTokens": 0,
@@ -2052,57 +2052,57 @@
     "report": {
       "decisionStatus": "Insufficient information (No measurement target identified. Sample state is unknown.)",
       "requirementsStated": [
-        "Report glucose concentration and viable biomass during fermentation",
-        "Use existing fluorescence spectrometer",
+        "Existing fluorescence spectrometer is available",
+        "Goal is to report glucose concentration and viable biomass directly during fermentation",
+        "Fluorescent target has not been identified",
         "Process monitoring of a single stream",
-        "Fluorescence detection desired"
+        "Fluorescence detection is desired"
       ],
       "keyUnknowns": [
         "Physical state and optical appearance of the sample at the measurement point",
-        "Preferred measurement interface (in‑line probe, remote, or lab sample)",
-        "Fiber link type and length; whether an IR‑compatible fiber can be used",
-        "Exact constituent or quality variable to be quantified (glucose, biomass, or a proxy)",
-        "Extent of turbidity, bubbles or other optical variability during the run",
-        "Concentration range of the target and required detection limit"
+        "Preferred measurement interface (in‑line probe, contact‑free, or laboratory sample)",
+        "Fiber link that will connect analyzer and probe and whether an IR fiber is required",
+        "Exact constituent or quality variable that must be measured",
+        "Extent of turbidity, bubbles or other optical variability during the process",
+        "Concentration range of the target and required detection change"
       ],
       "clarificationQuestions": [
-        "What is the sample state (clear liquid, turbid broth, paste, solid, etc.)?",
-        "Will the measurement be performed with an in‑line probe, a remote free‑space head, or on withdrawn samples?",
-        "Which fiber link will connect the spectrometer to the probe and can it transmit mid‑IR if needed?",
-        "What specific analytical variable must be measured (glucose concentration, biomass optical density, a fluorescent metabolite, etc.)?",
-        "How does turbidity or bubble formation vary during the fermentation?",
-        "What concentration range and change magnitude must be detected for the target?"
+        "What is the physical state of the fermentation broth at the measurement point (clear, turbid, foamy, etc.)?",
+        "Will the measurement be performed in‑line with a probe, or remotely on a sample?",
+        "Which fiber type and length will be used, and is a mid‑IR fiber available if needed?",
+        "What specific analytical relationship (e.g., fluorescence intensity vs. glucose) is required?",
+        "How does turbidity or bubble formation vary during the run?",
+        "What concentration range of glucose/biomass must be detected and what is the minimum change of interest?"
       ],
       "recommendation": [
         {
-          "method": "Mid‑IR (MIR) – ATR probe",
-          "text": "Worth testing if the broth is a liquid or soft paste and an IR‑transparent fiber can be installed; MIR offers molecular absorption that can correlate with glucose or biomass when a suitable calibration is defined [E4, E5]."
+          "method": "Mid‑IR – ATR probe",
+          "text": "Worth testing if the broth can be accessed with an ATR probe and the fiber link supports mid‑IR wavelengths; suitability depends on sample state and in‑line geometry [E4, E5]."
         },
         {
           "method": "Raman – Raman probe",
-          "text": "Worth testing if the sample can be accessed with a probe (liquid, powder or solid) and the optical path is not dominated by scattering; Raman can provide compositional information without a fluorescent tag [E6, E5]."
+          "text": "Worth testing if a Raman probe can be placed in‑line and the sample is compatible with Raman scattering (liquid, powder or solid); suitability depends on sample state and probe placement [E6, E5]."
         },
         {
-          "method": "Near‑IR (NIR) – Transmission / transflection probe",
-          "text": "Worth testing if the broth is sufficiently transparent for transmission or can be measured in transflection mode; NIR can quantify glucose and biomass through multivariate models when the optical variability is manageable [E7, E5]."
+          "method": "Near‑IR – Transmission / transflection probe",
+          "text": "Worth testing if the broth is sufficiently transmissive for NIR and an in‑line transmission geometry can be realised; suitability depends on sample state and probe configuration [E7, E5]."
         }
       ],
-      "measurementConcept": "A fiber‑optic probe (ATR, Raman or transmission) would be positioned at the fermentation line, coupled to the existing spectrometer via a suitable fiber link; the probe geometry (contact, immersion or window) must match the sample state to ensure adequate optical coupling [E4, E6, E7].",
-      "spectralRange": "MIR ATR: 4000–400 cm⁻¹ (2.5–25 µm); Raman excitation typically 785 nm with detection 400–1100 nm; NIR transmission: 780–2500 nm. The exact usable range depends on the fiber type and any spectral filters required – still to be confirmed.",
+      "measurementConcept": "A fiber‑optic probe (ATR, Raman or transmission) would be positioned at the fermentation line to collect emitted or scattered light, with the fiber link carrying the signal to the existing spectrometer; the exact probe geometry and fiber type must match the chosen spectral range [E4, E6, E7].",
+      "spectralRange": "Mid‑IR ATR: 4000–400 cm⁻¹ (2.5–25 µm); Raman: 400–1100 nm (visible to short‑wave NIR); Near‑IR transmission: 780–2500 nm. The compatible fiber link for each range still needs confirmation.",
       "risks": [
-        "Fluorescence alone is not selective; without a defined fluorophore it cannot directly report glucose or biomass (E3).",
-        "If the sample is highly turbid or contains bubbles, transmission‑based methods may fail.",
-        "Incorrect fiber choice could block the required spectral region.",
-        "Calibration models may be invalid if optical properties change during the run."
+        "Fluorescence alone is not selective and cannot report glucose or biomass without a defined fluorophore [E3]",
+        "Sample state is unknown, so probe suitability cannot be guaranteed [E5]",
+        "Optical variability (turbidity, bubbles) may impair transmission or scattering measurements"
       ],
       "feasibilityPlan": [
-        "1. Obtain a representative fermentation broth sample and characterise its physical state, turbidity and presence of any intrinsic fluorescence.",
-        "2. Install a short‑length test probe (ATR, Raman or NIR) with a compatible fiber and record spectra while simultaneously measuring glucose (e.g., HPLC) and biomass (dry weight) as reference.",
-        "3. Develop a multivariate calibration (e.g., PLS) linking spectral features to the reference measurements.",
-        "4. Validate the model on independent broth samples covering the expected concentration range.",
-        "5. Assess probe robustness by introducing typical process variations (bubbles, temperature shifts) and compare spectral stability."
+        "Select a representative fermentation broth sample and characterise its physical state and optical properties (turbidity, colour, presence of bubbles).",
+        "Install a candidate probe (ATR, Raman or NIR) in a laboratory flow cell mimicking the intended in‑line location.",
+        "Collect spectra with the existing fluorescence spectrometer while simultaneously measuring glucose and biomass with reference methods (e.g., HPLC, dry weight).",
+        "Analyse correlation between spectral features and reference concentrations to assess selectivity and sensitivity.",
+        "Evaluate probe performance under varying turbidity or bubble conditions to determine robustness."
       ],
-      "decisionBasis": "The go/no‑go decision will be based on whether a reproducible calibration can be built that meets the client’s required accuracy for glucose and biomass (to be defined), and whether the probe can operate reliably under the identified sample state and optical variability."
+      "decisionBasis": "The method will be accepted if a statistically significant correlation (e.g., R² > 0.9) between the optical signal and independently measured glucose/biomass can be demonstrated across the expected concentration range, and if the probe can operate reliably under the identified sample state and optical variability."
     },
     "evidence": [
       {
@@ -2151,6 +2151,6 @@
       }
     ],
     "model": "gpt-oss 120B",
-    "latencyMs": 12995
+    "latencyMs": 17390
   }
 }
