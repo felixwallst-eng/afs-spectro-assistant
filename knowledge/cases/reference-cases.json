@@ -1,0 +1,201 @@
+{
+  "cases": [
+    {
+      "id": "ref-D01",
+      "origin": "reference",
+      "createdAt": "2026-10-18T16:40:00.000Z",
+      "title": "D01 · Blend potency in a tablet press feed frame (worked example)",
+      "enquiry": "We manufacture tablets from a powder blend containing an active pharmaceutical ingredient and excipients. Laboratory checks tell us whether the blend is on target, but results arrive after the material has moved through the press. We want to assess whether a fiber based measurement in the feed frame could follow API concentration changes. Our first pilot should compare reasonable measurement options before we commit to production equipment.",
+      "engine": "Cloudflare Clef (classifier) · decisions after the AFS worked example",
+      "steps": [
+        {
+          "id": "sample_state",
+          "title": "Sample state",
+          "model": {
+            "basis": "customer",
+            "value": "powder_or_granular",
+            "valueName": "Powder / granulate"
+          },
+          "value": "powder_or_granular",
+          "valueName": "Powder / granulate",
+          "byExpert": false,
+          "note": "Powder blend with API and excipients, as stated. Physical variation of the powder (particle size, density, flow) changes the NIR signal and must be part of the experiment."
+        },
+        {
+          "id": "interface_mode",
+          "title": "Measurement interface",
+          "model": {
+            "basis": "customer",
+            "value": "in_process_probe",
+            "valueName": "In-process probe"
+          },
+          "value": "in_process_probe",
+          "valueName": "In-process probe",
+          "byExpert": false,
+          "note": "A powder interface for each candidate in the feed frame, e.g. a diffuse reflection probe for NIR and a Raman probe. Probe type, installation and optical configuration need AFS confirmation."
+        },
+        {
+          "id": "spectral_range",
+          "title": "Usable spectral range",
+          "model": {
+            "basis": "missing",
+            "value": null,
+            "valueName": null
+          },
+          "value": "uv_vis_nir_only",
+          "valueName": "UV/Vis/NIR only",
+          "byExpert": true,
+          "note": "Both candidates of the worked example – NIR reflection and Raman with 785 nm excitation – need only Vis–NIR light, so a standard silica fiber link is enough; mid-IR is not part of the concept. Specify the usable range of the selected system, not the nominal NIR range (780–2500 nm)."
+        },
+        {
+          "id": "target_property_type",
+          "title": "Measurement target",
+          "model": {
+            "basis": "customer",
+            "value": "chemical_composition",
+            "valueName": "Chemical composition"
+          },
+          "value": "chemical_composition",
+          "valueName": "Chemical composition",
+          "byExpert": false,
+          "note": "API concentration (blend potency) is the target; independent laboratory assays remain the reference."
+        },
+        {
+          "id": "optical_variability",
+          "title": "Optical variability",
+          "model": {
+            "basis": "missing",
+            "value": null,
+            "valueName": null
+          },
+          "value": "variable_over_process",
+          "valueName": "Changes",
+          "byExpert": true,
+          "note": "Not stated by the customer, but expected: particle size, density and flow of the blend vary between runs and change the signal. Ask which formulation, particle and operating changes occur."
+        },
+        {
+          "id": "concentration_level",
+          "title": "Concentration level",
+          "model": {
+            "basis": "missing",
+            "value": null,
+            "valueName": null
+          },
+          "value": "not_stated",
+          "valueName": "Open – ask the customer",
+          "byExpert": true,
+          "note": "Key unknown in the worked example: API, excipients and the concentration range, plus acceptance limits and response time. Ask before choosing between the candidates."
+        }
+      ],
+      "methods": [
+        {
+          "name": "Near-IR (NIR)",
+          "technique": "Diffuse reflection probe",
+          "rank": 1
+        },
+        {
+          "name": "Raman",
+          "technique": "Raman probe",
+          "rank": 2
+        }
+      ],
+      "premises": []
+    },
+    {
+      "id": "ref-D02",
+      "origin": "reference",
+      "createdAt": "2026-10-18T16:40:00.000Z",
+      "title": "D02 · Fat and protein monitoring in opaque dairy product (worked example)",
+      "enquiry": "We produce an opaque, concentrated milk product that flows through a processing line. We currently sample it for fat and protein analysis and would like earlier information about composition changes. Product temperature and texture vary during production. We want an initial spectroscopy concept and a practical comparison experiment, while retaining our laboratory checks.",
+      "engine": "Cloudflare Clef (classifier) · decisions after the AFS worked example",
+      "steps": [
+        {
+          "id": "sample_state",
+          "title": "Sample state",
+          "model": {
+            "basis": "customer",
+            "value": "opaque_scattering_liquid",
+            "valueName": "Opaque liquid"
+          },
+          "value": "opaque_scattering_liquid",
+          "valueName": "Opaque liquid",
+          "byExpert": false,
+          "note": "Opaque, concentrated milk product as stated – reflection is the usual geometry; consider another geometry only if the measured optical behaviour justifies it."
+        },
+        {
+          "id": "interface_mode",
+          "title": "Measurement interface",
+          "model": {
+            "basis": "sources",
+            "value": "in_process_probe",
+            "valueName": "In-process probe"
+          },
+          "value": "in_process_probe",
+          "valueName": "In-process probe",
+          "byExpert": true,
+          "note": "Confirmed: the product flows in a processing line, so an in-line reflection probe is the target. Test the reflection interface on representative laboratory samples first, then specify the process installation; contact geometry, fouling control and cleaning to be confirmed with AFS and the customer."
+        },
+        {
+          "id": "spectral_range",
+          "title": "Usable spectral range",
+          "model": {
+            "basis": "missing",
+            "value": null,
+            "valueName": null
+          },
+          "value": "uv_vis_nir_only",
+          "valueName": "UV/Vis/NIR only",
+          "byExpert": true,
+          "note": "The recommended NIR diffuse reflection works with a Vis–NIR silica link. 780–2500 nm is the general NIR range, not a required full coverage – check which bands the instrument and fiber actually cover."
+        },
+        {
+          "id": "target_property_type",
+          "title": "Measurement target",
+          "model": {
+            "basis": "customer",
+            "value": "chemical_composition",
+            "valueName": "Chemical composition"
+          },
+          "value": "chemical_composition",
+          "valueName": "Chemical composition",
+          "byExpert": false,
+          "note": "Fat and protein; each needs its own independent reference results."
+        },
+        {
+          "id": "optical_variability",
+          "title": "Optical variability",
+          "model": {
+            "basis": "customer",
+            "value": "variable_over_process",
+            "valueName": "Changes"
+          },
+          "value": "variable_over_process",
+          "valueName": "Changes",
+          "byExpert": false,
+          "note": "Temperature and texture vary as stated. Scattering changes can mimic composition changes, so the experiment must separate physical effects from composition."
+        },
+        {
+          "id": "concentration_level",
+          "title": "Concentration level",
+          "model": {
+            "basis": "missing",
+            "value": null,
+            "valueName": null
+          },
+          "value": "not_stated",
+          "valueName": "Open – ask the customer",
+          "byExpert": true,
+          "note": "Key unknown: product types and composition ranges, required accuracy and delay. Ask before the feasibility test; no acceptance target is invented here."
+        }
+      ],
+      "methods": [
+        {
+          "name": "Near-IR (NIR)",
+          "technique": "Diffuse reflection probe",
+          "rank": 1
+        }
+      ],
+      "premises": []
+    }
+  ]
+}

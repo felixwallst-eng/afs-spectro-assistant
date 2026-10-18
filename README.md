@@ -75,3 +75,7 @@ export default defineConfig([
 ])
 
 ```
+
+## Third-party sources
+
+`public/sources/A01.pdf`: Mishra, A.; Aghaee, M.; Tamer, I.M.; Budman, H. *Spectroscopic Advances in Real Time Monitoring of Pharmaceutical Bioprocesses: A Review of Vibrational and Fluorescence Techniques.* Spectrosc. J. 2025, 3, 12. https://doi.org/10.3390/spectroscj3020012 – © 2025 by the authors, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Included unchanged as an additional knowledge source; the knowledge cards in `knowledge/cards/A01.json` quote it with page references.

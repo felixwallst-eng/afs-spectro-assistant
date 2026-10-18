@@ -87,6 +87,7 @@ export const SOURCES: SourceDoc[] = [
   { id: 'S02', title: 'AFS Process Control Slides', kind: 'Slides, 20 pages', use: 'Fiber types and transmission ranges, probes, process applications.' },
   { id: 'S03', title: 'LED NIR Kidney Study (2017)', kind: 'Research paper', use: 'In-vitro proof of concept on 14 samples from 7 patients.' },
   { id: 'S04', title: 'Combined MIR / Fluorescence Probe (2021)', kind: 'Research paper', use: 'Simultaneous MIR ATR and fluorescence on model tissues.' },
+  { id: 'A01', title: 'Mishra et al. 2025, Spectroscopy Journal 3(2):12', kind: 'Open-access review (CC BY 4.0), added source', use: 'Bioprocess monitoring: UV/Vis, NIR, MIR, Raman, fluorescence – applications, accuracy, cost, limits. doi:10.3390/spectroscj3020012' },
   { id: 'S05', title: 'AFS Flyer', kind: 'Company overview', use: 'Business context only.' },
   { id: 'S06', title: 'Laboratory link', kind: 'Website', use: 'Business context only.' },
   { id: 'Table', title: 'AFS method comparison table', kind: 'Spreadsheet', use: 'Machine-readable S01 Table 1: method, technique, sample type, ratings.' },

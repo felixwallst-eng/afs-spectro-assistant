@@ -25,6 +25,8 @@ export interface SolvedCase {
   methods: { name: string; technique: string; rank?: number }[]
   premises: { id: string; severity: string; text: string }[]
   engine: string
+  /** reference: worked example from the AFS material, shipped with the app (cannot be deleted). */
+  origin?: 'expert' | 'reference'
 }
 
 export const MAX_CASE_BYTES = 64 * 1024

@@ -1,0 +1,198 @@
+{
+  "docId": "A01",
+  "createdAt": "2026-10-18T16:30:00.000Z",
+  "model": "Curated (Claude, quotes verified against the PDF text)",
+  "pagesRead": 24,
+  "rejected": 0,
+  "cards": [
+    {
+      "id": "A01-1",
+      "docId": "A01",
+      "page": 11,
+      "step": "sample_state",
+      "value": "turbid_or_colloidal_liquid",
+      "claim": "In a yeast fermentation, a Raman probe focused just behind the reactor wall limits the scattering by the cells in the broth.",
+      "quote": "minimizing the influence of scattering due to the solid particles (cells)"
+    },
+    {
+      "id": "A01-2",
+      "docId": "A01",
+      "page": 10,
+      "step": "sample_state",
+      "value": null,
+      "claim": "Mid-IR penetrates only a short distance, which limits the analysis of dense or opaque samples without preparation.",
+      "quote": "MIR spectroscopy often suffers from low penetration depths, which limits its ability to analyze dense or opaque samples without additional preparation."
+    },
+    {
+      "id": "A01-3",
+      "docId": "A01",
+      "page": 3,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "For in-line bioprocess monitoring a non-invasive optical probe is inserted directly into the bioreactor.",
+      "quote": "Generally, for in-line monitoring, a non-invasive optical probe is inserted in the bioreactor for data acquisition."
+    },
+    {
+      "id": "A01-4",
+      "docId": "A01",
+      "page": 9,
+      "step": "interface_mode",
+      "value": "in_process_probe",
+      "claim": "A mid-IR ATR probe was inserted into a 15 L fermenter through a standard DN 25 port.",
+      "quote": "An ATR probe was inserted into the bioreactor through a standard DN 25 port."
+    },
+    {
+      "id": "A01-5",
+      "docId": "A01",
+      "page": 9,
+      "step": "interface_mode",
+      "value": "non_contact_at_distance",
+      "claim": "NIR spectra can be taken through the glass wall of the bioreactor – no immersion probe and a lower contamination risk.",
+      "quote": "Spectra were acquired through the glass wall of the bioreactor, significantly reducing contamination risks and eliminating the need for immersion probes."
+    },
+    {
+      "id": "A01-6",
+      "docId": "A01",
+      "page": 3,
+      "step": "interface_mode",
+      "value": null,
+      "claim": "A bypass flow cell (on-line) is used when the sensor cannot withstand the pressure or temperature in the vessel; the sample may then not represent the process exactly.",
+      "quote": "This method is employed when the measuring device cannot endure the harsh conditions present in the actual process vessel, such as high pressures or temperatures."
+    },
+    {
+      "id": "A01-7",
+      "docId": "A01",
+      "page": 13,
+      "step": "spectral_range",
+      "value": null,
+      "claim": "In-situ ATR-FTIR is limited by the absorption of the fiber optics, whereas Raman and NIR can even measure through glass or plastic.",
+      "quote": "Unlike in situ ATR-FTIR monitoring, which is limited by fiber optic absorption, Raman and NIR techniques can take measurements through glass or plastic media."
+    },
+    {
+      "id": "A01-8",
+      "docId": "A01",
+      "page": 6,
+      "step": "target_property_type",
+      "value": "turbidity_or_cell_density",
+      "claim": "UV/Vis is a well-established in-line method for biomass, because the turbidity of a cell suspension follows the cell density.",
+      "quote": "It is also a well-established method for assessing biomass because cell suspension turbidity correlates well with cell."
+    },
+    {
+      "id": "A01-9",
+      "docId": "A01",
+      "page": 2,
+      "step": "target_property_type",
+      "value": "fluorescent_species",
+      "claim": "Fluorescence only detects molecules with intrinsic fluorescence, which limits it to certain biomolecules.",
+      "quote": "fluorescence spectroscopy can only detect molecules that exhibit intrinsic fluorescence, limiting its applicability to certain types of bio-molecules."
+    },
+    {
+      "id": "A01-10",
+      "docId": "A01",
+      "page": 18,
+      "step": "target_property_type",
+      "value": "fluorescent_species",
+      "claim": "Most metabolites do not fluoresce; fluorescence can follow them only indirectly through markers such as NADH or tryptophan.",
+      "quote": "Many metabolites do not exhibit intrinsic fluorescence, unless they contain aromatic rings or cofactors such as NADH and FAD, making direct fluorescence detection challenging"
+    },
+    {
+      "id": "A01-11",
+      "docId": "A01",
+      "page": 11,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "Raman followed glucose and ethanol in-line during a yeast fermentation (prediction error 2.8 % and 4.2 % of full scale).",
+      "quote": "The root mean square error of prediction (RMSEP) as a percentage of the full-scale measurement for glucose and ethanol was 2.76% and 4.19%, respectively."
+    },
+    {
+      "id": "A01-12",
+      "docId": "A01",
+      "page": 10,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "Raman absorbs little in water, so it suits metabolite measurements in aqueous media.",
+      "quote": "exhibits lower absorbance for polar molecules like water, making it particularly well suited for analysis in aqueous environments"
+    },
+    {
+      "id": "A01-13",
+      "docId": "A01",
+      "page": 9,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "A mid-IR ATR probe in the fermenter tracked fructose, acetate and gluconacetan with PLS models.",
+      "quote": "PLS regression was utilized for the monitoring of fructose, acetate, and gluconacetan concentrations in the broth."
+    },
+    {
+      "id": "A01-14",
+      "docId": "A01",
+      "page": 19,
+      "step": "target_property_type",
+      "value": "chemical_composition",
+      "claim": "Raman offers the highest specificity for metabolites but is also the most expensive option.",
+      "quote": "Raman spectroscopy offers the highest specificity for metabolite detection but is also the most expensive"
+    },
+    {
+      "id": "A01-15",
+      "docId": "A01",
+      "page": 2,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Background fluorescence, photobleaching, turbidity and pH of the sample affect fluorescence measurements.",
+      "quote": "Background fluorescence, photo-bleaching, sample turbidity, and sample pH are other factors that can affect the accuracy and precision of fluorescence measurements"
+    },
+    {
+      "id": "A01-16",
+      "docId": "A01",
+      "page": 16,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Fluorescence signals react strongly to changes of pH, temperature and ionic strength in the bioreactor.",
+      "quote": "fluorescence signals can be highly sensitive to changes in bioreactor conditions such as pH, temperature, and ionic strength"
+    },
+    {
+      "id": "A01-17",
+      "docId": "A01",
+      "page": 17,
+      "step": "optical_variability",
+      "value": "variable_over_process",
+      "claim": "Spectroscopic models need regular recalibration as equipment ages, the medium changes or the environment varies.",
+      "quote": "Maintaining model accuracy demands regular recalibration due to equipment aging, media composition shifts, or environmental variations"
+    },
+    {
+      "id": "A01-18",
+      "docId": "A01",
+      "page": 9,
+      "step": "concentration_level",
+      "value": "minor_component",
+      "claim": "NIR glucose predictions became less accurate once glucose was low and no longer correlated with biomass growth.",
+      "quote": "for the fed-batch phase, when the glucose concentration was low and uncorrelated with biomass growth, the prediction accuracy was lower"
+    },
+    {
+      "id": "A01-19",
+      "docId": "A01",
+      "page": 10,
+      "step": "concentration_level",
+      "value": null,
+      "claim": "NIR has limited sensitivity for compounds below about 0.1 %.",
+      "quote": "NIR exhibits limited sensitivity for compounds present at concentrations below 0.1 percent"
+    },
+    {
+      "id": "A01-20",
+      "docId": "A01",
+      "page": 13,
+      "step": "concentration_level",
+      "value": "trace",
+      "claim": "Fluorescence is highly sensitive and can detect several components even at low concentrations.",
+      "quote": "offering high sensitivity and the capability to detect multiple components even at low concentrations"
+    },
+    {
+      "id": "A01-21",
+      "docId": "A01",
+      "page": 10,
+      "step": "concentration_level",
+      "value": null,
+      "claim": "Like NIR, mid-IR absorbs strongly in water, which makes trace compounds hard to detect.",
+      "quote": "Akin to NIR, MIR experiences increased absorbance in aqueous solutions, leading to challenges in detecting trace compounds."
+    }
+  ]
+}

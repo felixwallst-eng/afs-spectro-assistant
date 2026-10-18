@@ -115,7 +115,7 @@ function CardsPanel({ doc, onChanged }: { doc: DocMeta; onChanged: (count: numbe
           <button className="linkbtn" onClick={download} title="Save these cards as JSON, e.g. to version them in the repository">
             Download JSON
           </button>
-          {!set.curated && doc.origin === 'original' && (
+          {!set.curated && doc.origin !== 'uploaded' && (
             <button className="linkbtn" onClick={reset} title="Discard edits and re-reads, use the curated cards again">
               Reset to curated
             </button>
@@ -367,7 +367,7 @@ export default function KnowledgePage({ focusCase }: { focusCase?: string | null
                     </div>
                   </td>
                   <td>
-                    <span className={`tag ${d.origin}`}>{d.origin === 'original' ? 'Original' : 'Uploaded'}</span>
+                    <span className={`tag ${d.origin}`}>{d.origin === 'original' ? 'Original' : d.origin === 'added' ? 'Added source' : 'Uploaded'}</span>
                     {!d.indexed && <span className="kb-muted kb-unindexed">Not searchable yet</span>}
                   </td>
                   <td>{d.pages ?? '–'}</td>
@@ -495,7 +495,8 @@ function SolvedCasesPanel({ focus }: { focus: string | null }) {
       <div className="panel-body">
         <p className="kb-intro">
           When an expert has decided every step of an assessment, the case can be added here: the customer enquiry, what the assistant proposed, what the
-          expert decided and why. The collection grows with every reviewed enquiry.
+          expert decided and why. The collection grows with every reviewed enquiry. The worked examples D01 and D02 from the AFS reference document are
+          included as the first cases.
         </p>
         {error && <p className="error">{error}</p>}
         {!cases ? (
@@ -514,7 +515,11 @@ function SolvedCasesPanel({ focus }: { focus: string | null }) {
                   ref={c.id === focus ? (el) => el?.scrollIntoView({ block: 'start', behavior: 'smooth' }) : undefined}
                 >
                   <button className="case-row" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen}>
-                    <span className="case-title">{c.title}{c.enquiry.length > c.title.length ? '…' : ''}</span>
+                    <span className="case-title">
+                      {c.origin === 'reference' && <span className="tag added case-tag">Worked example</span>}
+                      {c.title}
+                      {c.origin !== 'reference' && c.enquiry.length > c.title.length ? '…' : ''}
+                    </span>
                     <span className="case-meta">
                       {expert.length} expert decision{expert.length === 1 ? '' : 's'} · {c.steps.filter((s) => s.note).length} note
                       {c.steps.filter((s) => s.note).length === 1 ? '' : 's'} · {fmtDate(c.updatedAt ?? c.createdAt)}
@@ -544,7 +549,7 @@ function SolvedCasesPanel({ focus }: { focus: string | null }) {
                               </td>
                               <td>
                                 <strong>{s.valueName}</strong>
-                                <small>{s.byExpert ? (s.model.value === s.value ? 'confirmed by the expert' : s.model.value ? 'changed by the expert' : 'filled in by the expert') : 'from the customer text'}</small>
+                                <small>{s.value === 'not_stated' ? 'left open by the expert' : s.byExpert ? (s.model.value === s.value ? 'confirmed by the expert' : s.model.value ? 'changed by the expert' : 'filled in by the expert') : 'from the customer text'}</small>
                               </td>
                               <td>{s.note ?? <span className="kb-muted">–</span>}</td>
                             </tr>
@@ -571,7 +576,9 @@ function SolvedCasesPanel({ focus }: { focus: string | null }) {
                       )}
                       <div className="case-actions-row">
                         <span className="kb-muted">Assessed with {c.engine || 'the assistant'}</span>
-                        {confirm === c.id ? (
+                        {c.origin === 'reference' ? (
+                          <span className="kb-muted">From the AFS reference document (worked example) – part of the app</span>
+                        ) : confirm === c.id ? (
                           <span>
                             Delete this case?{' '}
                             <button className="linkbtn danger" onClick={() => remove(c.id)}>

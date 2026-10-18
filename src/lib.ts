@@ -129,7 +129,7 @@ export const cardsApi = {
 /** Index bundled original PDFs (page texts -> KV), then let the model read each one into knowledge cards. */
 export async function ensureOriginalsIndexed(extract: (url: string) => Promise<string[]>) {
   let docs = await docsApi.list()
-  for (const d of docs.filter((x) => x.origin === 'original' && !x.indexed)) {
+  for (const d of docs.filter((x) => x.origin !== 'uploaded' && !x.indexed)) {
     try {
       const pages = await extract(d.url)
       await api(fetch(`/api/docs/${encodeURIComponent(d.id)}/text`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(pages) }))
@@ -138,7 +138,7 @@ export async function ensureOriginalsIndexed(extract: (url: string) => Promise<s
     }
   }
   docs = await docsApi.list()
-  for (const d of docs.filter((x) => x.origin === 'original' && x.indexed && x.cards === undefined)) {
+  for (const d of docs.filter((x) => x.origin !== 'uploaded' && x.indexed && x.cards === undefined)) {
     try {
       await cardsApi.build(d.id)
     } catch (e) {

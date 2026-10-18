@@ -40,6 +40,20 @@ export default function AssessPage({ settings, methods }: Props) {
   const [error, setError] = useState('')
   const [history, setHistory] = useState<HistoryEntry[]>(() => store.history())
   const [currentId, setCurrentId] = useState<string | null>(null)
+  // evaluation cases frozen for the demo (public/demo/evaluation-cases.json, written by scripts/export-demo.mjs)
+  const [pinned, setPinned] = useState<HistoryEntry[]>([])
+  const [confirmClear, setConfirmClear] = useState(false)
+  useEffect(() => {
+    fetch('/demo/evaluation-cases.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { cases?: { id: string; title: string; text: string; tree: TreeResponse; createdAt: string }[] } | null) =>
+        setPinned(
+          (d?.cases ?? []).map((c) => ({ id: c.id, title: c.title, text: c.text, raw: rawFromDecisions(c.tree.decisions), overrides: {}, model: c.tree.model, tree: c.tree, createdAt: c.createdAt })),
+        ),
+      )
+      .catch(() => setPinned([]))
+  }, [])
+  const isPinned = (id: string | null) => !!id && pinned.some((p) => p.id === id)
   const [tree, setTree] = useState<TreeResponse | null>(null)
   const [since, setSince] = useState<number | null>(null)
   const [historyOpen, setHistoryOpen] = useState(() => {
@@ -177,6 +191,20 @@ export default function AssessPage({ settings, methods }: Props) {
     setTree(e.tree ?? null)
   }
 
+  function removeEntry(id: string) {
+    const next = history.filter((e) => e.id !== id)
+    setHistory(next)
+    store.saveHistory(next)
+    if (currentId === id) newCase()
+  }
+
+  function clearHistory() {
+    setHistory([])
+    store.saveHistory([])
+    setConfirmClear(false)
+    if (!isPinned(currentId)) newCase()
+  }
+
   function newCase() {
     setText('')
     setNotes({})
@@ -204,20 +232,56 @@ export default function AssessPage({ settings, methods }: Props) {
             {historyOpen ? '‹' : '›'}
           </button>
         </div>
+        {historyOpen && pinned.length > 0 && (
+          <div className="history-pinned">
+            <h4>Evaluation cases</h4>
+            <ul>
+              {pinned.map((h) => (
+                <li key={h.id}>
+                  <button aria-current={h.id === currentId} onClick={() => openEntry(h)} title="Result stored with the app – open it without running the analysis">
+                    {h.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {!historyOpen ? null : history.length === 0 ? (
-          <p className="empty">Analysed enquiries appear here.</p>
+          <p className="empty">Analysed enquiries appear here. They are stored in this browser only.</p>
         ) : (
-          <ul>
-            {history.map((h) => (
-              <li key={h.id}>
-                <button aria-current={h.id === currentId} onClick={() => openEntry(h)}>
-                  {h.title}
-                  {h.title.length >= 70 ? '…' : ''}
-                  <small>{new Date(h.createdAt).toLocaleString()}</small>
+          <>
+            <ul>
+              {history.map((h) => (
+                <li key={h.id} className="history-item">
+                  <button aria-current={h.id === currentId} onClick={() => openEntry(h)}>
+                    {h.title}
+                    {h.title.length >= 70 ? '…' : ''}
+                    <small>{new Date(h.createdAt).toLocaleString()}</small>
+                  </button>
+                  <button className="history-del" onClick={() => removeEntry(h.id)} aria-label={`Remove “${h.title}” from the history`} title="Remove from the history">
+                    ×
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="history-clear">
+              {confirmClear ? (
+                <>
+                  Delete all {history.length}?{' '}
+                  <button className="linkbtn danger" onClick={clearHistory}>
+                    Yes, delete
+                  </button>{' '}
+                  <button className="linkbtn" onClick={() => setConfirmClear(false)}>
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button className="linkbtn" onClick={() => setConfirmClear(true)}>
+                  Clear history
                 </button>
-              </li>
-            ))}
-          </ul>
+              )}
+            </div>
+          </>
         )}
       </aside>
 

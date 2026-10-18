@@ -1,10 +1,12 @@
-// Knowledge-base documents: the supplied AFS originals plus PDFs uploaded by experts.
+// Knowledge-base documents: the supplied AFS originals, curated additional sources bundled with the app,
+// and PDFs uploaded by experts.
 
 export interface DocMeta {
   id: string // 'S01'… for originals, 'u-…' for uploads
   title: string
   fileName: string
-  origin: 'original' | 'uploaded'
+  /** original: supplied by AFS · added: curated extra source in the repository · uploaded: by an expert */
+  origin: 'original' | 'added' | 'uploaded'
   url: string // where the PDF is served
   pages: number | null
   size: number | null // bytes
@@ -86,3 +88,25 @@ export const ORIGINAL_DOCS: DocMeta[] = [
     enabled: true,
   },
 ]
+
+/** Additional sources bundled with the app (curated cards in knowledge/cards). Used only with
+ *  “Originals + added sources”; the evaluation runs on the AFS originals alone. */
+export const ADDED_DOCS: DocMeta[] = [
+  {
+    id: 'A01',
+    title: 'Mishra et al. (2025): Spectroscopic advances in real time monitoring of pharmaceutical bioprocesses',
+    fileName: 'Mishra_2025_SpectroscJ_3_12.pdf',
+    origin: 'added',
+    url: '/sources/A01.pdf',
+    pages: 24,
+    size: 1253398,
+    addedAt: '2026-10-18',
+    summary:
+      'Open-access review (Spectroscopy Journal 3(2):12, CC BY 4.0), cited by S01 p.16. In-line, on-line and at-line monitoring of fermentations and cell cultures with UV/Vis, NIR, MIR, Raman and fluorescence: applications, accuracy, cost and limitations (p.6–16), method selection and cost comparison (p.18–20).',
+    notes: 'Review of published studies – a reason to test a method, not proof for a specific process. Cost figures are indicative (USD, 2025).',
+    enabled: true,
+  },
+]
+
+/** Documents shipped with the app: originals plus curated additional sources. */
+export const BUNDLED_DOCS: DocMeta[] = [...ORIGINAL_DOCS, ...ADDED_DOCS]

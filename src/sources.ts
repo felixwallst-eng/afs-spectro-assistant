@@ -4,6 +4,7 @@ export const SOURCE_FILES: Record<string, string> = {
   S02: '/sources/S02.pdf',
   S03: '/sources/S03.pdf',
   S04: '/sources/S04.pdf',
+  A01: '/sources/A01.pdf',
 }
 
 export interface SourceRef {

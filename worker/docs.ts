@@ -1,4 +1,4 @@
-import { MAX_UPLOAD_BYTES, ORIGINAL_DOCS } from '../shared/docs.ts'
+import { BUNDLED_DOCS, MAX_UPLOAD_BYTES } from '../shared/docs.ts'
 import { getCards } from './cards.ts'
 import type { DocMeta, DocPatch } from '../shared/docs.ts'
 
@@ -10,11 +10,12 @@ import type { DocMeta, DocPatch } from '../shared/docs.ts'
 //   run:<hash>  cached assessment (see worker/steps.ts)
 
 const json = (data: unknown, status = 200) => Response.json(data, { status })
-const isOriginal = (id: string) => ORIGINAL_DOCS.some((d) => d.id === id)
+// bundled documents (originals and curated added sources) are static assets: they can be switched off, not deleted
+const isOriginal = (id: string) => BUNDLED_DOCS.some((d) => d.id === id)
 
 export async function listDocs(kv: KVNamespace): Promise<DocMeta[]> {
   const originals = await Promise.all(
-    ORIGINAL_DOCS.map(async (d) => ({ ...d, ...((await kv.get<DocPatch>(`meta:${d.id}`, 'json')) ?? {}) })),
+    BUNDLED_DOCS.map(async (d) => ({ ...d, ...((await kv.get<DocPatch>(`meta:${d.id}`, 'json')) ?? {}) })),
   )
   const keys = await kv.list({ prefix: 'meta:u-' })
   const uploads = (await Promise.all(keys.keys.map((k) => kv.get<DocMeta>(k.name, 'json')))).filter((d): d is DocMeta => d !== null)
