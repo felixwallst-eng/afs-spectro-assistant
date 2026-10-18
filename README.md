@@ -19,7 +19,7 @@ An AFS expert pastes a customer enquiry. The assistant turns it into a first tec
 5. [Model and tool configuration](#model-and-tool-configuration)
 6. [Loading the AFS materials](#loading-the-afs-materials)
 7. [Reproducing the answers and the evaluation](#reproducing-the-answers-and-the-evaluation)
-8. [Results](#results)
+8. [Pilot Results](#results)
 9. [Limitations](#limitations)
 10. [Repository layout](#repository-layout)
 11. [Third-party sources](#third-party-sources)
@@ -185,7 +185,7 @@ Decisions, methods, premises and sources are reproducible. Only the wording of t
 
 Gold standards (drafts by the team, D cases only) are in `eval/gold/`, and benchmark outputs in `eval/results/`.
 
-## Results
+## Pilot Results
 
 Measured with `scripts/repro.mjs` (Clef pipeline, AFS originals only):
 
