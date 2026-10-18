@@ -2,7 +2,7 @@ import type { KnowledgeCard } from '../shared/cards.ts'
 import { DIMENSIONS, DIM_BY_ID } from '../shared/dimensions.ts'
 import { SOURCE_STEPS, TREE_NODES } from '../shared/tree.ts'
 import type { Decision, SourcePassage, StepsRequest, TreeResponse } from '../shared/tree.ts'
-import { premisesFor } from '../shared/treeLogic.ts'
+import { deriveSteps, premisesFor } from '../shared/treeLogic.ts'
 import { DEFAULT_SETTINGS } from '../shared/types.ts'
 import type { DimensionDef } from '../shared/types.ts'
 import { loadCards } from './cards.ts'
@@ -23,10 +23,11 @@ import { listDocs } from './docs.ts'
 //   premise check (customer assumptions that the AFS rules contradict).
 // The evidence shown to the expert is the relevant cards (verified quotes) – no generated text.
 
-export const CLEF_PIPELINE_VERSION = 'clef-v3'
+export const CLEF_PIPELINE_VERSION = 'clef-v4'
 const MAX_QUESTIONS = 60
-const PREMISE_AT = 0.5
 const TREE_IDS = new Set(TREE_NODES.map((n) => n.id))
+/** Steps that are never suggested from a tentative reading of the text – stated or open. */
+const STATED_ONLY = new Set(['spectral_range'])
 
 type Runner = { run: (model: string, input: unknown) => Promise<unknown> }
 interface Answer {
@@ -64,7 +65,11 @@ export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: Ste
   const started = Date.now()
   const ai = aiBinding as Runner
   const sources = req.sources ?? 'all'
-  const { confidentAt: HI, uncertainAt: LO } = DEFAULT_SETTINGS
+  // thresholds from the settings page; the defaults are the values the benchmark was measured with
+  const t = req.thresholds
+  const HI = t?.confidentAt ?? DEFAULT_SETTINGS.confidentAt
+  const LO = t?.uncertainAt ?? DEFAULT_SETTINGS.uncertainAt
+  const PREMISE_AT = t?.premiseAt ?? DEFAULT_SETTINGS.premiseAt ?? 0.5
   let calls = 0
   const run = async (state: string, questions: Record<string, unknown>) => {
     calls += Math.ceil(Object.keys(questions).length / MAX_QUESTIONS)
@@ -176,7 +181,9 @@ export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: Ste
         reasoning: `The customer text does not state this. With the applicable AFS knowledge the most likely value is “${name(d, C!.value)}”${markers(refs, C!.value)}.`,
       }
     }
-    const candidates = [aReal ? A : null, SOURCE_STEPS.has(d.id) && cReal ? C : null].filter((p): p is Pick => !!p && p.confidence >= LO)
+    // a weak reading of the text is no basis for the spectral range: it changes which methods are excluded,
+    // so it is only taken when stated (or derived from the stated fiber link)
+    const candidates = [aReal && !STATED_ONLY.has(d.id) ? A : null, SOURCE_STEPS.has(d.id) && cReal ? C : null].filter((p): p is Pick => !!p && p.confidence >= LO)
     const best = candidates.sort((x, y) => y.confidence - x.confidence)[0]
     if (best) {
       const refs = refsFor(best.value)
@@ -210,6 +217,7 @@ export async function runClefSteps(aiBinding: unknown, kv: KVNamespace, req: Ste
     else decisions.push({ id: d.id, basis: 'missing', value: null })
   }
 
+  deriveSteps(decisions)
   const steps = decisions.filter((x) => TREE_IDS.has(x.id))
   return {
     model: 'Cloudflare Clef (classifier)',

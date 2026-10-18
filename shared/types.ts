@@ -86,6 +86,11 @@ export interface Candidate {
   status: 'recommended' | 'conditional' | 'excluded'
   score: number
   reasons: Reason[]
+  /** Rank among the setups that are not excluded (1 = best fit); tied setups share a rank. */
+  rank?: number
+  tied?: boolean
+  /** Why this setup is ranked ahead of the next one (empty when tied or last). */
+  aheadBecause?: string
 }
 
 export interface OpenQuestion {
@@ -118,9 +123,11 @@ export interface Assessment {
 export interface Settings {
   confidentAt: number // >= -> confident
   uncertainAt: number // >= -> uncertain, below -> unknown
+  /** Clef: facts from this confidence on feed the premise check. */
+  premiseAt?: number
   agentModel: 'gptoss' | 'qwen' | 'kimi' // knowledge agent model, see shared/agent.ts
   /** Who decides the tree steps: the Clef classifier or the language model (one call per step, 3 votes). */
   engine?: 'clef' | 'llm'
 }
 
-export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3, agentModel: 'gptoss', engine: 'clef' }
+export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3, premiseAt: 0.5, agentModel: 'gptoss', engine: 'clef' }

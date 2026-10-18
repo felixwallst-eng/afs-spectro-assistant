@@ -35,3 +35,30 @@ export function premisesFor(decisions: Decision[], settings: Settings = DEFAULT_
 }
 
 export const isBlocking = (id: string) => (DIM_BY_ID[id]?.priority ?? 3) <= 2
+
+/** Steps the rules derive from other stated facts. The usable spectral range follows from the fiber
+ *  link the customer wants to reuse (S02 p.6): a silica link carries UV/Vis/NIR only, an IR fiber
+ *  also mid-IR. A derived value counts as stated; if the classifier read a different value from the
+ *  text, the step becomes a conflict for the expert. */
+export function deriveSteps(decisions: Decision[]): void {
+  const stated = (id: string) => {
+    const d = decisions.find((x) => x.id === id)
+    return basisOf(d) === 'customer' ? d?.value : null
+  }
+  if (stated('reuse_fiber') !== 'yes') return
+  const fiber = stated('existing_fiber_type')
+  const value = fiber === 'silica_uv_vis_nir' ? 'uv_vis_nir_only' : fiber === 'ir_fiber' ? 'mid_ir_possible' : null
+  if (!value) return
+  const i = decisions.findIndex((x) => x.id === 'spectral_range')
+  const prev = i >= 0 ? decisions[i] : undefined
+  const why =
+    value === 'uv_vis_nir_only'
+      ? 'Derived from the stated facts: the customer wants to reuse an existing silica fiber, which transmits about 0.35–2.4 µm (UV/Vis/NIR).'
+      : 'Derived from the stated facts: the customer wants to reuse an existing IR fiber, so mid-IR light can reach the sample.'
+  const next: Decision =
+    prev && basisOf(prev) === 'customer' && prev.value && prev.value !== value
+      ? { ...prev, basis: 'conflict', value: prev.value, alternative: value, reasoning: `The customer text points to “${DIM_BY_ID.spectral_range.labels[prev.value]?.name}”, but ${why.charAt(0).toLowerCase()}${why.slice(1)}` }
+      : { ...(prev ?? { id: 'spectral_range' }), id: 'spectral_range', basis: 'customer', value, reasoning: why, missing: undefined }
+  if (i >= 0) decisions[i] = next
+  else decisions.push(next)
+}

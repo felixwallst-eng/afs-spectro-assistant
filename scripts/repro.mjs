@@ -39,7 +39,7 @@ const MODEL = args.model ?? 'gptoss'
 const PRICE_IN = Number(args['price-in'] ?? 0.35)
 const PRICE_OUT = Number(args['price-out'] ?? 0.75)
 
-const TREE = ['sample_state', 'interface_mode', 'target_property_type', 'optical_variability', 'concentration_level']
+const TREE = ['sample_state', 'interface_mode', 'spectral_range', 'target_property_type', 'optical_variability', 'concentration_level']
 const SETUPS = {
   clef: { label: 'Clef', body: () => ({ pipeline: 'clef' }), callsPerRun: 8 },
   llm: { label: 'LLM 3 votes', body: (run) => ({ pipeline: 'steps', votes: 3, seedBase: 100 * (run + 1) }), callsPerRun: 18 },

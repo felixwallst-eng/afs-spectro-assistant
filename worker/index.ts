@@ -2,6 +2,7 @@ import { classify } from './clef.ts'
 import { handleDocs } from './docs.ts'
 import { runAgent, runBrief } from './agent.ts'
 import { runTree } from './tree.ts'
+import type { Thresholds } from '../shared/tree.ts'
 import { runSteps } from './steps.ts'
 import { runClefSteps } from './clefSteps.ts'
 import { buildCards, deleteCard, getCards, resetCards } from './cards.ts'
@@ -33,14 +34,15 @@ export default {
     }
 
     if (url.pathname === '/api/tree' && request.method === 'POST') {
-      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown; seedBase?: unknown; stepsOnly?: unknown } | null
+      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown; seedBase?: unknown; stepsOnly?: unknown; thresholds?: unknown } | null
       const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
       if (!text) return Response.json({ error: 'Enter the customer enquiry text.' }, { status: 400 })
       const model = body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss'
       try {
         // "single": the earlier one-call pipeline, kept for comparison in the reproducibility test
         if (body?.pipeline === 'single') return Response.json(await runTree(env.AI, env.DOCS, { text, model }))
-        if (body?.pipeline === 'clef') return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all' }))
+        if (body?.pipeline === 'clef')
+          return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all', thresholds: parseThresholds(body?.thresholds) }))
         return Response.json(
           await runSteps(env.AI, env.DOCS, {
             text,
@@ -127,3 +129,15 @@ export default {
     return new Response(null, { status: 404 })
   },
 } satisfies ExportedHandler<Env>
+
+/** Thresholds from the settings page, clamped to sensible ranges; anything invalid falls back to the defaults. */
+function parseThresholds(x: unknown): Thresholds | undefined {
+  if (!x || typeof x !== 'object') return undefined
+  const o = x as Record<string, unknown>
+  const num = (v: unknown, lo: number, hi: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : null)
+  const confidentAt = num(o.confidentAt, 0.3, 0.99)
+  const uncertainAt = num(o.uncertainAt, 0, 0.9)
+  const premiseAt = num(o.premiseAt, 0.1, 0.95)
+  if (confidentAt === null || uncertainAt === null || premiseAt === null || uncertainAt >= confidentAt) return undefined
+  return { confidentAt, uncertainAt, premiseAt }
+}

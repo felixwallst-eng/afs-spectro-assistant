@@ -151,6 +151,24 @@ export const DIMENSIONS: DimensionDef[] = [
     sources: [{ source: 'S01', page: 'Table 1 (p.6)' }],
   },
   {
+    id: 'spectral_range',
+    group: 'case',
+    kind: 'fact',
+    title: 'Usable spectral range',
+    question:
+      'Which spectral range can reach the sample through the optical link the client describes? Look for the fiber type to be used or reused (silica / quartz, IR fiber) and where the analyzer sits.' +
+      STRICT,
+    labels: {
+      uv_vis_nir_only: L('UV/Vis/NIR only', 'The link is limited to UV, visible and near-infrared light (about 0.2–2.4 µm), e.g. an existing silica or quartz fiber is to be used.'),
+      mid_ir_possible: L('Mid-IR possible', 'Mid-infrared light can reach the sample, e.g. an IR fiber (chalcogenide, polycrystalline, hollow waveguide) or the analyzer directly at the probe.'),
+      not_stated: L('Not stated', 'The client says nothing about the fiber link or its spectral range.'),
+    },
+    unknownLabel: 'not_stated',
+    priority: 3,
+    clarification: 'Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?',
+    sources: [{ source: 'S02', page: 'p.6–8' }],
+  },
+  {
     id: 'deployment_context',
     group: 'case',
     kind: 'fact',

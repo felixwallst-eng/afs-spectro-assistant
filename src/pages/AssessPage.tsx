@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { EXAMPLE_CASES } from '../../shared/cases.ts'
 import { assess, resolveDimensions } from '../../shared/engine.ts'
+import { DEFAULT_SETTINGS } from '../../shared/types.ts'
 import type { MethodSetup, RawDimension, Settings } from '../../shared/types.ts'
-import Recommendations from '../components/Recommendations.tsx'
 import DecisionTree from '../components/DecisionTree.tsx'
 import { store, treeApi } from '../lib.ts'
 import { rawFromDecisions } from '../treeModel.ts'
 import type { SourceMode, TreeResponse } from '../../shared/tree.ts'
 import { METHOD_INFO } from '../../shared/knowledge.ts'
+import { TREE_NODES } from '../../shared/tree.ts'
 import type { Assessment } from '../../shared/types.ts'
 
 const DECISION_SHORT = {
@@ -20,12 +21,13 @@ function Summary({ assessment }: { assessment: Assessment }) {
   const top = assessment.candidates.filter((c) => c.status === 'recommended').slice(0, 3)
   const blocks = assessment.warnings.filter((w) => w.severity === 'block').length
   const open = assessment.questions.filter((q) => q.kind === 'missing').length
+  const openSteps = TREE_NODES.filter((n) => assessment.dimensions[n.id]?.status === 'unknown').length
   return (
     <section className={`panel decision ${assessment.decisionStatus}`} style={{ margin: 0, display: 'block' }}>
       <strong>{DECISION_SHORT[assessment.decisionStatus]}</strong>
       <p style={{ fontSize: 14, marginTop: 4 }}>
         {top.length
-          ? `Worth testing: ${top.map((c) => `${METHOD_INFO[c.setup.method].name} – ${c.setup.technique}`).join(', ')}.`
+          ? `${openSteps ? `Provisional shortlist (${openSteps} step${openSteps > 1 ? 's' : ''} open)` : 'Worth testing'}: ${top.map((c) => `${METHOD_INFO[c.setup.method].name} – ${c.setup.technique}`).join(', ')}.`
           : 'No setup is recommended without conditions yet.'}
         {blocks > 0 && ` ${blocks} premise${blocks > 1 ? 's' : ''} in the request cannot be confirmed – see below.`}
       </p>
@@ -46,6 +48,8 @@ interface Props {
 
 export default function AssessPage({ settings, methods }: Props) {
   const [text, setText] = useState('')
+  // the example shown in the dropdown; it clears as soon as the text no longer matches it
+  const [exampleId, setExampleId] = useState('')
   const [raw, setRaw] = useState<Record<string, RawDimension> | null>(null)
   const [overrides, setOverrides] = useState<Record<string, string>>({})
   const [model, setModel] = useState('')
@@ -56,6 +60,23 @@ export default function AssessPage({ settings, methods }: Props) {
   const [currentId, setCurrentId] = useState<string | null>(null)
   const [tree, setTree] = useState<TreeResponse | null>(null)
   const [since, setSince] = useState<number | null>(null)
+  const [historyOpen, setHistoryOpen] = useState(() => {
+    try {
+      return localStorage.getItem('afs.historyOpen') !== '0'
+    } catch {
+      return true
+    }
+  })
+  const toggleHistory = () => {
+    setHistoryOpen((o) => {
+      try {
+        localStorage.setItem('afs.historyOpen', o ? '0' : '1')
+      } catch {
+        /* storage unavailable */
+      }
+      return !o
+    })
+  }
   const [sources, setSources] = useState<SourceMode>(() => {
     try {
       return localStorage.getItem('afs.sources') === 'original' ? 'original' : 'all'
@@ -84,7 +105,8 @@ export default function AssessPage({ settings, methods }: Props) {
     setError('')
     try {
       setSince(Date.now())
-      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss', { sources, fresh, pipeline: settings.engine === 'llm' ? 'steps' : 'clef' })
+      const thresholds = { confidentAt: settings.confidentAt, uncertainAt: settings.uncertainAt, premiseAt: settings.premiseAt ?? DEFAULT_SETTINGS.premiseAt ?? 0.5 }
+      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss', { sources, fresh, pipeline: settings.engine === 'llm' ? 'steps' : 'clef', thresholds })
       const nextOverrides = keepOverrides ? overrides : {}
       const dimensions = rawFromDecisions(res.decisions)
       setTree(res)
@@ -128,6 +150,7 @@ export default function AssessPage({ settings, methods }: Props) {
 
   function openEntry(e: HistoryEntry) {
     setText(e.text)
+    setExampleId(EXAMPLE_CASES.find((c) => c.text === e.text)?.id ?? '')
     setRaw(e.raw)
     setOverrides(e.overrides)
     setModel(e.model)
@@ -139,6 +162,7 @@ export default function AssessPage({ settings, methods }: Props) {
 
   function newCase() {
     setText('')
+    setExampleId('')
     setRaw(null)
     setOverrides({})
     setTree(null)
@@ -147,10 +171,21 @@ export default function AssessPage({ settings, methods }: Props) {
   }
 
   return (
-    <div className="assess">
+    <div className={`assess${historyOpen ? '' : ' history-closed'}`}>
       <aside className="history">
-        <h3>Recent assessments</h3>
-        {history.length === 0 ? (
+        <div className="history-head">
+          {historyOpen && <h3>Recent assessments</h3>}
+          <button
+            className="history-toggle"
+            onClick={toggleHistory}
+            aria-expanded={historyOpen}
+            aria-label={historyOpen ? 'Hide recent assessments' : 'Show recent assessments'}
+            title={historyOpen ? 'Hide recent assessments' : 'Show recent assessments'}
+          >
+            {historyOpen ? '‹' : '›'}
+          </button>
+        </div>
+        {!historyOpen ? null : history.length === 0 ? (
           <p className="empty">Analysed enquiries appear here.</p>
         ) : (
           <ul>
@@ -175,12 +210,13 @@ export default function AssessPage({ settings, methods }: Props) {
               <div className="right">
                 <select
                   aria-label="Load an example enquiry"
-                  value=""
+                  value={exampleId}
                   onChange={(e) => {
                     const ex = EXAMPLE_CASES.find((c) => c.id === e.target.value)
                     if (ex) {
                       newCase()
                       setText(ex.text)
+                      setExampleId(ex.id)
                     }
                   }}
                 >
@@ -201,7 +237,10 @@ export default function AssessPage({ settings, methods }: Props) {
             <div className="panel-body">
               <textarea
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={(e) => {
+                  setText(e.target.value)
+                  if (exampleId && e.target.value !== EXAMPLE_CASES.find((c) => c.id === exampleId)?.text) setExampleId('')
+                }}
                 placeholder="Paste what the customer wrote, e.g. “We need to monitor moisture and hydrocarbon contamination in soil…”"
                 aria-label="Customer enquiry"
               />
@@ -262,7 +301,6 @@ export default function AssessPage({ settings, methods }: Props) {
                 Choose “Analyse enquiry” again to build the evidence-backed decision path.
               </section>
             )}
-            <Recommendations assessment={assessment} />
           </>
         ) : (
           <section className="panel placeholder">

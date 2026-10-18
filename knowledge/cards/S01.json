@@ -1,6 +1,6 @@
 {
   "docId": "S01",
-  "createdAt": "2026-10-18T10:00:00.000Z",
+  "createdAt": "2026-10-18T12:25:54.000Z",
   "model": "Curated (Claude, quotes verified against the PDF text)",
   "pagesRead": 19,
   "rejected": 0,
@@ -373,6 +373,15 @@
       "value": "high",
       "claim": "Combining several benchtop spectrometers is bulky and expensive.",
       "quote": "The cost of such spectrometers is also quite high."
+    },
+    {
+      "id": "S01-42",
+      "docId": "S01",
+      "page": 5,
+      "step": "spectral_range",
+      "value": "uv_vis_nir_only",
+      "claim": "NIR works with ordinary glass optics and standard lamps – simple hardware, well suited to remote fiber measurements.",
+      "quote": "allows the use of ordinary glass for optics, as well as standard lamps as light sources, making it ideal for online applications, including remote measurements via fiber optic probes"
     }
   ]
 }

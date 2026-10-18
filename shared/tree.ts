@@ -9,6 +9,7 @@ import type { AgentModelKey } from './agent.ts'
 export const TREE_NODES: { id: string; column: string }[] = [
   { id: 'sample_state', column: 'Sample type' },
   { id: 'interface_mode', column: 'Measurement technique' },
+  { id: 'spectral_range', column: 'Spectral range / fiber link (S02)' },
   { id: 'target_property_type', column: 'Physical phenomenon / selectivity' },
   { id: 'optical_variability', column: 'Optical path / depth' },
   { id: 'concentration_level', column: 'Sensitivity' },
@@ -40,6 +41,14 @@ export interface StepsRequest {
   seedBase?: number
   /** Benchmark only: skip the call for the other facts and flags (they are not part of the tree). */
   stepsOnly?: boolean
+  /** Clef only: confidence thresholds from the settings page (defaults: DEFAULT_SETTINGS). */
+  thresholds?: Thresholds
+}
+
+export interface Thresholds {
+  confidentAt: number
+  uncertainAt: number
+  premiseAt: number
 }
 
 /** A verbatim passage from an AFS document, verified against the indexed page text. */

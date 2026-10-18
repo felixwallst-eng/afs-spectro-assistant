@@ -1,5 +1,5 @@
 import type { CardSet } from '../shared/cards.ts'
-import type { SourceMode, TreeResponse } from '../shared/tree.ts'
+import type { SourceMode, TreeResponse, Thresholds } from '../shared/tree.ts'
 import type { AgentModelKey, AgentResponse, BriefResponse } from '../shared/agent.ts'
 import type { DocMeta, DocPatch } from '../shared/docs.ts'
 import type { ClassifyResponse, MethodSetup, RawDimension, Settings } from '../shared/types.ts'
@@ -94,7 +94,7 @@ export const agentApi = {
 }
 
 export const treeApi = {
-  run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean; pipeline?: 'clef' | 'steps' } = {}) =>
+  run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean; pipeline?: 'clef' | 'steps'; thresholds?: Thresholds } = {}) =>
     api<TreeResponse>(fetch('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, model, ...opts }) })),
 }
 

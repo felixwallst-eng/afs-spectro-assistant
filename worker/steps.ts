@@ -7,7 +7,7 @@ import { fold } from '../shared/text.ts'
 import { SOURCE_STEPS, TREE_NODES } from '../shared/tree.ts'
 import type { Decision, DecisionBasis, SourcePassage, StepsRequest, TreeResponse } from '../shared/tree.ts'
 import { chat, parseJson, seedAccepted } from './agent.ts'
-import { premisesFor } from '../shared/treeLogic.ts'
+import { deriveSteps, premisesFor } from '../shared/treeLogic.ts'
 import { loadCards } from './cards.ts'
 import { listDocs } from './docs.ts'
 
@@ -273,6 +273,7 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
     if (hits.length > votes / 2) decisions.push({ id: d.id, basis: 'customer', value: 'yes', enquiryQuote: hits[0]!.enquiry_quote })
   }
 
+  deriveSteps(decisions)
   const steps = decisions.filter((x) => TREE_IDS.has(x.id))
   const result: TreeResponse = {
     model: AGENT_MODELS[key].name,

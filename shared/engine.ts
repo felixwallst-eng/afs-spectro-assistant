@@ -161,7 +161,10 @@ export function evaluateSetup(s: MethodSetup, v: V): Candidate {
 
   // Fiber link
   const info = METHOD_INFO[s.method]
-  if (yes(v, 'reuse_fiber') && v.existing_fiber_type === 'silica_uv_vis_nir') {
+  const silicaRange = FIBERS.find((f) => f.id === 'silica_vis_nir')!.rangeUm
+  if (v.spectral_range === 'uv_vis_nir_only' && !overlaps(silicaRange, info.rangeUm))
+    add('exclude', `Only UV/Vis/NIR light reaches the sample (≈0.35–2.4 µm); ${info.rangeText} needs an IR fiber.`, FIBER_CITATION)
+  else if (yes(v, 'reuse_fiber') && v.existing_fiber_type === 'silica_uv_vis_nir') {
     const silica = FIBERS.find((f) => f.id === 'silica_vis_nir')!.rangeUm
     if (!overlaps(silica, info.rangeUm)) add('condition', `The existing silica link (≈0.35–2.4 µm) cannot carry ${info.rangeText}; an IR fiber is needed.`, FIBER_CITATION)
   }
@@ -186,10 +189,70 @@ export function evaluateSetup(s: MethodSetup, v: V): Candidate {
 
 const STATUS_ORDER = { recommended: 0, conditional: 1, excluded: 2 }
 
+export interface OpenRisk {
+  dimensionId: string
+  label: string
+  status: 'conditional' | 'excluded'
+}
+
+/** What the still open steps could do to a setup: every answer that would make it conditional or
+ *  exclude it. Used to mark a provisional shortlist honestly. */
+export function openRisks(s: MethodSetup, v: V, openIds: string[]): OpenRisk[] {
+  const now = STATUS_ORDER[evaluateSetup(s, v).status]
+  const out: OpenRisk[] = []
+  for (const id of openIds) {
+    const def = DIM_BY_ID[id]
+    if (!def) continue
+    for (const label of Object.keys(def.labels)) {
+      if (label === def.unknownLabel) continue
+      const st = evaluateSetup(s, { ...v, [id]: label }).status
+      if (STATUS_ORDER[st] > now) out.push({ dimensionId: id, label, status: st as OpenRisk['status'] })
+    }
+  }
+  return out
+}
+
+const GRADE = { low: 0, average: 1, high: 2 } as const
+
+/** Ranking: status, then the rule score; ties are broken by facts from the AFS method table –
+ *  in-line capable first (unless the client works with lab samples), then higher selectivity,
+ *  then lower cost. Setups equal on all of these share a rank. */
+function rankCriteria(v: V) {
+  const inline = v.interface_mode !== 'offline_lab_sample'
+  return [
+    { cmp: (a: Candidate, b: Candidate) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status], why: (a: Candidate) => (a.status === 'recommended' ? 'no open condition' : 'fewer exclusions') },
+    { cmp: (a: Candidate, b: Candidate) => b.score - a.score, why: () => 'a better balance of pros and cons in the rules' },
+    { cmp: (a: Candidate, b: Candidate) => (inline ? Number(a.setup.labOnly) - Number(b.setup.labOnly) : 0), why: () => 'it can be installed in-line' },
+    { cmp: (a: Candidate, b: Candidate) => GRADE[b.setup.selectivity] - GRADE[a.setup.selectivity], why: () => 'higher selectivity' },
+    { cmp: (a: Candidate, b: Candidate) => GRADE[a.setup.cost] - GRADE[b.setup.cost], why: () => 'lower cost' },
+  ]
+}
+
 export function evaluateAll(methods: MethodSetup[], v: V): Candidate[] {
-  return methods
-    .map((m) => evaluateSetup(m, v))
-    .sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status] || b.score - a.score)
+  const criteria = rankCriteria(v)
+  const compare = (a: Candidate, b: Candidate) => {
+    for (const c of criteria) {
+      const d = c.cmp(a, b)
+      if (d) return d
+    }
+    return 0
+  }
+  const list = methods.map((m) => evaluateSetup(m, v)).sort(compare)
+  // ranks count within each group (worth testing, conditional); excluded setups get none
+  for (const status of ['recommended', 'conditional'] as const) {
+    const group = list.filter((c) => c.status === status)
+    let rank = 0
+    group.forEach((c, i) => {
+      const prev = group[i - 1]
+      const next = group[i + 1]
+      const tiedPrev = !!prev && compare(prev, c) === 0
+      rank = tiedPrev ? rank : i + 1
+      c.rank = rank
+      c.tied = tiedPrev || (!!next && compare(c, next) === 0)
+      if (next && compare(c, next) !== 0) c.aheadBecause = criteria.find((k) => k.cmp(c, next) !== 0)!.why(c)
+    })
+  }
+  return list
 }
 
 // ---------------------------------------------------------------------------

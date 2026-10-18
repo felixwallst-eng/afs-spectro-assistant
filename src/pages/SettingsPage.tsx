@@ -10,6 +10,10 @@ interface Props {
 
 export default function SettingsPage({ settings, setSettings }: Props) {
   const pct = (n: number) => `${Math.round(n * 100)} %`
+  const hi = settings.confidentAt
+  const lo = settings.uncertainAt
+  const premiseAt = settings.premiseAt ?? DEFAULT_SETTINGS.premiseAt ?? 0.5
+  const clef = (settings.engine ?? 'clef') === 'clef'
   return (
     <section className="panel" style={{ maxWidth: 820 }}>
       <div className="panel-head">
@@ -17,12 +21,28 @@ export default function SettingsPage({ settings, setSettings }: Props) {
       </div>
       <div className="panel-body">
         <p className="hint" style={{ marginBottom: 8 }}>
-          Clef returns a confidence for every dimension. These thresholds decide when a value is used as is, when the expert is asked to
-          confirm it, and when it counts as unknown and becomes an open question.
+          For every step Clef picks a value and says how sure it is (0–100 %). These thresholds turn that confidence into what you see in
+          the decision tree. They apply to the next analysis; entries in the history keep the result they were analysed with.
         </p>
-        <div className="setting">
+        {!clef && (
+          <p className="hint" style={{ marginBottom: 8 }}>
+            The language model decides by majority vote and returns no confidence, so these thresholds only apply with the Clef classifier.
+          </p>
+        )}
+
+        <div className="threshold-bar" aria-hidden="true">
+          <span className="tb-open" style={{ width: `${lo * 100}%` }}>open question</span>
+          <span className="tb-confirm" style={{ width: `${(hi - lo) * 100}%` }}>suggestion to confirm</span>
+          <span className="tb-sure" style={{ width: `${(1 - hi) * 100}%` }}>decided</span>
+        </div>
+        <div className="threshold-scale" aria-hidden="true">
+          <span>0 %</span>
+          <span>100 %</span>
+        </div>
+
+        <div className={`setting${clef ? '' : ' off'}`}>
           <label htmlFor="confident">
-            Use value directly
+            Decided
             <small>at or above this confidence</small>
           </label>
           <input
@@ -31,15 +51,23 @@ export default function SettingsPage({ settings, setSettings }: Props) {
             min={0.3}
             max={0.99}
             step={0.01}
-            value={settings.confidentAt}
-            onChange={(e) => setSettings({ ...settings, confidentAt: Math.max(Number(e.target.value), settings.uncertainAt + 0.01) })}
+            disabled={!clef}
+            value={hi}
+            onChange={(e) => setSettings({ ...settings, confidentAt: Math.max(Number(e.target.value), lo + 0.01) })}
           />
-          <span>{pct(settings.confidentAt)}</span>
+          <span>{pct(hi)}</span>
         </div>
-        <div className="setting">
+        <p className="setting-help">
+          A value Clef reads from the customer text with this confidence counts as stated by the customer and is drawn as a decided step. If
+          Clef is this sure from the customer text and, with the AFS knowledge cards, this sure of a different value, the step is flagged as a
+          conflict. Higher: fewer automatic decisions and more steps for you to confirm. Lower: faster, but more values are taken without a
+          check.
+        </p>
+
+        <div className={`setting${clef ? '' : ' off'}`}>
           <label htmlFor="uncertain">
-            Ask the expert to confirm
-            <small>between this and the value above; below counts as unknown</small>
+            Suggestion to confirm
+            <small>from this confidence up to “Decided”</small>
           </label>
           <input
             id="uncertain"
@@ -47,11 +75,42 @@ export default function SettingsPage({ settings, setSettings }: Props) {
             min={0}
             max={0.9}
             step={0.01}
-            value={settings.uncertainAt}
-            onChange={(e) => setSettings({ ...settings, uncertainAt: Math.min(Number(e.target.value), settings.confidentAt - 0.01) })}
+            disabled={!clef}
+            value={lo}
+            onChange={(e) => setSettings({ ...settings, uncertainAt: Math.min(Number(e.target.value), hi - 0.01) })}
           />
-          <span>{pct(settings.uncertainAt)}</span>
+          <span>{pct(lo)}</span>
         </div>
+        <p className="setting-help">
+          In this band the most likely value is shown as a suggestion (amber “action needed”) for you to accept or change. Below it the step is
+          left open and the tree asks the clarification question for the customer. Higher: more open questions, fewer guesses. Lower: more
+          suggestions, some of them weak.
+        </p>
+
+        <div className={`setting${clef ? '' : ' off'}`}>
+          <label htmlFor="premise">
+            Premise check
+            <small>facts from this confidence on</small>
+          </label>
+          <input
+            id="premise"
+            type="range"
+            min={0.1}
+            max={0.95}
+            step={0.01}
+            disabled={!clef}
+            value={premiseAt}
+            onChange={(e) => setSettings({ ...settings, premiseAt: Number(e.target.value) })}
+          />
+          <span>{pct(premiseAt)}</span>
+        </div>
+        <p className="setting-help">
+          Besides the tree steps Clef reads facts such as “reuses an existing calibration”, “analyzer in another building” or “asks for
+          approval”. From this confidence on they feed the premise check (red “!” before the methods), which warns when the request relies on
+          something the AFS rules contradict. A warning only asks you to check, so this is set lower than “Decided”. Lower: fewer missed
+          premises, more false alarms. Higher: the reverse.
+        </p>
+
         <h3 className="settings-sub">Who decides the tree steps</h3>
         <div className="model-choice">
           {(
@@ -87,7 +146,7 @@ export default function SettingsPage({ settings, setSettings }: Props) {
         </div>
         <div className="toolbar" style={{ marginTop: 16 }}>
           <button className="btn" onClick={() => setSettings(DEFAULT_SETTINGS)}>
-            Restore defaults ({pct(DEFAULT_SETTINGS.confidentAt)} / {pct(DEFAULT_SETTINGS.uncertainAt)})
+            Restore defaults ({pct(DEFAULT_SETTINGS.confidentAt)} / {pct(DEFAULT_SETTINGS.uncertainAt)} / {pct(DEFAULT_SETTINGS.premiseAt ?? 0.5)})
           </button>
           <span className="note">Saved in this browser. Classifier: Cloudflare Clef via Workers AI.</span>
         </div>

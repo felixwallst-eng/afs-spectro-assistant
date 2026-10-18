@@ -1,6 +1,6 @@
 {
   "docId": "S02",
-  "createdAt": "2026-10-18T10:00:00.000Z",
+  "createdAt": "2026-10-18T12:25:54.000Z",
   "model": "Curated (Claude, quotes verified against the PDF text)",
   "pagesRead": 20,
   "rejected": 0,
@@ -85,6 +85,24 @@
       "value": "high",
       "claim": "A central full-spectrum analyzer with multiplexer gives higher accuracy at higher cost.",
       "quote": "Advantage - High accuracy due to the higher performance of full spectra process analyzer"
+    },
+    {
+      "id": "S02-10",
+      "docId": "S02",
+      "page": 7,
+      "step": "spectral_range",
+      "value": "uv_vis_nir_only",
+      "claim": "Silica fiber cables of 100–300 m allow a remote analyzer – for the Vis-NIR range.",
+      "quote": "Robust 100-300m cables made with Silica fibers of low OH-content (<0.1ppm OH) enable remote industrial process-control"
+    },
+    {
+      "id": "S02-11",
+      "docId": "S02",
+      "page": 8,
+      "step": "spectral_range",
+      "value": "mid_ir_possible",
+      "claim": "Mid-IR needs polycrystalline (PIR) fibers, which transmit 3–16 µm.",
+      "quote": "PIR-fiber transmission range 3-16μm is in the perfect match with Black Body Spectral Radiance at 0-100°C and Finger-Print Region of Molecular Vibrations"
     }
   ]
 }
