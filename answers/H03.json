@@ -1,0 +1,2156 @@
+{
+  "case": {
+    "id": "H03",
+    "split": "test",
+    "title": "A fluorescence instrument requested for glucose and viable biomass",
+    "text": "We already have a fluorescence spectrometer and would like to use it to report glucose concentration and viable biomass directly during fermentation. Our only justification is that fluorescence can be very sensitive. We have not identified a fluorescent target, marker or reference relationship. What should the assistant tell us?"
+  },
+  "generatedAt": "2026-10-18T17:36:04.217Z",
+  "tree": {
+    "model": "Cloudflare Clef (classifier)",
+    "decisions": [
+      {
+        "id": "sample_state",
+        "clef": {
+          "text": {
+            "value": "turbid_or_colloidal_liquid",
+            "confidence": 0.2063
+          },
+          "withSources": {
+            "value": "–",
+            "confidence": 0
+          },
+          "relevantCards": 0
+        },
+        "basis": "missing",
+        "value": null,
+        "refs": [],
+        "related": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 5,
+            "quote": "NIR spectroscopy, with its relatively large penetration depth (up to several millimetres) even into dense solid samples due to low absorption and strong scattering",
+            "cardId": "S01-1",
+            "claim": "NIR penetrates several millimetres even into dense solids and powders because of low absorption and strong scattering."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 5,
+            "quote": "strong absorption in the mid-IR region limits the corresponding spectral method to the analysis of very thin samples (usually less than 50 μm), but it opens up the possibility of using attenuated total reflectance (ATR)",
+            "cardId": "S01-2",
+            "claim": "Mid-IR absorbs so strongly that only very thin layers (<50 µm) can be measured – in practice via ATR."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 10,
+            "quote": "ATR fiber probes (Fig.1) enable the analysis of liquids and solid elastic samples, such as biological tissue, using specialized probes utilizing high-transmission fiber optics in the Mid-IR region.",
+            "cardId": "S01-3",
+            "claim": "Mid-IR ATR fiber probes analyse liquids and elastic solids such as biological tissue."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 14,
+            "quote": "A multispectral fiber probe, e.g. one combining MIR-ATR and fluorescence techniques into a single fiber optic probe shaft allows for the simultaneous acquisition of complementary chemical information from the exact same measurement point",
+            "cardId": "S01-4",
+            "claim": "Heterogeneous solids like tissue need a combined probe that measures both methods at exactly the same point."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 15,
+            "quote": "As the powder blend passes the probe tip, the system captures spectra at high speeds without interrupting the production flow.",
+            "cardId": "S01-5",
+            "claim": "For powder blends (tablet press feed frame) NIR reflection and Raman probes measure the blend as it passes the probe tip."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "For highly transparent liquids with low optical density, UV-Transmission or Transflection probes are ideal",
+            "cardId": "S01-6",
+            "claim": "Clear liquids with low optical density: transmission or transflection probes with a defined 1–10 mm path give high sensitivity for low concentrations."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "as the media becomes more opaque, turbid, or highly concentrated, the signal in a standard transmission setup becomes saturated because the light cannot penetrate the bulk of the sample",
+            "cardId": "S01-7",
+            "claim": "Opaque, turbid or highly concentrated media saturate a transmission setup because light cannot pass through the sample."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "In these high-OD scenarios, a UV-ATR (Attenuated Total Reflection) probe is used.",
+            "cardId": "S01-8",
+            "claim": "For high optical density liquids an ATR probe is used: the evanescent wave gives a path of a few micrometres, so black or highly scattering fluids can be measured without dilution."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 17,
+            "quote": "Inline NIR Reflection is primarily used for opaque or highly concentrated dairy products, such as yogurt, butter, or whole milk concentrates.",
+            "cardId": "S01-9",
+            "claim": "Opaque or highly concentrated dairy products (yogurt, butter, milk concentrates) are measured in-line with NIR diffuse reflection."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 18,
+            "quote": "NIR Transmission is the preferred method for transparent or semi-transparent liquids, such as skim milk, whey, or permeate.",
+            "cardId": "S01-10",
+            "claim": "For transparent or semi-transparent liquids (skim milk, whey, permeate) NIR transmission is the preferred method."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 18,
+            "quote": "it fails when the milk becomes too \"thick\" or fat-rich, as the light cannot penetrate the sample",
+            "cardId": "S01-11",
+            "claim": "Transmission fails once the product becomes thick or fat-rich; reflection works in highly scattering media but is less representative for clear liquids."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 18,
+            "quote": "In some cases, a Transflection probe can already be a combined solution working well for low-fat and high-fat containing milk products.",
+            "cardId": "S01-12",
+            "claim": "A transflection probe can sometimes cover both low-fat (clearer) and high-fat products with one interface."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 14,
+            "quote": "Spectra of API in hot polymer obtained with Diamond cone ATR probe coupled to iC10 FTIR (MTAC)",
+            "cardId": "S02-1",
+            "claim": "API in hot polymer melt was measured with a diamond ATR probe."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 2,
+            "quote": "It is important that the NIR light penetrates into the sample by up to 3 mm",
+            "cardId": "S03-1",
+            "claim": "NIR light penetrates up to about 3 mm into tissue – deeper than other suitable spectral regions."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 1,
+            "quote": "The application of fiber optic probes can be moreover indispensable for the spectroscopic analysis of solid inhomogeneous samples",
+            "cardId": "S04-1",
+            "claim": "Fiber probes are indispensable for local analysis of inhomogeneous solids (pharma and food products, soils, tissue)."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 1,
+            "quote": "Although ATR spectroscopy is not optimal for the analysis of solid objects, its application for the analysis of biological tissues by fiber-based probes is one of the most important exceptions.",
+            "cardId": "S04-2",
+            "claim": "ATR is not optimal for solid objects; biological tissue is an important exception."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 2,
+            "quote": "light used in fluorimetry can penetrate to the depth of a few millimeters into the tissue",
+            "cardId": "S04-3",
+            "claim": "Fluorescence light reaches a few millimetres into tissue, while ATR samples only a few micrometres."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 4,
+            "quote": "which is true for liquid or soft solid samples and their components, allowing a tight contact with the probe head",
+            "cardId": "S04-4",
+            "claim": "ATR needs a tight contact with the probe head – true for liquids and soft solids."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 4,
+            "quote": "The main focus of the proposed technology is on analyzing nonhomogeneous solid samples, because it enables simultaneous measurements at the same point on the sample surface.",
+            "cardId": "S04-5",
+            "claim": "The combined probe targets inhomogeneous solids because both methods measure at the same point."
+          }
+        ],
+        "missing": "What is the physical state and optical appearance of the sample at the measurement point (powder, clear / turbid / opaque liquid, paste or melt, solid)?",
+        "reasoning": "Neither the enquiry nor the AFS material decides this. Ask the customer: What is the physical state and optical appearance of the sample at the measurement point (powder, clear / turbid / opaque liquid, paste or melt, solid)?"
+      },
+      {
+        "id": "interface_mode",
+        "clef": {
+          "text": {
+            "value": "in_process_probe",
+            "confidence": 0.2291
+          },
+          "withSources": {
+            "value": "–",
+            "confidence": 0
+          },
+          "relevantCards": 0
+        },
+        "basis": "missing",
+        "value": null,
+        "refs": [],
+        "related": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 3,
+            "quote": "It allows for in-process analysis, i.e., directly in the process flow or reactor without sampling, eliminating delays and the risk of sample contamination.",
+            "cardId": "S01-13",
+            "claim": "In-process measurement works directly in the flow or reactor without sampling – no delay and no contamination risk."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 4,
+            "quote": "Different absorption coefficients of light in NIR, Mid-IR, and Raman spectroscopy, as well as the depth of its penetration into a given dense medium (solid, liquid, or powder) also requires different measurement interfaces and techniques, such as various fiber optic probes: ATR, Transmission, Transflexion, Reflection, etc.",
+            "cardId": "S01-14",
+            "claim": "Penetration depth differs between NIR, mid-IR and Raman, so each needs its own interface (ATR, transmission, transflection, reflection)."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 5,
+            "quote": "Immersible fiber optic probes operating in various spectral regions from UV to mid-IR are increasingly being used for measuring liquid and soft or powdered solid samples.",
+            "cardId": "S01-15",
+            "claim": "Immersible probes from UV to mid-IR measure liquids, soft and powdered solids in situ."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 10,
+            "quote": "Probe-based analysis is gaining widespread use in online analysis, such as in-line, in-process (chemical, biotechnological, natural) environments, as well as in-situ measurements, such as for field testing or for spectral diagnostics during surgery.",
+            "cardId": "S01-16",
+            "claim": "Probe-based analysis is used in-line and in-process, and in situ for field tests or during surgery."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 10,
+            "quote": "Near-IR vibrational spectroscopy (NIR) is the most common online analysis method performed using fiber optic probes.",
+            "cardId": "S01-17",
+            "claim": "NIR is the most common method for online analysis with fiber probes."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 10,
+            "quote": "high light scattering by solid and dispersed samples, which enables measurements using diffuse reflectance, including measurements without direct contact with the sample, at a distance",
+            "cardId": "S01-18",
+            "claim": "Because solids and dispersions scatter NIR light strongly, diffuse reflectance can measure without contact, at a distance."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 13,
+            "quote": "The experimental procedure involves the direct contact of the probe tip with the tissue during an operation, such as for kidney, colon, or rectal cancer.",
+            "cardId": "S01-19",
+            "claim": "For tissue diagnostics the probe tip is brought into direct contact with the tissue during the operation."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 15,
+            "quote": "The use of fiber optics is critical here, as it allows the sensitive spectrometers to be located safely away from the vibration and dust of the manufacturing floor.",
+            "cardId": "S01-20",
+            "claim": "Fiber optics let the spectrometer stay away from vibration and dust while the probe sits in the process."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 17,
+            "quote": "Experimentally, the probe is flush-mounted into a pipe or vat to interact directly with the flowing medium.",
+            "cardId": "S01-21",
+            "claim": "For dairy, the reflection probe is flush-mounted into a pipe or vat in contact with the flowing product."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 7,
+            "quote": "Robust 100-300m cables made with Silica fibers of low OH-content (<0.1ppm OH) enable remote industrial process-control",
+            "cardId": "S02-2",
+            "claim": "Silica fiber cables of 100–300 m allow a remote analyzer – for the Vis-NIR range."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 8,
+            "quote": "PIR-fiber transmission range 3-16μm is in the perfect match with Black Body Spectral Radiance at 0-100°C and Finger-Print Region of Molecular Vibrations",
+            "cardId": "S02-3",
+            "claim": "Mid-IR needs polycrystalline (PIR) fibers, which transmit 3–16 µm."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 13,
+            "quote": "measurement of water content in petroleum ATR-Probes with ATR-tips from ZrO 2 (& Diamond, etc.) sealed in PEEK-shaft",
+            "cardId": "S02-4",
+            "claim": "Water in petroleum is measured with sealed ATR probes (ZrO2 or diamond tip in a PEEK shaft)."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 14,
+            "quote": "NIR-Reflex & MIR-ATR-spectroscopy to control polymer extrusion in-line",
+            "cardId": "S02-5",
+            "claim": "Polymer extrusion is controlled in-line with NIR reflection and MIR ATR probes."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 2,
+            "quote": "Another important advantage of the NIR diagnostics of tissue tumors, compared to traditional methods, is the measurement flexibility due to the application of fiber-based light guides and probes, which is necessary under clinical conditions (e.g., during a surgery).",
+            "cardId": "S03-2",
+            "claim": "Fiber-based probes give the flexibility needed under clinical conditions, e.g. during surgery."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 5,
+            "quote": "In the latter case, therefore, the data was acquired at a distance of 3–4 mm above the tissue surface.",
+            "cardId": "S03-3",
+            "claim": "In the improved prototype, the reflectance data were acquired 3–4 mm above the tissue surface (probe tip touching)."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 1,
+            "quote": "Fiber optics and probes on its basis enable sampling-free measurements in situ, thereby essentially expanding the scope of optical analysis compared to the traditional lab spectroscopy.",
+            "cardId": "S04-6",
+            "claim": "Fiber probes enable sampling-free measurements in situ."
+          }
+        ],
+        "missing": "Should the measurement be in-line with a probe, contact-free at a distance, or on laboratory samples?",
+        "reasoning": "Neither the enquiry nor the AFS material decides this. Ask the customer: Should the measurement be in-line with a probe, contact-free at a distance, or on laboratory samples?"
+      },
+      {
+        "id": "spectral_range",
+        "clef": {
+          "text": {
+            "value": "uv_vis_nir_only",
+            "confidence": 0.1867
+          },
+          "withSources": {
+            "value": "–",
+            "confidence": 0
+          },
+          "relevantCards": 0
+        },
+        "basis": "missing",
+        "value": null,
+        "refs": [],
+        "related": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 5,
+            "quote": "allows the use of ordinary glass for optics, as well as standard lamps as light sources, making it ideal for online applications, including remote measurements via fiber optic probes",
+            "cardId": "S01-42",
+            "claim": "NIR works with ordinary glass optics and standard lamps – simple hardware, well suited to remote fiber measurements."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 7,
+            "quote": "Robust 100-300m cables made with Silica fibers of low OH-content (<0.1ppm OH) enable remote industrial process-control",
+            "cardId": "S02-10",
+            "claim": "Silica fiber cables of 100–300 m allow a remote analyzer – for the Vis-NIR range."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 8,
+            "quote": "PIR-fiber transmission range 3-16μm is in the perfect match with Black Body Spectral Radiance at 0-100°C and Finger-Print Region of Molecular Vibrations",
+            "cardId": "S02-11",
+            "claim": "Mid-IR needs polycrystalline (PIR) fibers, which transmit 3–16 µm."
+          }
+        ],
+        "missing": "Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?",
+        "reasoning": "Neither the enquiry nor the AFS material decides this. Ask the customer: Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?"
+      },
+      {
+        "id": "target_property_type",
+        "clef": {
+          "text": {
+            "value": "chemical_composition",
+            "confidence": 0.3175
+          },
+          "withSources": {
+            "value": "–",
+            "confidence": 0
+          },
+          "relevantCards": 0
+        },
+        "basis": "sources",
+        "value": "chemical_composition",
+        "refs": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 5,
+            "quote": "However, most chemicals do not exhibit this property.",
+            "cardId": "S01-23",
+            "claim": "Fluorimetry only works for substances that fluoresce – most chemicals do not.",
+            "role": "caution"
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 4,
+            "quote": "Of course, it is limited to the samples containing at least one fluorescent component that often has a biological or natural origin.",
+            "cardId": "S04-7",
+            "claim": "The MIR + fluorescence probe only applies to samples with at least one fluorescent component.",
+            "role": "caution"
+          }
+        ],
+        "related": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 5,
+            "quote": "the strong overlap of spectral signals in UV spectra complicates the analysis of real samples and makes the use of chemometric algorithms a necessary component of qualitative mixture analysis methods",
+            "cardId": "S01-22",
+            "claim": "UV spectra of mixtures overlap strongly; quantification needs chemometrics (low selectivity)."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 7,
+            "quote": "The combination of fluorescence and IR spectroscopy also proved necessary for classifying biological tissues.",
+            "cardId": "S01-24",
+            "claim": "Classifying biological tissues required combining fluorescence and IR."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 13,
+            "quote": "These models automatically categorize the tissue as \"normal\" or \"malignant,\" providing instant diagnostic results that serve as a \"spectral biopsy\".",
+            "cardId": "S01-25",
+            "claim": "Tissue diagnostics is a classification task (normal vs malignant) solved with PCA / PLS-DA models."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 15,
+            "quote": "The combination of these techniques is particularly effective because it captures complementary chemical information: NIR detects hydrogen bonds and asymmetric polar groups, while Raman provides information on the molecular backbone and symmetrical non-polar groups.",
+            "cardId": "S01-26",
+            "claim": "API content in powder blends: NIR and Raman give complementary chemical information."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "UV/Vis spectroscopy can be deployed as a low- cost, robust tool for real-time biomass monitoring, as cell suspension turbidity correlates well with cell density.",
+            "cardId": "S01-27",
+            "claim": "Biomass can be followed with low-cost UV/Vis, because turbidity correlates with cell density."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "Raman spectroscopy can be used in the same reactor to provide a \"molecular fingerprint\" for direct detection of specific metabolites like glucose, acetate, or lactate.",
+            "cardId": "S01-28",
+            "claim": "Specific metabolites (glucose, acetate, lactate) are detected with Raman; it suits aqueous media because water absorbs weakly."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "Fluorescence spectroscopy can be used for high- sensitivity detection (down to the nM-μM range) of critical cofactors and amino acids like NADH, tryptophan, and riboflavin.",
+            "cardId": "S01-29",
+            "claim": "Fluorescence detects named fluorophores (NADH, tryptophan, riboflavin) at nM–µM levels."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 17,
+            "quote": "Data processing may involve converting the reflectance values to absorbance and applying Multiplicative Scatter Correction (MSC) or Standard Normal Variate (SNV) transformations to remove physical interference caused by the scattering nature of the milk particles before using Partial Least Squares (PLS) regression to quantify fat and protein.",
+            "cardId": "S01-30",
+            "claim": "Fat and protein in milk are quantified from NIR reflection spectra after scatter correction with PLS regression."
+          },
+          {
+            "docId": "S02",
+            "docTitle": "AFS Process Control Slides",
+            "page": 3,
+            "quote": "Comparison of spectral data for customer process enables to select the best process-control solution",
+            "cardId": "S02-6",
+            "claim": "AFS compares the spectral data of the customer's process across methods before choosing the process-control solution."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 2,
+            "quote": "Diffuse reflectance near-infrared (NIR) spectroscopy is one of the most promising methods for optical tissue analysis.",
+            "cardId": "S03-4",
+            "claim": "Diffuse reflectance NIR is a promising method for distinguishing tissue types (tumour vs normal)."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 3,
+            "quote": "It is common practice to use ex vivo samples at the early research stages, as in the present proof-of-concept study.",
+            "cardId": "S03-5",
+            "claim": "The study used ex vivo samples at an early research stage; in vivo spectra can differ."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 10,
+            "quote": "The practicable diagnostic model should be built at a later stage of the method development, using a large representative set of patients, and should then be permanently updated with new data.",
+            "cardId": "S03-6",
+            "claim": "A usable diagnostic model needs a large representative patient set – beyond the scope of the study."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 14,
+            "quote": "This study provides a proof-of-concept demonstration of the LED-based sensor for tumor discrimination.",
+            "cardId": "S03-7",
+            "claim": "The LED sensor is only a proof of concept for tumour discrimination; further studies are needed."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 4,
+            "quote": "However, none of the individual techniques was sufficient to completely separate the three sample classes on the PCA score plots",
+            "cardId": "S04-8",
+            "claim": "No single method separated the three tissue classes; the combined IR + fluorescence data did."
+          }
+        ],
+        "reasoning": "Not stated outright. The closest passage is “We already have a fluorescence spectrometer and would like to use it to report glucose concentration and viable biomass directly during fermentation” [E], which suggests Chemical composition. Note [1, 2]: fluorimetry only works for substances that fluoresce – most chemicals do not. Please confirm.",
+        "enquiryQuote": "We already have a fluorescence spectrometer and would like to use it to report glucose concentration and viable biomass directly during fermentation."
+      },
+      {
+        "id": "optical_variability",
+        "clef": {
+          "text": {
+            "value": "not_stated",
+            "confidence": 0.6617
+          },
+          "withSources": {
+            "value": "–",
+            "confidence": 0
+          },
+          "relevantCards": 0
+        },
+        "basis": "missing",
+        "value": null,
+        "refs": [],
+        "related": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 7,
+            "quote": "Morphological factors, such as sample inhomogeneity (e.g., biological tissue) or process turbulence, must also be considered when selecting a measurement technique.",
+            "cardId": "S01-31",
+            "claim": "Sample inhomogeneity and process turbulence must be considered when choosing the measurement technique."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 8,
+            "quote": "Situations are also possible where problems of inhomogeneity and rapid changes in the sample coexist. In these cases, the use of multispectral probes becomes essential.",
+            "cardId": "S01-32",
+            "claim": "Where inhomogeneity and rapid changes coexist, multispectral probes become essential."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 17,
+            "quote": "Because the light does not penetrate deeply, the method is sensitive to the surface characteristics and fat globule size.",
+            "cardId": "S01-33",
+            "claim": "Reflection is sensitive to surface properties and fat globule size – texture changes affect the signal."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 18,
+            "quote": "By maintaining both, a lab can calibrate models for every stage of production - from raw milk intake to final evaporation - ensuring that no matter how the physical state of the milk changes during processing, the inline monitoring remains accurate and robust.",
+            "cardId": "S01-34",
+            "claim": "When the physical state changes along the process, calibrations for several interfaces keep the measurement robust."
+          },
+          {
+            "docId": "S03",
+            "docTitle": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+            "page": 14,
+            "quote": "The main disadvantage of the LED-based sensor in its present form is a very high measurement variance in cancer tissue samples (Figure 9).",
+            "cardId": "S03-8",
+            "claim": "Cancer tissue showed very high measurement variance – the main weakness of the sensor."
+          },
+          {
+            "docId": "S04",
+            "docTitle": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+            "page": 3,
+            "quote": "Low measurement reproducibility of the fat samples (broad standard deviation in Figure 2a) is explained by higher inhomogeneity of this tissue type",
+            "cardId": "S04-9",
+            "claim": "Inhomogeneous tissue (fat) gave low measurement reproducibility."
+          }
+        ],
+        "missing": "Do turbidity, optical density, texture or bubbles of the sample change during the process, and over what range?",
+        "reasoning": "Neither the enquiry nor the AFS material decides this. Ask the customer: Do turbidity, optical density, texture or bubbles of the sample change during the process, and over what range?"
+      },
+      {
+        "id": "concentration_level",
+        "clef": {
+          "text": {
+            "value": "not_stated",
+            "confidence": 0.5256
+          },
+          "withSources": {
+            "value": "–",
+            "confidence": 0
+          },
+          "relevantCards": 0
+        },
+        "basis": "missing",
+        "value": null,
+        "refs": [],
+        "related": [
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "NIR spectroscopy is effective for tracking major components like glucose or glycerol in the millimolar range but may lack the sensitivity to detect trace compounds below 0.1 percent.",
+            "cardId": "S01-35",
+            "claim": "NIR tracks major components (mM range) but may miss trace compounds below 0.1 %."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "Fluorescence spectroscopy can be used for high- sensitivity detection (down to the nM-μM range) of critical cofactors and amino acids like NADH, tryptophan, and riboflavin.",
+            "cardId": "S01-36",
+            "claim": "Trace-level fluorophores (nM–µM) need fluorescence spectroscopy."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 16,
+            "quote": "they pass light through a defined path length (typically 1 mm to 10 mm), allowing for high sensitivity and accurate quantification of low- concentration analytes",
+            "cardId": "S01-37",
+            "claim": "Transmission with a defined path allows accurate quantification of low-concentration analytes in clear liquids."
+          },
+          {
+            "docId": "S01",
+            "docTitle": "Multispectral Laboratory of Optical Analysis Methods",
+            "page": 18,
+            "quote": "This technique generally offers higher accuracy for low-concentration components because the light interacts with the entire volume of the sampled cross-section, providing a more representative chemical signature.",
+            "cardId": "S01-38",
+            "claim": "Transmission through the whole cross-section gives higher accuracy for low-concentration components."
+          }
+        ],
+        "missing": "In what concentration range is the target present, and what change must be detected?",
+        "reasoning": "Neither the enquiry nor the AFS material decides this. Ask the customer: In what concentration range is the target present, and what change must be detected?"
+      },
+      {
+        "id": "matrix_count",
+        "basis": "customer",
+        "value": "single_matrix"
+      },
+      {
+        "id": "target_definition",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "fluorescent_target",
+        "basis": "customer",
+        "value": "explicitly_not_identified"
+      },
+      {
+        "id": "sample_heterogeneity",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "deployment_context",
+        "basis": "customer",
+        "value": "process_monitoring"
+      },
+      {
+        "id": "aqueous_matrix",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "reference_analytics",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "analyzer_location",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "quantified_requirements",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "budget",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "matrix_change_vs_existing",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "existing_fiber_type",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "certainty_requested",
+        "basis": "missing",
+        "value": null
+      },
+      {
+        "id": "cond_high_temperature",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "cond_temperature_variation",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "cond_texture_variation",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "cond_fouling",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "cond_harsh_environment",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "proposed_nir",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "proposed_mir_atr",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "proposed_raman",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "proposed_fluorescence",
+        "basis": "customer",
+        "value": "yes"
+      },
+      {
+        "id": "proposed_uv_vis",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "reuse_calibration",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "reuse_instrument",
+        "basis": "customer",
+        "value": "yes"
+      },
+      {
+        "id": "reuse_fiber",
+        "basis": "customer",
+        "value": "no"
+      },
+      {
+        "id": "reuse_study_as_evidence",
+        "basis": "customer",
+        "value": "no"
+      }
+    ],
+    "latencyMs": 2895,
+    "passagesRead": 64,
+    "usage": {
+      "inputTokens": 0,
+      "outputTokens": 0
+    },
+    "pipeline": "clef",
+    "sources": "original",
+    "calls": 5,
+    "docsRead": [
+      {
+        "docId": "S01",
+        "title": "Multispectral Laboratory of Optical Analysis Methods",
+        "pages": 19,
+        "cards": 42
+      },
+      {
+        "docId": "S02",
+        "title": "AFS Process Control Slides",
+        "pages": 20,
+        "cards": 11
+      },
+      {
+        "docId": "S03",
+        "title": "LED-based NIR Sensor for Kidney Tumour Diagnostics (2017)",
+        "pages": 17,
+        "cards": 10
+      },
+      {
+        "docId": "S04",
+        "title": "Combined MIR ATR and Fluorescence Fiber Probe (2021)",
+        "pages": 6,
+        "cards": 11
+      }
+    ],
+    "docsUnread": [],
+    "premises": [
+      {
+        "id": "fluorescence-target",
+        "severity": "block",
+        "text": "Fluorescence is highly sensitive but not selective. Without a defined fluorescent species or reference relationship it cannot report the requested variables directly.",
+        "citation": {
+          "source": "S01",
+          "page": "p.16"
+        }
+      }
+    ],
+    "premiseFacts": {
+      "matrix_count": {
+        "value": "single_matrix",
+        "confidence": 0.6308
+      },
+      "target_definition": {
+        "value": "loosely_defined",
+        "confidence": 0.0992
+      },
+      "fluorescent_target": {
+        "value": "explicitly_not_identified",
+        "confidence": 0.9726
+      },
+      "sample_heterogeneity": {
+        "value": "not_stated",
+        "confidence": 0.789
+      },
+      "deployment_context": {
+        "value": "process_monitoring",
+        "confidence": 0.6296
+      },
+      "aqueous_matrix": {
+        "value": "not_stated",
+        "confidence": 0.5753
+      },
+      "reference_analytics": {
+        "value": "not_stated",
+        "confidence": 0.7687
+      },
+      "analyzer_location": {
+        "value": "not_stated",
+        "confidence": 0.4271
+      },
+      "quantified_requirements": {
+        "value": "not_stated",
+        "confidence": 0.9499
+      },
+      "budget": {
+        "value": "not_stated",
+        "confidence": 0.831
+      },
+      "matrix_change_vs_existing": {
+        "value": "not_stated",
+        "confidence": 0.3816
+      },
+      "existing_fiber_type": {
+        "value": "not_stated",
+        "confidence": 0.6
+      },
+      "certainty_requested": {
+        "value": "exploratory_assessment",
+        "confidence": 0.3463
+      },
+      "cond_high_temperature": {
+        "value": "no",
+        "confidence": 0.9347
+      },
+      "cond_temperature_variation": {
+        "value": "no",
+        "confidence": 0.9746
+      },
+      "cond_texture_variation": {
+        "value": "no",
+        "confidence": 0.9764
+      },
+      "cond_fouling": {
+        "value": "no",
+        "confidence": 0.9676
+      },
+      "cond_harsh_environment": {
+        "value": "no",
+        "confidence": 0.9496
+      },
+      "proposed_nir": {
+        "value": "no",
+        "confidence": 0.9317
+      },
+      "proposed_mir_atr": {
+        "value": "no",
+        "confidence": 0.9554
+      },
+      "proposed_raman": {
+        "value": "no",
+        "confidence": 0.95
+      },
+      "proposed_fluorescence": {
+        "value": "yes",
+        "confidence": 0.9775
+      },
+      "proposed_uv_vis": {
+        "value": "no",
+        "confidence": 0.9511
+      },
+      "reuse_calibration": {
+        "value": "no",
+        "confidence": 0.9679
+      },
+      "reuse_instrument": {
+        "value": "yes",
+        "confidence": 0.9363
+      },
+      "reuse_fiber": {
+        "value": "no",
+        "confidence": 0.9517
+      },
+      "reuse_study_as_evidence": {
+        "value": "no",
+        "confidence": 0.9554
+      }
+    },
+    "stats": {
+      "decided": 0,
+      "suggested": 1,
+      "open": 5,
+      "rejectedQuotes": 0,
+      "verifiedSources": 2
+    }
+  },
+  "assessment": {
+    "decisionStatus": "insufficient_information",
+    "warnings": [
+      {
+        "id": "fluorescence-target",
+        "severity": "block",
+        "text": "Fluorescence is highly sensitive but not selective. Without a defined fluorescent species or reference relationship it cannot report the requested variables directly.",
+        "citation": {
+          "source": "S01",
+          "page": "p.16"
+        }
+      }
+    ],
+    "candidates": [
+      {
+        "setup": {
+          "id": "ir-atr-probe",
+          "method": "ir",
+          "technique": "ATR probe",
+          "phenomenon": "absorption",
+          "sampleTypes": [
+            "liquid",
+            "paste",
+            "soft"
+          ],
+          "depthUm": [
+            1,
+            6
+          ],
+          "sensitivity": "average",
+          "selectivity": "high",
+          "cost": "high",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: high – a larger investment than the low- and average-cost alternatives.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 1,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "raman-probe",
+          "method": "raman",
+          "technique": "Raman probe",
+          "phenomenon": "Raman scattering",
+          "sampleTypes": [
+            "liquid",
+            "powder",
+            "solid"
+          ],
+          "depthUm": [
+            2000,
+            5000
+          ],
+          "sensitivity": "average",
+          "selectivity": "high",
+          "cost": "high",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: high – a larger investment than the low- and average-cost alternatives.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 1,
+        "tied": true,
+        "aheadBecause": "higher selectivity"
+      },
+      {
+        "setup": {
+          "id": "nir-transmission-probe",
+          "method": "nir",
+          "technique": "Transmission / transflection probe",
+          "phenomenon": "transmission",
+          "sampleTypes": [
+            "liquid",
+            "colloidal"
+          ],
+          "depthUm": [
+            1000,
+            10000
+          ],
+          "sensitivity": "average",
+          "selectivity": "average",
+          "cost": "average",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 3,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "nir-diffuse-reflection-probe",
+          "method": "nir",
+          "technique": "Diffuse reflection probe",
+          "phenomenon": "diffuse reflection",
+          "sampleTypes": [
+            "scattering media",
+            "powder"
+          ],
+          "depthUm": [
+            500,
+            1000
+          ],
+          "sensitivity": "average",
+          "selectivity": "average",
+          "cost": "average",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 3,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "nir-surface-distance",
+          "method": "nir",
+          "technique": "Surface at a distance",
+          "phenomenon": "diffuse reflection",
+          "sampleTypes": [
+            "solid",
+            "powder"
+          ],
+          "depthUm": [
+            2000,
+            5000
+          ],
+          "sensitivity": "average",
+          "selectivity": "average",
+          "cost": "average",
+          "labOnly": false,
+          "nonContact": true,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 3,
+        "tied": true,
+        "aheadBecause": "higher selectivity"
+      },
+      {
+        "setup": {
+          "id": "uvvis-diffuse-reflection-probe",
+          "method": "uvvis",
+          "technique": "Diffuse reflection probe",
+          "phenomenon": "diffuse reflection",
+          "sampleTypes": [
+            "solid",
+            "pill"
+          ],
+          "depthUm": [
+            1000,
+            5000
+          ],
+          "sensitivity": "low",
+          "selectivity": "low",
+          "cost": "low",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: low – the most economical option for this method.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 6,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "uvvis-transmission-probe",
+          "method": "uvvis",
+          "technique": "Transmission / transflection probe",
+          "phenomenon": "transmission",
+          "sampleTypes": [
+            "liquid"
+          ],
+          "depthUm": [
+            1000,
+            10000
+          ],
+          "sensitivity": "low",
+          "selectivity": "low",
+          "cost": "low",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: low – the most economical option for this method.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 6,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "uvvis-probe-lens",
+          "method": "uvvis",
+          "technique": "Probe with lens",
+          "phenomenon": "emission of an external source",
+          "sampleTypes": [
+            "radiating sample"
+          ],
+          "depthUm": null,
+          "sensitivity": "high",
+          "selectivity": "low",
+          "cost": "low",
+          "labOnly": false,
+          "nonContact": true,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: low – the most economical option for this method.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 6,
+        "tied": true,
+        "aheadBecause": "lower cost"
+      },
+      {
+        "setup": {
+          "id": "uvvis-atr-probe",
+          "method": "uvvis",
+          "technique": "ATR probe",
+          "phenomenon": "absorption",
+          "sampleTypes": [
+            "liquid"
+          ],
+          "depthUm": [
+            0.1,
+            1
+          ],
+          "sensitivity": "low",
+          "selectivity": "low",
+          "cost": "average",
+          "labOnly": false,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -1,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 9,
+        "tied": false,
+        "aheadBecause": "a better balance of pros and cons in the rules"
+      },
+      {
+        "setup": {
+          "id": "ir-cuvette",
+          "method": "ir",
+          "technique": "Cuvette",
+          "phenomenon": "absorption",
+          "sampleTypes": [
+            "liquid"
+          ],
+          "depthUm": [
+            10,
+            100
+          ],
+          "sensitivity": "high",
+          "selectivity": "high",
+          "cost": "average",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 10,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "ir-sample-layer",
+          "method": "ir",
+          "technique": "Sample layer",
+          "phenomenon": "absorption",
+          "sampleTypes": [
+            "solid film"
+          ],
+          "depthUm": [
+            5,
+            50
+          ],
+          "sensitivity": "high",
+          "selectivity": "high",
+          "cost": "average",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 10,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "ir-sample-surface",
+          "method": "ir",
+          "technique": "Sample surface",
+          "phenomenon": "diffuse reflection",
+          "sampleTypes": [
+            "solid"
+          ],
+          "depthUm": [
+            10,
+            10
+          ],
+          "sensitivity": "average",
+          "selectivity": "high",
+          "cost": "average",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 10,
+        "tied": true,
+        "aheadBecause": "lower cost"
+      },
+      {
+        "setup": {
+          "id": "ir-atr-platform",
+          "method": "ir",
+          "technique": "ATR platform",
+          "phenomenon": "absorption",
+          "sampleTypes": [
+            "liquid",
+            "paste",
+            "soft"
+          ],
+          "depthUm": [
+            1,
+            6
+          ],
+          "sensitivity": "average",
+          "selectivity": "high",
+          "cost": "high",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: high – a larger investment than the low- and average-cost alternatives.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 13,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "raman-cuvette",
+          "method": "raman",
+          "technique": "Cuvette 90°",
+          "phenomenon": "Raman scattering",
+          "sampleTypes": [
+            "liquid"
+          ],
+          "depthUm": [
+            2000,
+            5000
+          ],
+          "sensitivity": "average",
+          "selectivity": "high",
+          "cost": "high",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: high – a larger investment than the low- and average-cost alternatives.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 13,
+        "tied": true,
+        "aheadBecause": "higher selectivity"
+      },
+      {
+        "setup": {
+          "id": "nir-cuvette",
+          "method": "nir",
+          "technique": "Cuvette",
+          "phenomenon": "transmission",
+          "sampleTypes": [
+            "liquid"
+          ],
+          "depthUm": [
+            1000,
+            5000
+          ],
+          "sensitivity": "average",
+          "selectivity": "average",
+          "cost": "average",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 15,
+        "tied": true
+      },
+      {
+        "setup": {
+          "id": "nir-integrating-sphere",
+          "method": "nir",
+          "technique": "Integrating sphere",
+          "phenomenon": "diffuse reflection",
+          "sampleTypes": [
+            "solid",
+            "powder"
+          ],
+          "depthUm": [
+            5000,
+            10000
+          ],
+          "sensitivity": "average",
+          "selectivity": "average",
+          "cost": "average",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: average.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 15,
+        "tied": true,
+        "aheadBecause": "higher selectivity"
+      },
+      {
+        "setup": {
+          "id": "uvvis-cuvette",
+          "method": "uvvis",
+          "technique": "Cuvette",
+          "phenomenon": "absorption",
+          "sampleTypes": [
+            "liquid"
+          ],
+          "depthUm": [
+            1000,
+            5000
+          ],
+          "sensitivity": "high",
+          "selectivity": "low",
+          "cost": "low",
+          "labOnly": true,
+          "nonContact": false,
+          "citation": {
+            "source": "S01",
+            "page": "Table 1 (p.6)"
+          }
+        },
+        "status": "conditional",
+        "score": -2,
+        "reasons": [
+          {
+            "effect": "condition",
+            "text": "Sample state unknown – suitability for the sample not checked.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "condition",
+            "text": "Laboratory setup – useful for the first feasibility test, not for in-line installation.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          },
+          {
+            "effect": "info",
+            "text": "Cost: low – the most economical option for this method.",
+            "citation": {
+              "source": "S01",
+              "page": "Table 1 (p.6)"
+            }
+          }
+        ],
+        "rank": 17,
+        "tied": false
+      }
+    ]
+  },
+  "reportInput": {
+    "enquiry": "We already have a fluorescence spectrometer and would like to use it to report glucose concentration and viable biomass directly during fermentation. Our only justification is that fluorescence can be very sensitive. We have not identified a fluorescent target, marker or reference relationship. What should the assistant tell us?",
+    "decisionStatus": "insufficient_information",
+    "decisionReasons": [
+      "No measurement target identified.",
+      "Sample state is unknown."
+    ],
+    "steps": [
+      {
+        "title": "Sample state",
+        "value": null,
+        "how": "open",
+        "evidence": [],
+        "question": "What is the physical state and optical appearance of the sample at the measurement point (powder, clear / turbid / opaque liquid, paste or melt, solid)?"
+      },
+      {
+        "title": "Measurement interface",
+        "value": null,
+        "how": "open",
+        "evidence": [],
+        "question": "Should the measurement be in-line with a probe, contact-free at a distance, or on laboratory samples?"
+      },
+      {
+        "title": "Usable spectral range",
+        "value": null,
+        "how": "open",
+        "evidence": [],
+        "question": "Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?"
+      },
+      {
+        "title": "What is measured",
+        "value": "Chemical composition",
+        "how": "suggested",
+        "customerQuote": "We already have a fluorescence spectrometer and would like to use it to report glucose concentration and viable biomass directly during fermentation.",
+        "evidence": [
+          "E1",
+          "E2"
+        ],
+        "question": "Which specific constituent or quality variable must be measured?"
+      },
+      {
+        "title": "Optical variability",
+        "value": null,
+        "how": "open",
+        "evidence": [],
+        "question": "Do turbidity, optical density, texture or bubbles of the sample change during the process, and over what range?"
+      },
+      {
+        "title": "Concentration level",
+        "value": null,
+        "how": "open",
+        "evidence": [],
+        "question": "In what concentration range is the target present, and what change must be detected?"
+      }
+    ],
+    "facts": [
+      {
+        "title": "Streams / products",
+        "value": "Single stream"
+      },
+      {
+        "title": "Fluorescent target",
+        "value": "Not identified"
+      },
+      {
+        "title": "Use context",
+        "value": "Process monitoring"
+      },
+      {
+        "title": "Requested answer",
+        "value": "First assessment"
+      },
+      {
+        "title": "Fluorescence",
+        "value": "yes"
+      },
+      {
+        "title": "Existing instrument",
+        "value": "yes"
+      }
+    ],
+    "premises": [
+      {
+        "severity": "block",
+        "text": "Fluorescence is highly sensitive but not selective. Without a defined fluorescent species or reference relationship it cannot report the requested variables directly.",
+        "evidence": [
+          "E3"
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "rank": 1,
+        "status": "conditional",
+        "name": "Mid-IR (MIR)",
+        "technique": "ATR probe",
+        "range": "4000–400 cm⁻¹ (2.5–25 µm)",
+        "pros": [],
+        "cons": [
+          "Sample state unknown – suitability for the sample not checked. [E5]"
+        ],
+        "evidence": [
+          "E4"
+        ],
+        "canChange": [
+          "Drops out if Sample state = Powder / granulate or Rigid solid",
+          "Drops out if Measurement interface = Non-contact / remote",
+          "Drops out if Usable spectral range = UV/Vis/NIR only"
+        ]
+      },
+      {
+        "rank": 1,
+        "status": "conditional",
+        "name": "Raman",
+        "technique": "Raman probe",
+        "range": "visible / short-wave NIR detection (400–1100 nm), e.g. 785 nm excitation",
+        "pros": [],
+        "cons": [
+          "Sample state unknown – suitability for the sample not checked. [E5]"
+        ],
+        "evidence": [
+          "E6"
+        ],
+        "canChange": [
+          "Drops out if Sample state = Melt / paste",
+          "Drops out if Measurement interface = Non-contact / remote"
+        ]
+      },
+      {
+        "rank": 3,
+        "status": "conditional",
+        "name": "Near-IR (NIR)",
+        "technique": "Transmission / transflection probe",
+        "range": "780–2500 nm",
+        "pros": [],
+        "cons": [
+          "Sample state unknown – suitability for the sample not checked. [E5]"
+        ],
+        "evidence": [
+          "E7"
+        ],
+        "canChange": [
+          "Drops out if Sample state = Powder / granulate or Melt / paste or Soft solid / tissue or Rigid solid",
+          "Drops out if Measurement interface = Non-contact / remote"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "source": "S01",
+        "page": "p.5",
+        "text": "Fluorimetry only works for substances that fluoresce – most chemicals do not.",
+        "quote": "However, most chemicals do not exhibit this property."
+      },
+      {
+        "id": "E2",
+        "source": "S04",
+        "page": "p.4",
+        "text": "The MIR + fluorescence probe only applies to samples with at least one fluorescent component.",
+        "quote": "Of course, it is limited to the samples containing at least one fluorescent component that often has a biological or natural origin."
+      },
+      {
+        "id": "E3",
+        "source": "S01",
+        "page": "p.16",
+        "text": "Fluorescence is highly sensitive but not selective. Without a defined fluorescent species or reference relationship it cannot report the requested variables directly."
+      },
+      {
+        "id": "E4",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Mid-IR (MIR) – ATR probe: absorption, samples liquid, paste, soft"
+      },
+      {
+        "id": "E5",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Sample state unknown – suitability for the sample not checked."
+      },
+      {
+        "id": "E6",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Raman – Raman probe: Raman scattering, samples liquid, powder, solid"
+      },
+      {
+        "id": "E7",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Near-IR (NIR) – Transmission / transflection probe: transmission, samples liquid, colloidal"
+      }
+    ],
+    "openSteps": [
+      {
+        "title": "Sample state",
+        "question": "What is the physical state and optical appearance of the sample at the measurement point (powder, clear / turbid / opaque liquid, paste or melt, solid)?"
+      },
+      {
+        "title": "Measurement interface",
+        "question": "Should the measurement be in-line with a probe, contact-free at a distance, or on laboratory samples?"
+      },
+      {
+        "title": "Usable spectral range",
+        "question": "Which fiber link connects analyzer and probe (fiber type, length), and could an IR fiber be used if mid-IR is the best method?"
+      },
+      {
+        "title": "What is measured",
+        "question": "Which specific constituent or quality variable must be measured?"
+      },
+      {
+        "title": "Optical variability",
+        "question": "Do turbidity, optical density, texture or bubbles of the sample change during the process, and over what range?"
+      },
+      {
+        "title": "Concentration level",
+        "question": "In what concentration range is the target present, and what change must be detected?"
+      }
+    ]
+  },
+  "report": {
+    "report": {
+      "decisionStatus": "Insufficient information (No measurement target identified. Sample state is unknown.)",
+      "requirementsStated": [
+        "Report glucose concentration and viable biomass during fermentation",
+        "Use existing fluorescence spectrometer",
+        "Process monitoring of a single stream",
+        "Fluorescence detection desired"
+      ],
+      "keyUnknowns": [
+        "Physical state and optical appearance of the sample at the measurement point",
+        "Preferred measurement interface (in‑line probe, remote, or lab sample)",
+        "Fiber link type and length; whether an IR‑compatible fiber can be used",
+        "Exact constituent or quality variable to be quantified (glucose, biomass, or a proxy)",
+        "Extent of turbidity, bubbles or other optical variability during the run",
+        "Concentration range of the target and required detection limit"
+      ],
+      "clarificationQuestions": [
+        "What is the sample state (clear liquid, turbid broth, paste, solid, etc.)?",
+        "Will the measurement be performed with an in‑line probe, a remote free‑space head, or on withdrawn samples?",
+        "Which fiber link will connect the spectrometer to the probe and can it transmit mid‑IR if needed?",
+        "What specific analytical variable must be measured (glucose concentration, biomass optical density, a fluorescent metabolite, etc.)?",
+        "How does turbidity or bubble formation vary during the fermentation?",
+        "What concentration range and change magnitude must be detected for the target?"
+      ],
+      "recommendation": [
+        {
+          "method": "Mid‑IR (MIR) – ATR probe",
+          "text": "Worth testing if the broth is a liquid or soft paste and an IR‑transparent fiber can be installed; MIR offers molecular absorption that can correlate with glucose or biomass when a suitable calibration is defined [E4, E5]."
+        },
+        {
+          "method": "Raman – Raman probe",
+          "text": "Worth testing if the sample can be accessed with a probe (liquid, powder or solid) and the optical path is not dominated by scattering; Raman can provide compositional information without a fluorescent tag [E6, E5]."
+        },
+        {
+          "method": "Near‑IR (NIR) – Transmission / transflection probe",
+          "text": "Worth testing if the broth is sufficiently transparent for transmission or can be measured in transflection mode; NIR can quantify glucose and biomass through multivariate models when the optical variability is manageable [E7, E5]."
+        }
+      ],
+      "measurementConcept": "A fiber‑optic probe (ATR, Raman or transmission) would be positioned at the fermentation line, coupled to the existing spectrometer via a suitable fiber link; the probe geometry (contact, immersion or window) must match the sample state to ensure adequate optical coupling [E4, E6, E7].",
+      "spectralRange": "MIR ATR: 4000–400 cm⁻¹ (2.5–25 µm); Raman excitation typically 785 nm with detection 400–1100 nm; NIR transmission: 780–2500 nm. The exact usable range depends on the fiber type and any spectral filters required – still to be confirmed.",
+      "risks": [
+        "Fluorescence alone is not selective; without a defined fluorophore it cannot directly report glucose or biomass (E3).",
+        "If the sample is highly turbid or contains bubbles, transmission‑based methods may fail.",
+        "Incorrect fiber choice could block the required spectral region.",
+        "Calibration models may be invalid if optical properties change during the run."
+      ],
+      "feasibilityPlan": [
+        "1. Obtain a representative fermentation broth sample and characterise its physical state, turbidity and presence of any intrinsic fluorescence.",
+        "2. Install a short‑length test probe (ATR, Raman or NIR) with a compatible fiber and record spectra while simultaneously measuring glucose (e.g., HPLC) and biomass (dry weight) as reference.",
+        "3. Develop a multivariate calibration (e.g., PLS) linking spectral features to the reference measurements.",
+        "4. Validate the model on independent broth samples covering the expected concentration range.",
+        "5. Assess probe robustness by introducing typical process variations (bubbles, temperature shifts) and compare spectral stability."
+      ],
+      "decisionBasis": "The go/no‑go decision will be based on whether a reproducible calibration can be built that meets the client’s required accuracy for glucose and biomass (to be defined), and whether the probe can operate reliably under the identified sample state and optical variability."
+    },
+    "evidence": [
+      {
+        "id": "E1",
+        "source": "S01",
+        "page": "p.5",
+        "text": "Fluorimetry only works for substances that fluoresce – most chemicals do not.",
+        "quote": "However, most chemicals do not exhibit this property."
+      },
+      {
+        "id": "E2",
+        "source": "S04",
+        "page": "p.4",
+        "text": "The MIR + fluorescence probe only applies to samples with at least one fluorescent component.",
+        "quote": "Of course, it is limited to the samples containing at least one fluorescent component that often has a biological or natural origin."
+      },
+      {
+        "id": "E3",
+        "source": "S01",
+        "page": "p.16",
+        "text": "Fluorescence is highly sensitive but not selective. Without a defined fluorescent species or reference relationship it cannot report the requested variables directly."
+      },
+      {
+        "id": "E4",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Mid-IR (MIR) – ATR probe: absorption, samples liquid, paste, soft"
+      },
+      {
+        "id": "E5",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Sample state unknown – suitability for the sample not checked."
+      },
+      {
+        "id": "E6",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Raman – Raman probe: Raman scattering, samples liquid, powder, solid"
+      },
+      {
+        "id": "E7",
+        "source": "S01",
+        "page": "Table 1 (p.6)",
+        "text": "Near-IR (NIR) – Transmission / transflection probe: transmission, samples liquid, colloidal"
+      }
+    ],
+    "model": "gpt-oss 120B",
+    "latencyMs": 12995
+  }
+}

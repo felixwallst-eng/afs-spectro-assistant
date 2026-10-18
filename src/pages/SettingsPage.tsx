@@ -1,5 +1,4 @@
 import { AGENT_MODELS } from '../../shared/agent.ts'
-import type { AgentModelKey } from '../../shared/agent.ts'
 import { DEFAULT_SETTINGS } from '../../shared/types.ts'
 import type { Settings } from '../../shared/types.ts'
 
@@ -13,7 +12,7 @@ export default function SettingsPage({ settings, setSettings }: Props) {
   const hi = settings.confidentAt
   const lo = settings.uncertainAt
   const premiseAt = settings.premiseAt ?? DEFAULT_SETTINGS.premiseAt ?? 0.5
-  const clef = (settings.engine ?? 'clef') === 'clef'
+  const clef = true // decisions are always made by the Clef classifier
   return (
     <section className="panel" style={{ maxWidth: 820 }}>
       <div className="panel-head">
@@ -111,38 +110,16 @@ export default function SettingsPage({ settings, setSettings }: Props) {
           premises, more false alarms. Higher: the reverse.
         </p>
 
-        <h3 className="settings-sub">Who decides the tree steps</h3>
-        <div className="model-choice">
-          {(
-            [
-              ['clef', 'Clef classifier', 'Reproducible: the same enquiry always gives the same decision. Checks the customer text against the AFS knowledge cards and flags conflicts.'],
-              ['llm', 'Language model', 'One model call per step, three runs with majority vote. Writes its own reasoning, but results can vary between runs.'],
-            ] as const
-          ).map(([k, label, note]) => (
-            <label key={k} className={(settings.engine ?? 'clef') === k ? 'on' : ''}>
-              <input type="radio" name="engine" checked={(settings.engine ?? 'clef') === k} onChange={() => setSettings({ ...settings, engine: k })} />
-              <span>
-                <strong>{label}</strong>
-                <small>{note}</small>
-              </span>
-            </label>
-          ))}
-        </div>
-        <h3 className="settings-sub">Knowledge agent model</h3>
-        <p className="hint" style={{ marginBottom: 8 }}>
-          All models have open weights, so the same model can later run on AFS hardware without sending enquiries to a third party. In
-          this prototype they are hosted on Cloudflare Workers AI.
-        </p>
-        <div className="model-choice">
-          {(Object.keys(AGENT_MODELS) as AgentModelKey[]).map((k) => (
-            <label key={k} className={settings.agentModel === k ? 'on' : ''}>
-              <input type="radio" name="agent-model" checked={settings.agentModel === k} onChange={() => setSettings({ ...settings, agentModel: k })} />
-              <span>
-                <strong>{AGENT_MODELS[k].name}</strong>
-                <small>{AGENT_MODELS[k].note}</small>
-              </span>
-            </label>
-          ))}
+        <h3 className="settings-sub">Models</h3>
+        <div className="model-fixed">
+          <p>
+            <strong>Decisions: Cloudflare Clef classifier</strong> – answers fixed multiple-choice questions with probabilities, so the same enquiry and the same
+            knowledge cards always give the same decision path.
+          </p>
+          <p>
+            <strong>Written assessment: {AGENT_MODELS.gptoss.name}</strong> – only writes the text from the fixed results; it decides nothing. Open weights, so
+            it could later run on AFS hardware. Both models are hosted on Cloudflare Workers AI.
+          </p>
         </div>
         <div className="toolbar" style={{ marginTop: 16 }}>
           <button className="btn" onClick={() => setSettings(DEFAULT_SETTINGS)}>

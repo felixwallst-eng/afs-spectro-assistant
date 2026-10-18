@@ -104,7 +104,7 @@ export default function AssessPage({ settings, methods }: Props) {
     try {
       setSince(Date.now())
       const thresholds = { confidentAt: settings.confidentAt, uncertainAt: settings.uncertainAt, premiseAt: settings.premiseAt ?? DEFAULT_SETTINGS.premiseAt ?? 0.5 }
-      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss', { sources, fresh, pipeline: settings.engine === 'llm' ? 'steps' : 'clef', thresholds })
+      const res = await treeApi.run(input, 'gptoss', { sources, fresh, pipeline: 'clef', thresholds })
       const nextOverrides = keepOverrides ? overrides : {}
       const dimensions = rawFromDecisions(res.decisions)
       setTree(res)
@@ -381,7 +381,7 @@ export default function AssessPage({ settings, methods }: Props) {
                 assessment={assessment}
                 overrides={overrides}
                 notes={notes}
-                model={settings.agentModel ?? 'gptoss'}
+                model="gptoss"
               />
             ) : (
               <section className="panel placeholder">
