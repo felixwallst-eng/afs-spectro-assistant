@@ -84,7 +84,7 @@ export default function AssessPage({ settings, methods }: Props) {
     setError('')
     try {
       setSince(Date.now())
-      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss', { sources, fresh })
+      const res = await treeApi.run(input, settings.agentModel ?? 'gptoss', { sources, fresh, pipeline: settings.engine === 'llm' ? 'steps' : 'clef' })
       const nextOverrides = keepOverrides ? overrides : {}
       const dimensions = rawFromDecisions(res.decisions)
       setTree(res)

@@ -5,6 +5,7 @@ import { fold } from '../shared/text.ts'
 import { TREE_NODES } from '../shared/tree.ts'
 import type { Decision, SourcePassage, TreeRequest, TreeResponse } from '../shared/tree.ts'
 import { chat, parseJson } from './agent.ts'
+import { premisesFor } from '../shared/treeLogic.ts'
 import { listDocs } from './docs.ts'
 
 // One model call fills every decision. Before the call, code retrieves the most relevant
@@ -242,6 +243,7 @@ export async function runTree(aiBinding: unknown, kv: KVNamespace, req: TreeRequ
     decisions,
     latencyMs: Date.now() - started,
     passagesRead: used.length,
+    premises: premisesFor(decisions),
     usage: { inputTokens: res.usage.prompt_tokens ?? 0, outputTokens: res.usage.completion_tokens ?? 0 },
     stats: {
       decided: steps.filter((x) => x.basis === 'customer').length,

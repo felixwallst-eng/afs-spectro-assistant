@@ -4,9 +4,10 @@ import type { KnowledgeCard } from '../shared/cards.ts'
 import { DIMENSIONS, DIM_BY_ID } from '../shared/dimensions.ts'
 import type { DimensionDef } from '../shared/types.ts'
 import { fold } from '../shared/text.ts'
-import { TREE_NODES } from '../shared/tree.ts'
+import { SOURCE_STEPS, TREE_NODES } from '../shared/tree.ts'
 import type { Decision, DecisionBasis, SourcePassage, StepsRequest, TreeResponse } from '../shared/tree.ts'
-import { chat, parseJson } from './agent.ts'
+import { chat, parseJson, seedAccepted } from './agent.ts'
+import { premisesFor } from '../shared/treeLogic.ts'
 import { loadCards } from './cards.ts'
 import { listDocs } from './docs.ts'
 
@@ -15,11 +16,12 @@ import { listDocs } from './docs.ts'
 //     added (worker/cards.ts). Each step gets ALL cards for that step – no search, same input every time.
 //  2. One small call per decision step (plus one for the other facts), each asked closed questions.
 //  3. The basis (customer / sources / missing) is decided by rules in code, not by the model.
-//  4. Every call runs VOTES times (fixed seeds); the majority wins. If the runs disagree, the step
-//     is left open for the expert – instability becomes a visible uncertainty instead of noise.
+//  4. Every call runs VOTES times; the runs vote on the value, then the basis is "stated" as soon as one
+//     agreeing run found a verified quote. Without a majority the step is left open for the expert –
+//     instability becomes a visible uncertainty instead of noise.
 //  5. Identical input (text, model, sources, cards) returns the stored result unless a fresh run is asked for.
 
-export const PIPELINE_VERSION = 'steps-v1'
+export const PIPELINE_VERSION = 'steps-v3'
 const DEFAULT_VOTES = 3
 const MAX_CARDS_PER_STEP = 40
 const MIN_QUOTE = 8
@@ -35,13 +37,13 @@ const values = (d: DimensionDef) =>
 const STEP_SYSTEM = [
   'You support a spectroscopy expert at Art Fiber Systems (AFS). You answer ONE decision step for a customer enquiry.',
   'Answer these questions in order:',
-  'Q1 "stated": does the customer text itself state this step? true only if a phrase in the enquiry directly says one of the values. Then give "stated_value" and "enquiry_quote" (a short phrase copied character for character from the enquiry).',
-  'Q2 "cards_used": ids of the AFS knowledge cards that are relevant to this enquiry for this step.',
-  'Q3 "suggested_value": only if Q1 is false – do the cards, applied to what the customer wrote, clearly point to one value for THIS case? Then that value, otherwise null. General statements that do not concern this case are not enough.',
+  'Q1 "value": the value that fits THIS case, judged from the customer text first and the AFS knowledge cards second; null if neither supports one.',
+  'Q2 "enquiry_quote": the phrase in the customer text that states or directly describes this value, copied character for character; null if the value comes only from the cards. Always look for such a phrase before answering null.',
+  'Q3 "cards_used": ids of the AFS knowledge cards that are relevant to this enquiry for this step.',
   'Q4 "reasoning": 2–4 sentences on what the customer wrote and what the cards say about it; cite cards inline like [C3].',
   'Q5 "check": one sentence if a card contradicts, qualifies or adds a risk to what the customer states or assumes; otherwise null.',
-  'Q6 "missing": if the step is neither stated nor suggested, the one question to ask the customer; otherwise null.',
-  'Answer only with JSON: {"stated": true, "stated_value": "label or null", "enquiry_quote": "...", "cards_used": ["C1"], "suggested_value": "label or null", "reasoning": "...", "check": null, "missing": null}',
+  'Q6 "missing": if value is null, the one question to ask the customer; otherwise null.',
+  'Answer only with JSON: {"value": "label or null", "enquiry_quote": "... or null", "cards_used": ["C1"], "reasoning": "...", "check": null, "missing": null}',
 ].join('\n')
 
 const FACT_SYSTEM = [
@@ -96,7 +98,8 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
       cards: allCards.map((c) => c.id),
     }),
   )}`
-  if (!req.fresh) {
+  const benchmark = req.seedBase !== undefined || req.stepsOnly === true
+  if (!req.fresh && !benchmark) {
     const hit = await kv.get<TreeResponse>(cacheKey, 'json')
     if (hit) return { ...hit, cachedAt: hit.cachedAt ?? new Date().toISOString() }
   }
@@ -144,30 +147,26 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
       .filter(Boolean)
       .join('\n\n')
     const text = await ask(STEP_SYSTEM, user, 1400, seed)
-    const r =
-      parseJson<{ stated?: boolean; stated_value?: string | null; enquiry_quote?: string | null; cards_used?: string[]; suggested_value?: string | null; reasoning?: string; check?: string | null; missing?: string | null }>(text) ?? {}
+    const r = parseJson<{ value?: string | null; enquiry_quote?: string | null; cards_used?: string[]; reasoning?: string; check?: string | null; missing?: string | null }>(text) ?? {}
     const valid = (v?: string | null) => (v && v in def.labels && v !== def.unknownLabel ? v : null)
     const cardKeys = [...new Set([...(r.cards_used ?? []), ...[...(r.reasoning ?? '').matchAll(/C(\d+)/g)].map((m) => `C${m[1]}`)])].filter((k) => {
       const n = Number(k.slice(1))
       return n >= 1 && n <= cards.length
     })
     const base = { reasoning: r.reasoning?.slice(0, 900), cardKeys, check: r.check?.slice(0, 300) || undefined, missing: r.missing?.slice(0, 300) || undefined }
-    // the basis is decided here, by rules – not by the model
-    const stated = valid(r.stated_value)
-    if (r.stated && stated) {
-      if (inEnquiry(r.enquiry_quote)) return { ...base, basis: 'customer', value: stated, quote: r.enquiry_quote! }
-      rejectedQuotes++
-    }
-    const suggested = valid(r.suggested_value) ?? (r.stated && stated ? stated : null)
-    if (suggested && cardKeys.length) {
-      const note = r.stated && stated && !inEnquiry(r.enquiry_quote) ? `The model said the customer states “${def.labels[stated].name}”, but its quote is not in the enquiry.` : undefined
-      return { ...base, basis: 'sources', value: suggested, rejected: note }
-    }
+    // The basis is decided here, by fixed rules – not by the model:
+    //   verified quote from the enquiry            -> stated by the customer
+    //   no quote, but cited cards (source steps)   -> suggestion from the AFS sources
+    //   otherwise                                  -> information missing
+    const value = valid(r.value)
+    if (value && inEnquiry(r.enquiry_quote)) return { ...base, basis: 'customer', value, quote: r.enquiry_quote! }
+    if (value && r.enquiry_quote) rejectedQuotes++
+    if (value && cardKeys.length && SOURCE_STEPS.has(def.id)) return { ...base, basis: 'sources', value }
     return { ...base, basis: 'missing', value: null }
   }
 
   // ------------------------------------------------------------ all steps × votes, in parallel
-  const seeds = Array.from({ length: votes }, (_, i) => i + 1)
+  const seeds = Array.from({ length: votes }, (_, i) => i + 1 + (req.seedBase ?? 0))
   const treeDefs = TREE_NODES.map((n) => ({ def: DIM_BY_ID[n.id], column: n.column, cards: stepCards(n.id) }))
   const otherFacts = DIMENSIONS.filter((d) => d.kind !== 'flag' && !TREE_IDS.has(d.id))
   const flags = DIMENSIONS.filter((d) => d.kind === 'flag')
@@ -176,7 +175,7 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
   const [stepRuns, factRuns] = await Promise.all([
     Promise.all(treeDefs.map((t) => Promise.all(seeds.map((s) => runStep(t.def, t.column, t.cards, s).catch(fail))))),
     Promise.all(
-      seeds.map((s) =>
+      (req.stepsOnly ? [] : seeds).map((s) =>
         ask(FACT_SYSTEM, factUser, 1800, s)
           .then((t) => parseJson<{ facts?: { id?: string; value?: string | null; enquiry_quote?: string }[]; flags?: { id?: string; enquiry_quote?: string }[] }>(t) ?? {})
           .catch(fail),
@@ -184,28 +183,28 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
     ),
   ])
   // never present failed calls as a result: a step without a single successful run is an error
-  if (stepRuns.some((runs) => runs.every((r) => r === null)) || factRuns.every((f) => f === null)) {
+  if (stepRuns.some((runs) => runs.every((r) => r === null)) || (factRuns.length > 0 && factRuns.every((f) => f === null))) {
     throw new Error(`${errors.length} of ${calls} model calls failed – ${errors[0] ?? 'no answer'}`)
   }
 
   // ------------------------------------------------------------ majority per step
   let verifiedSources = 0
-  const outcomeLabel = (def: DimensionDef, r: StepRun) =>
-    r.basis === 'customer' ? `stated: ${def.labels[r.value!].name}` : r.basis === 'sources' ? `suggested: ${def.labels[r.value!].name}` : 'information missing'
-
   const decisions: Decision[] = treeDefs.map((t, ti) => {
     const runs = stepRuns[ti].filter((r): r is StepRun => r !== null)
-    const counts = new Map<string, { n: number; first: StepRun }>()
+    // 1. vote on the VALUE (a missing value counts as one option)
+    const byValue = new Map<string, StepRun[]>()
     for (const r of runs) {
-      const k = `${r.basis}:${r.value ?? ''}`
-      const c = counts.get(k)
-      if (c) c.n++
-      else counts.set(k, { n: 1, first: r })
+      const k = r.value ?? '(missing)'
+      byValue.set(k, [...(byValue.get(k) ?? []), r])
     }
-    const ranked = [...counts.values()].sort((a, b) => b.n - a.n)
-    const outcomes = ranked.map((c) => ({ label: outcomeLabel(t.def, c.first), count: c.n }))
-    const win = ranked[0] && ranked[0].n > votes / 2 ? ranked[0] : null
-    const rep = win?.first ?? runs[0]
+    const ranked = [...byValue.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]))
+    const outcomes = ranked.map(([k, rs]) => ({
+      label: k === '(missing)' ? 'information missing' : `${t.def.labels[k].name}${rs.some((r) => r.basis === 'customer') ? ' (quote found)' : ' (from sources)'}`,
+      count: rs.length,
+    }))
+    const win = ranked[0] && ranked[0][1].length > votes / 2 ? { n: ranked[0][1].length, runs: ranked[0][1] } : null
+    // 2. then the BASIS: stated by the customer as soon as one agreeing run found a verified quote
+    const rep = win ? (win.runs.find((r) => r.basis === 'customer') ?? win.runs.find((r) => r.basis === 'sources') ?? win.runs[0]) : runs[0]
     const voteInfo = { runs: runs.length, agree: win?.n ?? 0, outcomes }
 
     // numbered references from the representative run
@@ -239,7 +238,9 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
         basis: 'missing' as const,
         value: null,
         missing: rep?.missing ?? t.def.clarification,
-        rejected: runs.length ? `The ${runs.length} independent runs did not agree (${outcomes.map((o) => `${o.label} ×${o.count}`).join(', ')}) – please decide.` : 'The model did not answer for this step.',
+        rejected: runs.length
+          ? `The ${runs.length} independent runs did not agree (${outcomes.map((o) => `${o.label} ×${o.count}`).join(', ')}) – this is a borderline case, please decide.`
+          : 'The model did not answer for this step.',
       }
     }
     if (rep.basis === 'customer') return { ...base, basis: 'customer', value: rep.value, enquiryQuote: rep.quote }
@@ -284,6 +285,8 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
     calls,
     docsRead: sets.map((s) => ({ docId: s.docId, title: title(s.docId), pages: s.pagesRead, cards: s.cards.length })),
     docsUnread: docs.filter((d) => !sets.some((s) => s.docId === d.id)).map((d) => d.id),
+    seedAccepted: seedAccepted(),
+    premises: premisesFor(decisions),
     stats: {
       decided: steps.filter((x) => x.basis === 'customer').length,
       suggested: steps.filter((x) => x.basis === 'sources').length,
@@ -294,6 +297,6 @@ export async function runSteps(aiBinding: unknown, kv: KVNamespace, req: StepsRe
   }
   // only complete results are cached (a failed call would otherwise be frozen in)
   const complete = stepRuns.every((runs) => runs.every((r) => r !== null)) && factRuns.every((f) => f !== null)
-  if (complete) await kv.put(cacheKey, JSON.stringify(result), { expirationTtl: 60 * 60 * 24 * 30 })
+  if (complete && !benchmark) await kv.put(cacheKey, JSON.stringify(result), { expirationTtl: 60 * 60 * 24 * 30 })
   return result
 }

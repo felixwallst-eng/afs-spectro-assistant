@@ -94,7 +94,7 @@ export const agentApi = {
 }
 
 export const treeApi = {
-  run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean } = {}) =>
+  run: (text: string, model: AgentModelKey, opts: { sources?: SourceMode; fresh?: boolean; pipeline?: 'clef' | 'steps' } = {}) =>
     api<TreeResponse>(fetch('/api/tree', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, model, ...opts }) })),
 }
 

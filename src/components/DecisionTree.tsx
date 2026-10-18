@@ -34,12 +34,13 @@ const OPT_TOP = LANE_Y + 58
 
 const STATUS_TEXT: Record<NodeStatus, string> = {
   decided: 'Stated by the customer',
-  suggested: 'Suggestion from AFS sources – please confirm',
+  suggested: 'Suggestion – please confirm',
+  conflict: 'Conflict – customer text and AFS sources disagree',
   expert: 'Decided by the expert',
   action: 'Information missing – blocks the decision',
   minor: 'Information missing – does not block the decision',
 }
-const STATUS_CHIP: Record<NodeStatus, string> = { decided: 'confident', suggested: 'uncertain', expert: 'expert', action: 'unknown', minor: 'clef' }
+const STATUS_CHIP: Record<NodeStatus, string> = { decided: 'confident', suggested: 'uncertain', conflict: 'unknown', expert: 'expert', action: 'unknown', minor: 'clef' }
 
 const curve = (x1: number, y1: number, x2: number, y2: number) => {
   const dx = Math.max(24, (x2 - x1) * 0.45)
@@ -59,7 +60,7 @@ function wrap(label: string, max = 13): string[] {
 /** Approximate rendered width of a wrapped label (13 px, partly bold) – the fiber leaves after the label. */
 const labelEnd = (x: number, label: string) => x + 13 + Math.max(...wrap(label).map((l) => l.length)) * 7.3 + 6
 
-type Selection = { kind: 'root' } | { kind: 'node'; id: string } | { kind: 'leaf'; setupId: string }
+type Selection = { kind: 'root' } | { kind: 'node'; id: string } | { kind: 'leaf'; setupId: string } | { kind: 'premises' }
 
 export default function DecisionTree({ tree, text, assessment, methods, overrides, onOverride }: Props) {
   const [sel, setSel] = useState<Selection | null>(null)
@@ -76,7 +77,9 @@ export default function DecisionTree({ tree, text, assessment, methods, override
     const d = tree.decisions.find((x) => x.id === n.id)
     const chosen = decided ? options.indexOf(values[n.id]) : -1
     const suggested = status === 'suggested' && d?.value ? options.indexOf(d.value) : -1
-    return { node: n, def, options, status, chosen, suggested, decided: decided && chosen >= 0, x: COL_X(k) }
+    // conflict: both the customer's value and the value the sources point to are marked
+    const conflicting = status === 'conflict' && d ? [d.value, d.alternative].map((v) => (v ? options.indexOf(v) : -1)).filter((i) => i >= 0) : []
+    return { node: n, def, options, status, chosen, suggested, conflicting, decided: decided && chosen >= 0, x: COL_X(k) }
   })
   const maxOpts = Math.max(...levels.map((l) => l.options.length))
   const optY = (n: number, i: number) => OPT_TOP + ((maxOpts - n) * ROW_H) / 2 + i * ROW_H
@@ -123,17 +126,19 @@ export default function DecisionTree({ tree, text, assessment, methods, override
       const y = optY(lv.options.length, i)
       const isChosen = lv.decided && i === lv.chosen
       const isSugg = i === lv.suggested
+      const isConflict = lv.conflicting.includes(i)
       const d = curve(bx, by, lv.x, y)
       if (isChosen) {
         core(`f${k}-${i}`, d)
         light(`l${k}`, d)
       } else fans.push(<path key={`f${k}-${i}`} d={d} className={`fiber ${open ? 'fiber-open' : 'fiber-dim'}`} />)
       if (isSugg) amber.push(<path key={`s${k}`} d={d} className="fiber-sugg" />)
+      if (isConflict) amber.push(<path key={`c${k}-${i}`} d={d} className="fiber-conflict" />)
       const lines2 = wrap(lv.def.labels[opt].name)
       nodes.push(
         <g
           key={`n${k}-${i}`}
-          className={`tnode ${isChosen ? 'chosen' : ''} ${isSugg ? 'sugg' : ''} ${isSel && (isChosen || isSugg) ? 'sel' : ''} ${lv.status === 'expert' && isChosen ? 'expert' : ''}`}
+          className={`tnode ${isChosen ? 'chosen' : ''} ${isSugg ? 'sugg' : ''} ${isConflict ? 'conflict' : ''} ${isSel && (isChosen || isSugg) ? 'sel' : ''} ${lv.status === 'expert' && isChosen ? 'expert' : ''}`}
           role="button"
           tabIndex={0}
           aria-label={`${lv.def.title}: ${lv.def.labels[opt].name}`}
@@ -165,10 +170,10 @@ export default function DecisionTree({ tree, text, assessment, methods, override
         >
           <circle cx={bx} cy={by} r={13} />
           <text x={bx} y={by + 5} textAnchor="middle" className="gate-q">
-            ?
+            {lv.status === 'conflict' ? '!' : '?'}
           </text>
           <text x={bx} y={by - 20} textAnchor="middle" className="gate-label">
-            {lv.status === 'suggested' ? 'Confirm' : lv.status === 'action' ? 'Missing' : 'Not stated'}
+            {lv.status === 'suggested' ? 'Confirm' : lv.status === 'conflict' ? 'Conflict' : lv.status === 'action' ? 'Missing' : 'Not stated'}
           </text>
         </g>,
       )
@@ -186,7 +191,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
       py = optY(lv.options.length, lv.suggested)
     } else {
       // unresolved: the fiber bypasses this column along the top lane
-      if (lv.status === 'action') unsure = true
+      if (lv.status === 'action' || lv.status === 'conflict') unsure = true
       fans.push(<path key={`b${k}`} d={curve(bx, by, lv.x, LANE_Y)} className="fiber fiber-bypass" />)
       if (unsure) amber.push(<path key={`bl${k}`} d={curve(bx, by, lv.x, LANE_Y)} className="fiber-sugg" />)
       nodes.push(<circle key={`bp${k}`} cx={lv.x} cy={LANE_Y} r={2.5} className="bypass-dot" />)
@@ -194,6 +199,36 @@ export default function DecisionTree({ tree, text, assessment, methods, override
       py = LANE_Y
     }
   })
+  // premise check: customer assumptions the AFS rules contradict (block) or qualify (caution)
+  const premises = assessment.warnings
+  const blocks = premises.filter((w) => w.severity === 'block').length
+  if (premises.length) {
+    const gx = leafX - 46
+    const isSel = sel?.kind === 'premises'
+    core('pt', line(px, py, gx, py))
+    light('plt', line(px, py, gx, py))
+    nodes.push(
+      <g
+        key="premises"
+        className={`gate premise ${blocks ? 'block' : 'caution'} ${isSel ? 'sel' : ''}`}
+        role="button"
+        tabIndex={0}
+        aria-label={`Premise check: ${premises.length} findings`}
+        onClick={() => setSel({ kind: 'premises' })}
+        onKeyDown={keyAct(() => setSel({ kind: 'premises' }))}
+      >
+        <circle cx={gx} cy={py} r={14} />
+        <text x={gx} y={py + 5} textAnchor="middle" className="gate-q">
+          !
+        </text>
+        <text x={gx} y={py - 22} textAnchor="middle" className="gate-label">
+          {blocks ? `${blocks} premise${blocks > 1 ? 's' : ''} to check` : 'Check premises'}
+        </text>
+      </g>,
+    )
+    if (blocks) unsure = true
+    px = gx
+  }
   leaves.forEach((c, i) => {
     const y = leafY(i)
     const isSel = sel?.kind === 'leaf' && sel.setupId === c.setup.id
@@ -222,7 +257,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
     )
   })
 
-  const needs = levels.filter((l) => l.status === 'suggested' || l.status === 'action')
+  const needs = levels.filter((l) => l.status === 'suggested' || l.status === 'action' || l.status === 'conflict')
   const level = sel?.kind === 'node' ? levels.find((l) => l.node.id === sel.id) : undefined
   const leaf = sel?.kind === 'leaf' ? assessment.candidates.find((c) => c.setup.id === sel.setupId) : undefined
 
@@ -242,9 +277,25 @@ export default function DecisionTree({ tree, text, assessment, methods, override
                 <button className="linkbtn" onClick={() => pickNode(l.node.id)}>
                   {l.def.title}
                 </button>
-                <span className="needs-kind">{l.status === 'suggested' ? ' (suggestion ready)' : ' (information missing)'}</span>
+                <span className="needs-kind">{l.status === 'suggested' ? ' (suggestion ready)' : l.status === 'conflict' ? ' (customer and sources disagree)' : ' (information missing)'}</span>
               </span>
             ))}
+            {blocks > 0 && (
+              <>
+                {' · '}
+                <button className="linkbtn" onClick={() => setSel({ kind: 'premises' })}>
+                  {blocks} premise{blocks > 1 ? 's' : ''} of the request
+                </button>{' '}
+                contradict the AFS knowledge
+              </>
+            )}
+          </p>
+        ) : blocks > 0 ? (
+          <p className="tree-actions conflict">
+            <button className="linkbtn" onClick={() => setSel({ kind: 'premises' })}>
+              {blocks} premise{blocks > 1 ? 's' : ''} of the request
+            </button>{' '}
+            contradict the AFS knowledge – check them before answering the customer.
           </p>
         ) : (
           <p className="tree-actions ok">Every blocking step is decided – by a verified quote from the enquiry or by you.</p>
@@ -318,6 +369,7 @@ export default function DecisionTree({ tree, text, assessment, methods, override
           />
         )}
         {leaf && <LeafDetail c={leaf} onClose={() => setSel(null)} />}
+        {sel?.kind === 'premises' && <PremiseDetail warnings={premises} onClose={() => setSel(null)} />}
 
         <p className="ev-meta">
           {tree.model} · {(tree.latencyMs / 1000).toFixed(1)} s
@@ -485,7 +537,22 @@ function NodeDetail(p: {
   let headline: ReactNode
   if (lv.status === 'decided') headline = <>Stated by the customer: <strong>{name(p.current)}</strong></>
   else if (lv.status === 'expert') headline = <>Decided by you: <strong>{name(p.current)}</strong>{d?.value && d.value !== p.current ? <span className="td-small"> (model: {name(d.value)})</span> : null}</>
-  else if (suggestion) headline = <>Suggested from the AFS sources: <strong>{name(suggestion)}</strong></>
+  else if (lv.status === 'conflict' && d?.value)
+    headline = (
+      <>
+        Conflict: the customer text says <strong>{name(d.value)}</strong>, the AFS sources point to <strong>{name(d.alternative)}</strong>
+      </>
+    )
+  else if (suggestion)
+    headline = refs.length ? (
+      <>
+        Suggested from the AFS sources: <strong>{name(suggestion)}</strong>
+      </>
+    ) : (
+      <>
+        Likely from the customer text: <strong>{name(suggestion)}</strong> – please confirm
+      </>
+    )
   else headline = <>Information missing{d?.missing ? <>: <span className="td-missing">{d.missing}</span></> : null}</>
 
   return (
@@ -529,6 +596,7 @@ function NodeDetail(p: {
       </div>
 
       <div className="td-body">
+        {d?.clef && <ClefTrace d={d} def={lv.def} />}
         <h4>Reasoning</h4>
         {d?.reasoning ? <ReasoningText text={d.reasoning} refs={refs} /> : <p className="td-small">No reasoning available for this step.</p>}
         {d?.basis === 'customer' && d.enquiryQuote && (
@@ -557,6 +625,57 @@ function NodeDetail(p: {
           </details>
         )}
       </div>
+    </div>
+  )
+}
+
+const certainty = (c: number) => (c >= 0.65 ? 'clear' : c >= 0.3 ? 'tentative' : 'unclear')
+
+/** How the classifier reached the decision – in words, not percentages. */
+function ClefTrace({ d, def }: { d: Decision; def: Level['def'] }) {
+  const c = d.clef!
+  const lab = (v: string) => (v === def.unknownLabel ? 'not stated' : (def.labels[v]?.name ?? v))
+  return (
+    <div className="clef-trace">
+      <span>
+        <span className="td-label">Customer text</span>
+        {lab(c.text.value)} <em>({certainty(c.text.confidence)})</em>
+      </span>
+      <span>
+        <span className="td-label">With AFS knowledge</span>
+        {c.relevantCards ? (
+          <>
+            {lab(c.withSources.value)} <em>({certainty(c.withSources.confidence)})</em> · {c.relevantCards} statement{c.relevantCards > 1 ? 's' : ''} apply
+          </>
+        ) : (
+          'no statement applies to this case'
+        )}
+      </span>
+    </div>
+  )
+}
+
+function PremiseDetail({ warnings, onClose }: { warnings: Assessment['warnings']; onClose: () => void }) {
+  return (
+    <div className="tree-detail premise-detail">
+      <div className="td-head">
+        <div>
+          <strong>Premise check</strong>
+          <span className="td-col">Assumptions in the request, checked against the AFS rules and sources</span>
+        </div>
+        <button className="linkbtn" onClick={onClose}>
+          Close
+        </button>
+      </div>
+      <ul className="premise-list">
+        {warnings.map((w) => (
+          <li key={w.id} className={w.severity}>
+            <span className={`chip ${w.severity === 'block' ? 'unknown' : 'uncertain'}`}>{w.severity === 'block' ? 'Contradicts AFS knowledge' : 'Needs checking'}</span>
+            <span>{w.text}</span>
+            <CiteLink c={w.citation} />
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "purpose": "Own development cases for the premise check (written by the team/assistant, not taken from the AFS material). Used to tune premise detection so that H01–H06 stay a fair final test.",
+    "rule": "premises lists the warning ids the rule engine should raise; any other blocking warning is a false alarm."
+  },
+  "cases": [
+    { "id": "T01", "title": "Validated NIR model after a supplier change", "premises": ["calibration"],
+      "text": "We run a validated NIR model for moisture in a granulate inside our fluid-bed dryer. Our excipient supplier changes next month and the granulate composition will shift slightly. We plan to keep using the existing model unchanged. Is there anything we need to do before the switch?" },
+    { "id": "T02", "title": "One setup for filtered and unfiltered beer", "premises": ["multi-stream"],
+      "text": "Our brewery wants a single in-line measurement concept for two lines: the clear filtered beer after filtration and the cloudy unfiltered beer with yeast before it. We are interested in alcohol and extract. Which concept should we test first?" },
+    { "id": "T03", "title": "Fluorimeter for salt in brine", "premises": ["fluorescence-target"],
+      "text": "We own a fluorescence spectrometer and want to use it to measure the sodium chloride concentration of a brine in-line, mainly because fluorescence is extremely sensitive. We are not aware of any fluorescent compound or marker in the brine. Can this work?" },
+    { "id": "T04", "title": "Existing NIR bundle for mid-IR ATR", "premises": ["silica-mir", "remote", "certainty"],
+      "text": "Please confirm that we can connect our existing 80 m silica fiber bundle, which we use for NIR today, to a mid-infrared ATR probe to follow ethanol in a fermenter. The FTIR spectrometer stays in the control room in another building. We need a yes or no." },
+    { "id": "T05", "title": "Immediate purchase decision for an unknown problem", "premises": ["certainty"],
+      "text": "Our wastewater sometimes fails the discharge limits and we do not know which substance is responsible. Tell us right away which spectrometer and probe to order so we can install it next week." },
+    { "id": "T06", "title": "Published kidney results for resection margins", "premises": ["clinical", "study-as-proof"],
+      "text": "A hospital team wants to rely on the published LED NIR kidney study to decide resection margins in patients during operations starting next month. They see no need for further testing because the paper already shows the sensor works." },
+    { "id": "T07", "title": "Moisture in a conveyor with a distant analyzer", "premises": ["remote"],
+      "text": "We want to follow the moisture of a powder on a conveyor belt. The process analyzer would have to be installed in a separate control building about 150 m away. What should a first feasibility study look at?" },
+    { "id": "T08", "title": "Ethanol in a fermentation broth (no trap)", "premises": [],
+      "text": "We would like to explore whether an in-line spectroscopic measurement can follow ethanol in a yeast fermentation broth. Offline GC results are available as a reference. Please suggest a first feasibility experiment." },
+    { "id": "T09", "title": "Lab classification of meat cuts (no trap)", "premises": [],
+      "text": "In our food lab we want to classify pork cuts by comparing mid-infrared ATR and fluorescence measurements on the same spots of the samples. This is a laboratory study. Which first comparison experiment would make sense?" },
+    { "id": "T10", "title": "Raman probe to guide brain surgery", "premises": ["clinical"],
+      "text": "We plan to use a fiber Raman probe during brain surgery to tell tumour tissue from healthy tissue in patients and guide the surgeon in real time. What should we consider?" }
+  ]
+}

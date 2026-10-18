@@ -3,6 +3,7 @@ import { handleDocs } from './docs.ts'
 import { runAgent, runBrief } from './agent.ts'
 import { runTree } from './tree.ts'
 import { runSteps } from './steps.ts'
+import { runClefSteps } from './clefSteps.ts'
 import { buildCards, deleteCard, getCards, resetCards } from './cards.ts'
 import { listDocs } from './docs.ts'
 import type { AgentRequest } from '../shared/agent.ts'
@@ -32,13 +33,14 @@ export default {
     }
 
     if (url.pathname === '/api/tree' && request.method === 'POST') {
-      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown } | null
+      const body = (await request.json().catch(() => null)) as { text?: unknown; model?: unknown; pipeline?: unknown; sources?: unknown; fresh?: unknown; votes?: unknown; seedBase?: unknown; stepsOnly?: unknown } | null
       const text = typeof body?.text === 'string' ? body.text.trim().slice(0, MAX_TEXT) : ''
       if (!text) return Response.json({ error: 'Enter the customer enquiry text.' }, { status: 400 })
       const model = body?.model === 'qwen' || body?.model === 'kimi' ? body.model : 'gptoss'
       try {
         // "single": the earlier one-call pipeline, kept for comparison in the reproducibility test
         if (body?.pipeline === 'single') return Response.json(await runTree(env.AI, env.DOCS, { text, model }))
+        if (body?.pipeline === 'clef') return Response.json(await runClefSteps(env.AI, env.DOCS, { text, sources: body?.sources === 'original' ? 'original' : 'all' }))
         return Response.json(
           await runSteps(env.AI, env.DOCS, {
             text,
@@ -46,6 +48,8 @@ export default {
             sources: body?.sources === 'original' ? 'original' : 'all',
             fresh: body?.fresh === true,
             votes: typeof body?.votes === 'number' ? Math.max(1, Math.min(5, Math.round(body.votes))) : undefined,
+            seedBase: typeof body?.seedBase === 'number' ? Math.round(body.seedBase) : undefined,
+            stepsOnly: body?.stepsOnly === true,
           }),
         )
       } catch (err) {

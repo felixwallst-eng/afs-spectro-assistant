@@ -35,6 +35,8 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
 
 /** Whether the current model accepted a `seed`; switched off after the first rejection. */
 let seedSupported = true
+/** false once the model has rejected the `seed` parameter (runs then rely on temperature 0 only). */
+export const seedAccepted = () => seedSupported
 
 export async function chat(ai: Runner, model: string, key: AgentModelKey, system: string, user: string, maxTokens: number, opts: { seed?: number } = {}) {
   const input = {

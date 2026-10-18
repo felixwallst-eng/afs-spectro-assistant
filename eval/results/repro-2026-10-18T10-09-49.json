@@ -1,0 +1,334 @@
+{
+  "date": "2026-10-18T10:09:49.384Z",
+  "model": "gptoss",
+  "runs": 3,
+  "cases": [
+    "D02",
+    "D06"
+  ],
+  "seedAccepted": true,
+  "summaries": [
+    {
+      "name": "same-seed",
+      "label": "same seed",
+      "stepAgreement": 0.9444444444444443,
+      "stepsIdentical": 0.8333333333333334,
+      "wholeTree": 0.6666666666666666,
+      "maj3": null,
+      "byStep": {
+        "sample_state": 1,
+        "interface_mode": 1,
+        "target_property_type": 0.8333333333333333,
+        "optical_variability": 1,
+        "concentration_level": 1,
+        "budget": 0.8333333333333333
+      },
+      "seconds": 8.370333333333333,
+      "calls": 6,
+      "tokens": 11063,
+      "costPerAnalysis": 0.00466325,
+      "failed": 0,
+      "errors": [],
+      "perCase": [
+        {
+          "case": "D02",
+          "runs": 3,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:opaque_scattering_liquid": 3
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:in_process_probe": 3
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 3,
+              "agreement": 0.6666666666666666,
+              "identical": false,
+              "maj3": 0.615912208504801,
+              "tally": {
+                "suggested:chemical_composition": 2,
+                "stated:chemical_composition": 1
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 3
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:major_component": 3
+              }
+            },
+            {
+              "id": "budget",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 3
+              }
+            }
+          ],
+          "wholeTree": 0.6666666666666666
+        },
+        {
+          "case": "D06",
+          "runs": 3,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 3
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:in_process_probe": 3
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 3
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 3
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:trace": 3
+              }
+            },
+            {
+              "id": "budget",
+              "n": 3,
+              "agreement": 0.6666666666666666,
+              "identical": false,
+              "maj3": 0.615912208504801,
+              "tally": {
+                "missing": 2,
+                "suggested:low": 1
+              }
+            }
+          ],
+          "wholeTree": 0.6666666666666666
+        }
+      ]
+    },
+    {
+      "name": "new-seed",
+      "label": "new seed",
+      "stepAgreement": 0.8888888888888887,
+      "stepsIdentical": 0.6666666666666666,
+      "wholeTree": 0.3333333333333333,
+      "maj3": 0.8719707361682669,
+      "byStep": {
+        "sample_state": 1,
+        "interface_mode": 1,
+        "target_property_type": 0.8333333333333333,
+        "optical_variability": 0.8333333333333333,
+        "concentration_level": 1,
+        "budget": 0.6666666666666666
+      },
+      "seconds": 8.331833333333334,
+      "calls": 6,
+      "tokens": 11043.666666666666,
+      "costPerAnalysis": 0.00464875,
+      "failed": 0,
+      "errors": [],
+      "perCase": [
+        {
+          "case": "D02",
+          "runs": 3,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:opaque_scattering_liquid": 3
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:in_process_probe": 3
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 3,
+              "agreement": 0.6666666666666666,
+              "identical": false,
+              "maj3": 0.615912208504801,
+              "tally": {
+                "stated:chemical_composition": 1,
+                "suggested:chemical_composition": 2
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 3
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:major_component": 3
+              }
+            },
+            {
+              "id": "budget",
+              "n": 3,
+              "agreement": 0.6666666666666666,
+              "identical": false,
+              "maj3": 0.615912208504801,
+              "tally": {
+                "missing": 2,
+                "suggested:low": 1
+              }
+            }
+          ],
+          "wholeTree": 0.3333333333333333
+        },
+        {
+          "case": "D06",
+          "runs": 3,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 3
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:in_process_probe": 3
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 3
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 3,
+              "agreement": 0.6666666666666666,
+              "identical": false,
+              "maj3": 0.615912208504801,
+              "tally": {
+                "missing": 1,
+                "suggested:variable_over_process": 2
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 3,
+              "agreement": 1,
+              "identical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:trace": 3
+              }
+            },
+            {
+              "id": "budget",
+              "n": 3,
+              "agreement": 0.6666666666666666,
+              "identical": false,
+              "maj3": 0.615912208504801,
+              "tally": {
+                "suggested:low": 2,
+                "missing": 1
+              }
+            }
+          ],
+          "wholeTree": 0.3333333333333333
+        }
+      ]
+    }
+  ]
+}

@@ -52,6 +52,23 @@ export default function SettingsPage({ settings, setSettings }: Props) {
           />
           <span>{pct(settings.uncertainAt)}</span>
         </div>
+        <h3 className="settings-sub">Who decides the tree steps</h3>
+        <div className="model-choice">
+          {(
+            [
+              ['clef', 'Clef classifier', 'Reproducible: the same enquiry always gives the same decision. Checks the customer text against the AFS knowledge cards and flags conflicts.'],
+              ['llm', 'Language model', 'One model call per step, three runs with majority vote. Writes its own reasoning, but results can vary between runs.'],
+            ] as const
+          ).map(([k, label, note]) => (
+            <label key={k} className={(settings.engine ?? 'clef') === k ? 'on' : ''}>
+              <input type="radio" name="engine" checked={(settings.engine ?? 'clef') === k} onChange={() => setSettings({ ...settings, engine: k })} />
+              <span>
+                <strong>{label}</strong>
+                <small>{note}</small>
+              </span>
+            </label>
+          ))}
+        </div>
         <h3 className="settings-sub">Knowledge agent model</h3>
         <p className="hint" style={{ marginBottom: 8 }}>
           All models have open weights, so the same model can later run on AFS hardware without sending enquiries to a third party. In

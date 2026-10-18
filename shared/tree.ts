@@ -1,3 +1,4 @@
+import type { Warning } from './types.ts'
 import type { AgentModelKey } from './agent.ts'
 
 // Decision tree: each node is one decision dimension from the AFS method table.
@@ -11,8 +12,13 @@ export const TREE_NODES: { id: string; column: string }[] = [
   { id: 'target_property_type', column: 'Physical phenomenon / selectivity' },
   { id: 'optical_variability', column: 'Optical path / depth' },
   { id: 'concentration_level', column: 'Sensitivity' },
-  { id: 'budget', column: 'Cost' },
 ]
+// Cost is not a decision step: no enquiry states a budget, so it appears as a pro / con of each
+// recommended setup instead (shared/engine.ts).
+
+/** Steps the AFS sources can suggest a value for. Others (e.g. the concentration the customer needs)
+ *  only the customer can state – there the model may cite knowledge, but never suggest a value. */
+export const SOURCE_STEPS = new Set(['sample_state', 'interface_mode', 'target_property_type', 'optical_variability'])
 
 export interface TreeRequest {
   text: string
@@ -30,6 +36,10 @@ export interface StepsRequest {
   fresh?: boolean
   /** Independent runs per step (majority vote). Default 3. */
   votes?: number
+  /** Benchmark only: offset for the seeds (vary it to test the model without seed help). */
+  seedBase?: number
+  /** Benchmark only: skip the call for the other facts and flags (they are not part of the tree). */
+  stepsOnly?: boolean
 }
 
 /** A verbatim passage from an AFS document, verified against the indexed page text. */
@@ -45,7 +55,7 @@ export interface SourcePassage {
 }
 
 /** Where a step's value comes from. */
-export type DecisionBasis = 'customer' | 'sources' | 'missing'
+export type DecisionBasis = 'customer' | 'sources' | 'missing' | 'conflict'
 
 export interface Decision {
   id: string
@@ -53,6 +63,7 @@ export interface Decision {
    * customer: stated in the enquiry (verified quote) – applied automatically.
    * sources: not stated, but the AFS passages point to a value – a suggestion the expert accepts.
    * missing: neither the enquiry nor the passages decide it.
+   * conflict: the enquiry states one value, the AFS sources point to another – the expert must check.
    */
   basis: DecisionBasis
   /** Stated value (customer) or suggested value (sources); null when missing. */
@@ -71,6 +82,10 @@ export interface Decision {
   related?: SourcePassage[]
   /** Why a proposed value was not accepted, e.g. its quote is not in the enquiry. */
   rejected?: string
+  /** For basis 'conflict': the value the AFS sources point to (value = what the customer text says). */
+  alternative?: string
+  /** Clef pipeline: the two classifications behind the decision (shown to the expert as text, not as numbers). */
+  clef?: { text: { value: string; confidence: number }; withSources: { value: string; confidence: number }; relevantCards: number }
   /** Majority vote over independent runs: how many agreed with the result, and what each run said. */
   votes?: { runs: number; agree: number; outcomes: { label: string; count: number }[] }
 }
@@ -84,7 +99,7 @@ export interface TreeResponse {
   usage: { inputTokens: number; outputTokens: number }
   stats: { decided: number; suggested: number; open: number; rejectedQuotes: number; verifiedSources: number }
   /** steps: one call per step with majority vote; single: one call for everything (earlier pipeline). */
-  pipeline?: 'single' | 'steps'
+  pipeline?: 'single' | 'steps' | 'clef'
   sources?: SourceMode
   /** Model calls made for this result. */
   calls?: number
@@ -94,4 +109,10 @@ export interface TreeResponse {
   docsRead?: { docId: string; title: string; pages: number; cards: number }[]
   /** Enabled documents that have not been read into cards yet. */
   docsUnread?: string[]
+  /** Whether the model accepted the fixed seed (false = only temperature 0). */
+  seedAccepted?: boolean
+  /** Premise check: customer assumptions that the AFS rules and sources contradict or qualify. */
+  premises?: Warning[]
+  /** Clef pipeline: raw classification of the facts behind the premise check (for evaluation). */
+  premiseFacts?: Record<string, { value: string; confidence: number }>
 }

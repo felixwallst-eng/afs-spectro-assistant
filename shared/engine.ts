@@ -147,10 +147,13 @@ export function evaluateSetup(s: MethodSetup, v: V): Candidate {
     if (s.sensitivity === 'high') add('plus', 'High sensitivity for trace levels.', TABLE1)
     if (s.method === 'nir') add('minus', 'NIR may lack sensitivity below about 0.1 %.', c('S01', 'p.16'))
   }
+  // Cost is a pro / con of every setup. It changes the ranking only if the customer states a low budget.
   if (v.budget === 'low') {
-    if (s.cost === 'high') add('minus', 'Higher cost setup.', TABLE1)
-    if (s.cost === 'low') add('plus', 'Low-cost setup.', TABLE1)
-  }
+    if (s.cost === 'high') add('minus', 'Higher cost setup – the customer asks for a low budget.', TABLE1)
+    if (s.cost === 'low') add('plus', 'Low-cost setup – fits the low budget.', TABLE1)
+  } else if (s.cost === 'high') add('info', 'Cost: high – a larger investment than the low- and average-cost alternatives.', TABLE1)
+  else if (s.cost === 'low') add('info', 'Cost: low – the most economical option for this method.', TABLE1)
+  else add('info', 'Cost: average.', TABLE1)
 
   // Process conditions
   if (!s.labOnly && (yes(v, 'cond_high_temperature') || yes(v, 'cond_fouling')))
@@ -203,7 +206,8 @@ function premiseWarnings(v: V, dims: Record<string, DimensionResult>): Warning[]
     add('study-as-proof', 'block', 'A published study is a reason to test a method, not proof that a new setup works for this use. Own validation data are required.', c('S03'))
   if (yes(v, 'reuse_calibration') && v.matrix_change_vs_existing !== 'same_matrix')
     add('calibration', 'block', 'Calibrations are matrix-specific. A changed formulation needs a new or extended calibration; adding another method does not keep the old model valid.', c('S01', 'p.10'))
-  if (yes(v, 'proposed_fluorescence') && v.fluorescent_target !== 'identified')
+  // classifying sample types from the fluorescence pattern needs no single named fluorophore (S04)
+  if (yes(v, 'proposed_fluorescence') && v.fluorescent_target !== 'identified' && v.target_property_type !== 'sample_classification')
     add('fluorescence-target', 'block', 'Fluorescence is highly sensitive but not selective. Without a defined fluorescent species or reference relationship it cannot report the requested variables directly.', c('S01', 'p.16'))
   if (yes(v, 'reuse_fiber')) {
     if (v.existing_fiber_type === 'silica_uv_vis_nir' && yes(v, 'proposed_mir_atr'))

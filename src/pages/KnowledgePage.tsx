@@ -121,14 +121,15 @@ function CardsPanel({ doc, onChanged }: { doc: DocMeta; onChanged: (count: numbe
           )}
         </div>
       </div>
-      {TREE_NODES.map((n) => {
-        const cards = set.cards.filter((c) => c.step === n.id)
+      {[...TREE_NODES.map((n) => n.id), 'budget'].map((stepId) => {
+        const cards = set.cards.filter((c) => c.step === stepId)
         if (!cards.length) return null
-        const def = DIM_BY_ID[n.id]
+        const def = DIM_BY_ID[stepId]
+        const n = { id: stepId }
         return (
           <div key={n.id} className="kb-card-group">
             <h4>
-              {def.title} <span className="kb-muted">· {cards.length}</span>
+              {stepId === 'budget' ? 'Cost (background for the pros and cons of setups)' : def.title} <span className="kb-muted">· {cards.length}</span>
             </h4>
             <ul>
               {cards.map((c) => (

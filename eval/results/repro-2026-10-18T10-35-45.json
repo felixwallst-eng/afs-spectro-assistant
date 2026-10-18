@@ -1,0 +1,548 @@
+{
+  "date": "2026-10-18T10:35:45.424Z",
+  "model": "gptoss",
+  "runs": 5,
+  "cases": [
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D07",
+    "D08"
+  ],
+  "seedAccepted": true,
+  "summaries": [
+    {
+      "name": "votes3",
+      "label": "3 votes",
+      "stepAgreement": 0.9399999999999998,
+      "stepsIdentical": 0.8,
+      "valueIdentical": 0.875,
+      "wholeTree": 0.725,
+      "maj3": null,
+      "byStep": {
+        "sample_state": 0.875,
+        "interface_mode": 0.9,
+        "target_property_type": 1,
+        "optical_variability": 0.975,
+        "concentration_level": 0.95
+      },
+      "seconds": 7.692575000000001,
+      "calls": 15,
+      "tokens": 26781.25,
+      "costPerAnalysis": 0.0109290475,
+      "failed": 0,
+      "errors": [],
+      "perCase": [
+        {
+          "case": "D01",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:powder_or_granular": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:in_process_probe": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTree": 1
+        },
+        {
+          "case": "D02",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:opaque_scattering_liquid": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 0.6,
+              "identical": false,
+              "valueIdentical": true,
+              "maj3": 0.5438080000000001,
+              "tally": {
+                "stated:in_process_probe": 3,
+                "suggested:in_process_probe": 2
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:major_component": 5
+              }
+            }
+          ],
+          "wholeTree": 0.6
+        },
+        {
+          "case": "D03",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "suggested:liquid_optics_unspecified": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:in_process_probe": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 0.8,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": 0.8136320000000002,
+              "tally": {
+                "stated:major_component": 4,
+                "open (runs disagree)": 1
+              }
+            }
+          ],
+          "wholeTree": 0.8
+        },
+        {
+          "case": "D04",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 0.4,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": 0.2692480000000002,
+              "tally": {
+                "missing": 2,
+                "stated:liquid_optics_unspecified": 1,
+                "open (runs disagree)": 1,
+                "stated:turbid_or_colloidal_liquid": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:in_process_probe": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:major_component": 5
+              }
+            }
+          ],
+          "wholeTree": 0.4
+        },
+        {
+          "case": "D05",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:turbid_or_colloidal_liquid": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 0.6,
+              "identical": false,
+              "valueIdentical": true,
+              "maj3": 0.5438080000000001,
+              "tally": {
+                "stated:in_process_probe": 3,
+                "suggested:in_process_probe": 2
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:turbidity_or_cell_density": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:major_component": 5
+              }
+            }
+          ],
+          "wholeTree": 0.6
+        },
+        {
+          "case": "D06",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 0.8,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": 0.8136320000000002,
+              "tally": {
+                "missing": 4,
+                "suggested:opaque_scattering_liquid": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:in_process_probe": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:trace": 5
+              }
+            }
+          ],
+          "wholeTree": 0.8
+        },
+        {
+          "case": "D07",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 0.8,
+              "identical": false,
+              "valueIdentical": true,
+              "maj3": 0.8136320000000002,
+              "tally": {
+                "suggested:melt_or_paste": 4,
+                "stated:melt_or_paste": 1
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:in_process_probe": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:chemical_composition": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:variable_over_process": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTree": 0.8
+        },
+        {
+          "case": "D08",
+          "runs": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:soft_solid_or_tissue": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:offline_lab_sample": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "n": 5,
+              "agreement": 1,
+              "identical": true,
+              "valueIdentical": true,
+              "maj3": 1,
+              "tally": {
+                "stated:sample_classification": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "n": 5,
+              "agreement": 0.8,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": 0.8136320000000002,
+              "tally": {
+                "missing": 4,
+                "stated:stable": 1
+              }
+            },
+            {
+              "id": "concentration_level",
+              "n": 5,
+              "agreement": 0.8,
+              "identical": false,
+              "valueIdentical": false,
+              "maj3": 0.8136320000000002,
+              "tally": {
+                "missing": 4,
+                "stated:major_component": 1
+              }
+            }
+          ],
+          "wholeTree": 0.8
+        }
+      ]
+    }
+  ]
+}

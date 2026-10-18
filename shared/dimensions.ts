@@ -303,7 +303,7 @@ export const DIMENSIONS: DimensionDef[] = [
     question: 'What kind of answer does the client ask for?',
     labels: {
       exploratory_assessment: L('First assessment', 'A first assessment, comparison, feasibility study or questions to clarify.'),
-      approval_or_proof: L('Approval / proof', 'Approval of a concept, or proof that something is ready or valid.'),
+      approval_or_proof: L('Approval / proof', 'Approval or confirmation that a concept or setup works, a yes/no answer, or proof that something is ready or valid.'),
       immediate_final_specification: L('Final specification now', 'The best method and exact configuration immediately.'),
     },
     priority: 3,

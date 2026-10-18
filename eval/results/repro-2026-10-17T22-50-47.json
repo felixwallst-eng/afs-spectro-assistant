@@ -1,0 +1,857 @@
+{
+  "date": "2026-10-17T22:50:47.607Z",
+  "model": "gptoss",
+  "sources": "original",
+  "runs": 5,
+  "votes": "default",
+  "cases": [
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D07",
+    "D08"
+  ],
+  "summaries": [
+    {
+      "pipeline": "single",
+      "runsPerCase": 5,
+      "stepAgreement": 0.125,
+      "stepsFullyReproducible": 0.125,
+      "wholeTreeAgreement": 0.125,
+      "avgSeconds": 16.6715,
+      "avgCalls": 1,
+      "avgTokens": 4539,
+      "errors": 38,
+      "perCase": [
+        {
+          "case": "D01",
+          "runs": 2,
+          "errors": 3,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "customer:powder_or_granular": 2
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "customer:in_process_probe": 2
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "customer:chemical_composition": 2
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 2
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 2
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 2
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D02",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        },
+        {
+          "case": "D03",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        },
+        {
+          "case": "D04",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        },
+        {
+          "case": "D05",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        },
+        {
+          "case": "D06",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        },
+        {
+          "case": "D07",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        },
+        {
+          "case": "D08",
+          "runs": 0,
+          "errors": 5,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            },
+            {
+              "id": "budget",
+              "agreement": 0,
+              "identical": false,
+              "tally": {}
+            }
+          ],
+          "wholeTreeAgreement": 0
+        }
+      ]
+    },
+    {
+      "pipeline": "steps",
+      "runsPerCase": 5,
+      "stepAgreement": 1,
+      "stepsFullyReproducible": 1,
+      "wholeTreeAgreement": 1,
+      "avgSeconds": 0.354025,
+      "avgCalls": 21,
+      "avgTokens": 0,
+      "errors": 0,
+      "perCase": [
+        {
+          "case": "D01",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D02",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D03",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D04",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D05",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D06",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D07",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        },
+        {
+          "case": "D08",
+          "runs": 5,
+          "errors": 0,
+          "steps": [
+            {
+              "id": "sample_state",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "interface_mode",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "target_property_type",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "optical_variability",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "concentration_level",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            },
+            {
+              "id": "budget",
+              "agreement": 1,
+              "identical": true,
+              "tally": {
+                "missing": 5
+              }
+            }
+          ],
+          "wholeTreeAgreement": 1
+        }
+      ]
+    }
+  ]
+}

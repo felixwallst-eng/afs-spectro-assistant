@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "version": "2026-10-18 draft A",
+    "annotator": "draft by the assistant from the case texts – to be checked by the team before results are reported",
+    "steps_rule": "For every decision step, the list holds every answer an AFS expert would accept. 'missing' means the step is not stated and should be asked. A wrong value is worse than 'missing'; 'missing' where a value is clearly stated counts as over-caution.",
+    "premises_rule": "Warning ids the rule engine is expected to raise (block or caution). Any other blocking warning counts as a false alarm.",
+    "split": "steps: development cases D01–D08 only. premises for H01–H06 are for the final evaluation – run them once, do not tune on them."
+  },
+  "steps": {
+    "D01": { "sample_state": ["powder_or_granular"], "interface_mode": ["in_process_probe"], "target_property_type": ["chemical_composition"], "optical_variability": ["missing"], "concentration_level": ["missing", "minor_component", "major_component"] },
+    "D02": { "sample_state": ["opaque_scattering_liquid"], "interface_mode": ["in_process_probe", "missing"], "target_property_type": ["chemical_composition"], "optical_variability": ["variable_over_process", "missing"], "concentration_level": ["major_component", "missing"] },
+    "D03": { "sample_state": ["clear_liquid", "turbid_or_colloidal_liquid"], "interface_mode": ["in_process_probe", "missing"], "target_property_type": ["chemical_composition"], "optical_variability": ["variable_over_process"], "concentration_level": ["minor_component", "missing"] },
+    "D04": { "sample_state": ["liquid_optics_unspecified", "turbid_or_colloidal_liquid", "missing"], "interface_mode": ["in_process_probe"], "target_property_type": ["chemical_composition"], "optical_variability": ["variable_over_process", "missing"], "concentration_level": ["missing", "major_component", "minor_component"] },
+    "D05": { "sample_state": ["turbid_or_colloidal_liquid", "liquid_optics_unspecified"], "interface_mode": ["in_process_probe", "missing"], "target_property_type": ["turbidity_or_cell_density", "missing"], "optical_variability": ["variable_over_process"], "concentration_level": ["missing"] },
+    "D06": { "sample_state": ["liquid_optics_unspecified", "missing"], "interface_mode": ["in_process_probe", "missing"], "target_property_type": ["chemical_composition"], "optical_variability": ["missing"], "concentration_level": ["missing", "minor_component"] },
+    "D07": { "sample_state": ["melt_or_paste"], "interface_mode": ["in_process_probe"], "target_property_type": ["chemical_composition"], "optical_variability": ["missing"], "concentration_level": ["missing", "minor_component"] },
+    "D08": { "sample_state": ["soft_solid_or_tissue"], "interface_mode": ["in_process_probe", "offline_lab_sample", "missing"], "target_property_type": ["sample_classification"], "optical_variability": ["missing"], "concentration_level": ["missing"] }
+  },
+  "premises": {
+    "D01": [], "D02": [], "D03": [], "D04": [], "D05": [], "D06": ["remote"], "D07": [], "D08": [],
+    "H01": ["calibration"],
+    "H02": ["multi-stream"],
+    "H03": ["fluorescence-target"],
+    "H04": ["silica-mir", "remote", "certainty"],
+    "H05": ["certainty"],
+    "H06": ["clinical", "study-as-proof"]
+  }
+}

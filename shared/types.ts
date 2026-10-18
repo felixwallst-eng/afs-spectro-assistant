@@ -119,6 +119,8 @@ export interface Settings {
   confidentAt: number // >= -> confident
   uncertainAt: number // >= -> uncertain, below -> unknown
   agentModel: 'gptoss' | 'qwen' | 'kimi' // knowledge agent model, see shared/agent.ts
+  /** Who decides the tree steps: the Clef classifier or the language model (one call per step, 3 votes). */
+  engine?: 'clef' | 'llm'
 }
 
-export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3, agentModel: 'gptoss' }
+export const DEFAULT_SETTINGS: Settings = { confidentAt: 0.65, uncertainAt: 0.3, agentModel: 'gptoss', engine: 'clef' }

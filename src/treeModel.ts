@@ -1,34 +1,23 @@
-import { DIMENSIONS, DIM_BY_ID } from '../shared/dimensions.ts'
+import { DIM_BY_ID } from '../shared/dimensions.ts'
+import { basisOf } from '../shared/treeLogic.ts'
 import { evaluateAll } from '../shared/engine.ts'
 import { TREE_NODES } from '../shared/tree.ts'
 import type { Decision } from '../shared/tree.ts'
-import type { MethodSetup, RawDimension } from '../shared/types.ts'
+import type { MethodSetup } from '../shared/types.ts'
 
-/** Model decisions -> raw dimensions for the rule engine. Only customer-stated values are applied;
- *  suggestions from the AFS sources count only once the expert accepts them. */
-export function rawFromDecisions(decisions: Decision[]): Record<string, RawDimension> {
-  const out: Record<string, RawDimension> = {}
-  for (const def of DIMENSIONS) {
-    const d = decisions.find((x) => x.id === def.id)
-    const stated = basisOf(d) === 'customer' ? (d?.value ?? null) : null
-    const value = def.kind === 'flag' ? (stated === 'yes' ? 'yes' : 'no') : (stated ?? def.unknownLabel ?? Object.keys(def.labels)[0])
-    out[def.id] = { id: def.id, value, confidence: 1 }
-  }
-  return out
-}
+export { rawFromDecisions } from '../shared/treeLogic.ts'
 
 /** decided: stated by the customer · suggested: AFS sources point to a value, expert accepts ·
- *  expert: set or accepted by the expert · action: missing and blocking · minor: missing, not blocking */
-/** Entries saved before suggestions existed have no basis: a value then means stated by the customer. */
-const basisOf = (d?: Decision) => d?.basis ?? (d?.value ? 'customer' : 'missing')
-
-export type NodeStatus = 'decided' | 'suggested' | 'expert' | 'action' | 'minor'
+ *  conflict: customer text and AFS sources disagree · expert: set or accepted by the expert ·
+ *  action: missing and blocking · minor: missing, not blocking */
+export type NodeStatus = 'decided' | 'suggested' | 'conflict' | 'expert' | 'action' | 'minor'
 
 export function nodeStatus(id: string, decisions: Decision[], overrides: Record<string, string>): NodeStatus {
   if (overrides[id] !== undefined) return 'expert'
   const d = decisions.find((x) => x.id === id)
   if (basisOf(d) === 'customer' && d?.value) return 'decided'
   if (basisOf(d) === 'sources' && d?.value) return 'suggested'
+  if (basisOf(d) === 'conflict') return 'conflict'
   return (DIM_BY_ID[id]?.priority ?? 3) <= 2 ? 'action' : 'minor'
 }
 
